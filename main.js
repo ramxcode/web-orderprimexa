@@ -1,3 +1,17 @@
+// ── Migrasi Nama Toko: RamxPremium → Primexa ─────────────────
+// Jalankan sekali saat halaman load untuk mengganti nilai lama di localStorage
+(function migrateBrandName() {
+  try {
+    var keysToCheck = ['ramx_store', 'ramx_hero', 'ramx_seo'];
+    keysToCheck.forEach(function(key) {
+      var raw = localStorage.getItem(key);
+      if (!raw) return;
+      var updated = raw.replace(/RamxPremium/g, 'Primexa').replace(/ramxpremium/g, 'primexa');
+      if (updated !== raw) localStorage.setItem(key, updated);
+    });
+  } catch(e) {}
+})();
+
 // ── Security Helpers ─────────────────────────────────────────
 // Escape HTML special chars — cegah XSS dari data yang di-render ke innerHTML
 function _esc(str) {
