@@ -1,0 +1,506 @@
+﻿<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/images/logo.jpg" type="image/jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lacak Pesanan - Primexa</title>
+  <meta name="description" content="Lacak status pesanan Anda di Primexa dengan memasukkan nomor order atau invoice.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../index.css?v=2">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <style>
+    /* â&rdquo;€â&rdquo;€ Track Order Page â&rdquo;€â&rdquo;€ */
+    .track-hero {
+      padding: 90px 24px 56px;
+      text-align: center;
+      background: linear-gradient(180deg, #0b1120 0%, var(--bg-primary) 100%);
+    }
+    .track-hero-icon {
+      width: 80px; height: 80px;
+      background: rgba(59,130,246,0.12);
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; color: var(--accent);
+      margin: 0 auto 20px;
+    }
+    .track-hero h1 { font-size: clamp(26px,6vw,42px); font-weight: 800; margin-bottom: 10px; color: #f1f5f9; }
+    .track-hero p  { color: var(--text-muted); font-size: 15px; max-width: 480px; margin: 0 auto 32px; line-height: 1.7; }
+
+    /* Search Form */
+    .track-form-wrap {
+      max-width: 620px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px 24px 20px;
+    }
+    .track-input-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    @media(max-width:480px) { .track-input-row { flex-direction: column; } }
+    .track-input-wrap {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .track-input-icon {
+      position: absolute;
+      left: 14px;
+      color: var(--text-muted);
+      font-size: 14px;
+      pointer-events: none;
+    }
+    .track-input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 13px 16px 13px 40px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .track-input:focus { border-color: var(--accent); }
+    .track-input::placeholder { color: var(--text-muted); }
+    .track-btn {
+      padding: 13px 22px;
+      background: linear-gradient(135deg,#2563eb,#1d4ed8);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: transform 0.2s, box-shadow 0.2s;
+      flex-shrink: 0;
+    }
+    .track-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,0.35); }
+    .track-hint { font-size: 12px; color: var(--text-muted); margin-top: 10px; display: flex; align-items: center; gap: 6px; }
+
+    /* Cara Melacak card */
+    .how-card {
+      max-width: 620px;
+      margin: 16px auto 0;
+      background: rgba(59,130,246,0.07);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 14px;
+      padding: 20px 24px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .how-icon {
+      width: 42px; height: 42px; flex-shrink: 0;
+      background: rgba(59,130,246,0.15);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      color: #60a5fa; font-size: 18px;
+    }
+    .how-title { font-size: 15px; font-weight: 700; margin-bottom: 10px; color: var(--text-primary); }
+    .how-item  { display: flex; gap: 8px; font-size: 13px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.5; }
+    .how-item:last-child { margin-bottom: 0; }
+    .how-item i { color: #60a5fa; margin-top: 2px; flex-shrink: 0; }
+
+    /* Result */
+    .track-result { max-width: 620px; margin: 24px auto 0; }
+    .track-result-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .result-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .result-invoice { font-size: 16px; font-weight: 800; color: var(--text-primary); }
+    .result-date    { font-size: 13px; color: var(--text-muted); }
+    .status-badge {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .badge-success  { background: rgba(16,185,129,0.12); color: #34d399; }
+    .badge-pending  { background: rgba(245,158,11,0.12);  color: #fbbf24; }
+    .badge-process  { background: rgba(59,130,246,0.12);  color: #60a5fa; }
+    .badge-failed   { background: rgba(239,68,68,0.12);   color: #f87171; }
+
+    .result-body { padding: 24px; }
+    .result-row  {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      gap: 12px;
+    }
+    .result-row:last-child { border-bottom: none; }
+    .result-key   { color: var(--text-muted); flex-shrink: 0; }
+    .result-val   { font-weight: 600; color: var(--text-primary); text-align: right; }
+    .result-product-key {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 13px;
+      font-family: monospace;
+      word-break: break-all;
+      margin-top: 8px;
+      color: var(--text-primary);
+    }
+    .copy-btn {
+      padding: 4px 10px;
+      background: rgba(59,130,246,0.12);
+      color: var(--accent);
+      border: none;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      margin-top: 6px;
+    }
+    .copy-btn:hover { background: rgba(59,130,246,0.2); }
+
+    /* Steps */
+    .track-steps {
+      max-width: 620px;
+      margin: 48px auto 0;
+      padding: 0 24px;
+    }
+    .steps-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; text-align: center; }
+    .step-list   { display: flex; flex-direction: column; gap: 0; }
+    .step-item {
+      display: flex;
+      gap: 16px;
+      position: relative;
+    }
+    .step-item:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 40px;
+      width: 2px;
+      height: calc(100% - 12px);
+      background: var(--border);
+    }
+    .step-num {
+      width: 40px; height: 40px;
+      background: rgba(59,130,246,0.12);
+      color: var(--accent);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 15px;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    .step-body  { padding: 8px 0 28px; }
+    .step-name  { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+    .step-desc  { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    /* CTA */
+    .track-cta {
+      max-width: 620px;
+      margin: 32px auto 80px;
+      text-align: center;
+      padding: 0 24px;
+    }
+    .track-cta p   { font-size: 14px; color: var(--text-muted); margin-bottom: 14px; }
+    .track-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 50px;
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .track-cta-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* WA Float */
+    .wa-float { position: fixed; bottom: 24px; right: 24px; z-index: 9000; }
+    .wa-btn   { width: 56px; height: 56px; border-radius: 50%; background: #25D366; border: none; cursor: pointer; font-size: 28px; color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: transform 0.2s; }
+    .wa-btn:hover { transform: scale(1.1); }
+
+    /* Error state */
+    .track-error {
+      max-width: 620px;
+      margin: 20px auto 0;
+      padding: 20px 24px;
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 12px;
+      color: #f87171;
+      font-size: 14px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.jpg" alt="Primexa" style="height:36px;width:auto;object-fit:contain;border-radius:8px;">
+  </a>
+  <div style="flex:1"></div>
+  <div class="nav-actions">
+    <a href="/" class="nav-btn"><i class="fa-solid fa-house"></i> Beranda</a>
+    <a href="/produk" class="nav-btn"><i class="fa-solid fa-box"></i> Produk</a>
+    <a href="/contact" class="nav-btn"><i class="fa-solid fa-headset"></i> Hubungi Kami</a>
+    <button class="nav-btn nav-btn-icon desktop-theme-btn" onclick="toggleTheme()" title="Toggle theme" id="themeBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="themeIcon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button class="nav-btn btn-login"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="track-hero">
+  <div class="track-hero-icon"><i class="fa-solid fa-box-archive"></i></div>
+  <h1>Lacak Pesanan</h1>
+  <p>Masukkan nomor invoice atau email untuk melacak pesanan Anda.</p>
+
+  <div class="track-form-wrap">
+    <div class="track-input-row">
+      <div class="track-input-wrap">
+        <i class="fa-solid fa-magnifying-glass track-input-icon"></i>
+        <input type="text" class="track-input" id="orderInput" placeholder="Masukkan Invoice (INV-XXXXXX) atau Email..." oninput="clearResult()" onkeydown="if(event.key==='Enter') trackOrder()">
+      </div>
+      <button class="track-btn" onclick="trackOrder()">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        Cari Pesanan
+      </button>
+    </div>
+    <p class="track-hint"><i class="fa-solid fa-circle-info"></i> Nomor order tersedia di email konfirmasi pembelian Anda.</p>
+  </div>
+</section>
+
+<!-- Error -->
+<div class="track-error" id="trackError">
+  <i class="fa-solid fa-circle-xmark"></i>
+  <span id="trackErrorMsg">Order tidak ditemukan. Periksa kembali nomor order Anda.</span>
+</div>
+
+<!-- Result -->
+<div class="track-result" id="trackResult" style="display:none;"></div>
+
+<!-- STEPS -->
+<div class="track-steps">
+  <div class="steps-title">Cara Lacak Pesanan</div>
+  <div class="step-list">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-name">Masukkan Nomor Order</div>
+        <div class="step-desc">Cari nomor order atau invoice di email konfirmasi yang kami kirimkan setelah transaksi berhasil.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-name">Klik Tombol Lacak</div>
+        <div class="step-desc">Tekan tombol "Lacak" untuk mencari status pesanan Anda di sistem kami secara otomatis.</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-name">Lihat Status & Produk</div>
+        <div class="step-desc">Detail pesanan akan tampil &mdash; termasuk status, produk yang dibeli, dan kunci/akun yang dikirimkan.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="track-cta">
+  <p>Order tidak ditemukan atau butuh bantuan?</p>
+  <a href="/contact" class="track-cta-btn">
+    <i class="fa-solid fa-headset"></i>
+    Hubungi Tim Support Kami
+  </a>
+</div>
+
+<!-- WA Float -->
+<div class="wa-float">
+  <button class="wa-btn" onclick="window.open('https://wa.me/6281234567890','_blank')" title="Chat via WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+  </button>
+</div>
+
+<script>
+  /* Theme */
+  (function() {
+    var t = localStorage.getItem('ramx-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    var icon = document.getElementById('themeIcon');
+    if (icon && t === 'light') icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  })();
+  function toggleTheme() {
+    var cur  = document.documentElement.getAttribute('data-theme');
+    var next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('ramx-theme', next);
+    var icon = document.getElementById('themeIcon');
+    if (icon) {
+      icon.innerHTML = next === 'light'
+        ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+        : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    }
+  }
+
+  var statusMap = {
+    completed: { label:'Berhasil',              badge:'badge-success', icon:'fa-circle-check' },
+    paid:      { label:'Dibayar - Diproses',    badge:'badge-process', icon:'fa-rotate' },
+    pending:   { label:'Menunggu Pembayaran',   badge:'badge-pending', icon:'fa-clock' },
+    processing:{ label:'Diproses',              badge:'badge-process', icon:'fa-rotate' },
+    failed:    { label:'Gagal',                 badge:'badge-failed',  icon:'fa-circle-xmark' },
+    cancelled: { label:'Dibatalkan',            badge:'badge-failed',  icon:'fa-ban' },
+    refunded:  { label:'Refunded',              badge:'badge-pending', icon:'fa-rotate-left' },
+  };
+
+  function fmt(n){ return 'Rp '+(Number(n)||0).toLocaleString('id-ID'); }
+  function fmtDate(d){ if(!d)return '-'; var dt=new Date(d); return dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})+' '+dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})+' WIB'; }
+
+  async function trackOrder() {
+    var inp = document.getElementById('orderInput').value.trim().toUpperCase();
+    var errEl = document.getElementById('trackError');
+    var resEl = document.getElementById('trackResult');
+
+    errEl.style.display = 'none';
+    resEl.style.display = 'none';
+
+    if (!inp) {
+      errEl.querySelector('#trackErrorMsg').textContent = 'Masukkan nomor order terlebih dahulu.';
+      errEl.style.display = 'flex';
+      return;
+    }
+
+    // Loading state
+    var btn = document.querySelector('.track-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mencari...';
+
+    try {
+      // Fetch order dari API
+      var r = await fetch('/api/orders/track/' + encodeURIComponent(inp));
+      var j = await r.json();
+
+      if (!j.success || !j.data) {
+        errEl.querySelector('#trackErrorMsg').textContent = 'Order "' + inp + '" tidak ditemukan. Periksa kembali nomor order Anda.';
+        errEl.style.display = 'flex';
+        return;
+      }
+
+      var order = j.data;
+      var orderId = order.orderId || inp;
+
+      // Coba ambil credentials jika status completed
+      var credHtml = '';
+      if (['completed','paid'].includes(order.status)) {
+        try {
+          var rr = await fetch('/api/orders/' + orderId + '/result');
+          var jj = await rr.json();
+          if (jj.success && jj.data && jj.data.credentials) {
+            var cred = jj.data.credentials;
+            credHtml = '<div class="result-row"><span class="result-key">Password</span></div>' +
+              '<div style="padding:0 0 10px;">' +
+              '<div class="result-product-key">' + cred + '</div>' +
+              '<button class="copy-btn" onclick="copyKey(this.dataset.c,this)" data-c="' + cred.replace(/"/g,'&quot;') + '">' +
+              '<i class="fa-regular fa-copy"></i> Salin</button></div>';
+          }
+        } catch(e) {}
+      }
+      if (!credHtml) {
+        var credLabel = order.status === 'pending' ? 'Menunggu konfirmasi pembayaran' : 'Sedang diproses oleh tim kami';
+        credHtml = '<div class="result-row"><span class="result-key">Password</span><span class="result-val" style="color:var(--text-muted);font-style:italic;">' + credLabel + '</span></div>';
+      }
+
+      var st = statusMap[order.status] || statusMap.failed;
+      var productName = order.productName || (order.items && order.items[0] && order.items[0].productName) || 'Produk';
+      var variantName = order.variantName || (order.items && order.items[0] && order.items[0].variant) || '';
+
+      resEl.innerHTML = '<div class="track-result-card">' +
+        '<div class="result-header">' +
+          '<div><div class="result-invoice">' + orderId + '</div><div class="result-date">' + fmtDate(order.createdAt) + '</div></div>' +
+          '<span class="status-badge ' + st.badge + '"><i class="fa-solid ' + st.icon + '"></i>' + st.label + '</span>' +
+          '<a href="/invoice/' + orderId + '" style="font-size:12px;color:var(--accent);margin-left:auto;text-decoration:none;white-space:nowrap"><i class="fa-solid fa-file-invoice"></i> Lihat Invoice</a>' +
+        '</div>' +
+        '<div class="result-body">' +
+          '<div class="result-row"><span class="result-key">Produk</span><span class="result-val">' + productName + (variantName ? ' \u2014 ' + variantName : '') + '</span></div>' +
+          '<div class="result-row"><span class="result-key">Email Tujuan</span><span class="result-val">' + (order.customerEmail || order.email || '-') + '</span></div>' +
+          '<div class="result-row"><span class="result-key">Total</span><span class="result-val" style="color:#34d399;">' + fmt(order.total) + '</span></div>' +
+          '<div class="result-row"><span class="result-key">Pembayaran</span><span class="result-val">' + (order.paymentMethod || '-') + '</span></div>' +
+          credHtml +
+        '</div>' +
+      '</div>';
+
+      resEl.style.display = 'block';
+      resEl.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    } catch(e) {
+      errEl.querySelector('#trackErrorMsg').textContent = 'Gagal menghubungi server. Coba lagi.';
+      errEl.style.display = 'flex';
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Cari Pesanan';
+    }
+  }
+
+  function clearResult() {
+    document.getElementById('trackResult').style.display = 'none';
+    document.getElementById('trackError').style.display = 'none';
+  }
+
+  function copyKey(text, btn) {
+    navigator.clipboard.writeText(text).then(function() {
+      var orig = btn.innerHTML;
+      btn.innerHTML = '<i class="fa-solid fa-check"></i> Tersalin!';
+      setTimeout(function() { btn.innerHTML = orig; }, 1500);
+    });
+  }
+
+  /* Pre-fill from URL param ?order=XXX */
+  (function() {
+    var params = new URLSearchParams(window.location.search);
+    var o = params.get('order');
+    if (o) { document.getElementById('orderInput').value = o; trackOrder(); }
+  })();
+</script>
+<script src="/shared-config.js"></script>
+</body>
+</html>

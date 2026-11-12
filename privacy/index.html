@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/images/logo.jpg" type="image/jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <title>Kebijakan Privasi &mdash; Primexa</title>
+  <meta name="description" content="Kebijakan privasi Primexa tentang pengumpulan dan penggunaan data pribadi Anda.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../index.css?v=2">
+  <style>
+    .legal-hero {
+      padding: 90px 24px 40px;
+      text-align: center;
+      background: linear-gradient(180deg, #0b1120 0%, var(--bg-primary) 100%);
+    }
+    .legal-hero-icon {
+      width: 72px; height: 72px;
+      background: rgba(139,92,246,0.12);
+      border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 32px; color: #8b5cf6;
+      margin: 0 auto 18px;
+    }
+    .legal-hero h1 { font-size: clamp(24px,5vw,38px); font-weight: 800; margin-bottom: 8px; }
+    .legal-hero .updated { font-size: 13px; color: var(--text-muted); }
+    .legal-body { max-width: 820px; margin: 40px auto 80px; padding: 0 24px; }
+    .legal-toc {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 20px 24px; margin-bottom: 32px;
+    }
+    .legal-toc h3 { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .legal-toc ul { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    @media(max-width:500px){ .legal-toc ul { grid-template-columns: 1fr; } }
+    .legal-toc a { font-size: 13px; color: var(--accent); text-decoration: none; }
+    .legal-toc a:hover { text-decoration: underline; }
+    .legal-content {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 32px 36px;
+      line-height: 1.8; font-size: 15px; color: var(--text-secondary);
+    }
+    @media(max-width:600px){ .legal-content { padding: 20px 18px; } }
+    .legal-content h2 { font-size: 22px; font-weight: 800; color: var(--text-primary); margin: 0 0 16px; }
+    .legal-content h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin: 28px 0 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .legal-content p  { margin: 0 0 14px; }
+    .legal-content ul, .legal-content ol { padding-left: 20px; margin: 0 0 14px; }
+    .legal-content li { margin-bottom: 6px; }
+    .legal-content strong { color: var(--text-primary); }
+    .legal-content a { color: var(--accent); }
+    .legal-cta {
+      margin-top: 28px; padding: 18px 24px;
+      background: rgba(139,92,246,0.07); border: 1px solid rgba(139,92,246,0.2);
+      border-radius: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+    }
+    .legal-cta p { font-size: 14px; color: var(--text-muted); margin: 0; }
+    .legal-cta a {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; background: #25D366; color: #fff;
+      border-radius: 50px; font-weight: 700; font-size: 14px;
+      text-decoration: none; white-space: nowrap; transition: transform 0.2s;
+    }
+    .legal-cta a:hover { transform: translateY(-1px); }
+    .wa-float { position: fixed; bottom: 24px; right: 24px; z-index: 9000; }
+    .wa-btn   { width: 56px; height: 56px; border-radius: 50%; background: #25D366; border: none; cursor: pointer; font-size: 28px; color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: transform 0.2s; }
+    .wa-btn:hover { transform: scale(1.1); }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.jpg" alt="Primexa" style="height:36px;width:auto;object-fit:contain;border-radius:8px;">
+  </a>
+  <div style="flex:1"></div>
+  <div class="nav-actions">
+    <a href="/" class="nav-btn"><i class="fa-solid fa-house"></i> Beranda</a>
+    <a href="/produk" class="nav-btn"><i class="fa-solid fa-box"></i> Produk</a>
+    <button class="nav-btn nav-btn-icon desktop-theme-btn" onclick="toggleTheme()" id="themeBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="themeIcon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button class="nav-btn btn-login"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+  </div>
+</nav>
+
+<section class="legal-hero">
+  <div class="legal-hero-icon"><i class="fa-solid fa-shield-halved"></i></div>
+  <h1>Kebijakan Privasi</h1>
+  <p class="updated">Terakhir diperbarui: <span id="updatedDate">1 Januari 2026</span></p>
+</section>
+
+<div class="legal-body">
+  <div class="legal-toc" id="tocBox" style="display:none;">
+    <h3><i class="fa-solid fa-list"></i> Daftar Isi</h3>
+    <ul id="tocList"></ul>
+  </div>
+
+  <div class="legal-content" id="legalContent">
+    <div style="text-align:center;padding:40px;color:var(--text-muted);">
+      <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+      <p style="margin-top:12px;">Memuat konten...</p>
+    </div>
+  </div>
+
+  <div class="legal-cta">
+    <p><i class="fa-solid fa-lock"></i> Privasi Anda adalah prioritas kami. Ada pertanyaan?</p>
+    <a href="https://wa.me/6281234567890" target="_blank"><i class="fa-brands fa-whatsapp"></i> Hubungi Kami</a>
+  </div>
+</div>
+
+<div class="wa-float">
+  <button class="wa-btn" onclick="window.open('https://wa.me/6281234567890','_blank')">
+    <i class="fa-brands fa-whatsapp"></i>
+  </button>
+</div>
+
+<script>
+  (function(){
+    var t=localStorage.getItem('ramx-theme')||'dark';
+    document.documentElement.setAttribute('data-theme',t);
+    var icon=document.getElementById('themeIcon');
+    if(icon&&t==='light') icon.innerHTML='<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  })();
+  function toggleTheme(){
+    var cur=document.documentElement.getAttribute('data-theme');
+    var next=cur==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',next);
+    localStorage.setItem('ramx-theme',next);
+    var icon=document.getElementById('themeIcon');
+    if(icon) icon.innerHTML=next==='light'?'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>':'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  }
+
+  var DEFAULT_PRIVACY = `<h2>Kebijakan Privasi</h2>
+<p>Kami berkomitmen penuh untuk melindungi privasi dan keamanan data pribadi Anda. Dokumen ini menjelaskan bagaimana kami mengumpulkan, menggunakan, dan melindungi informasi Anda.</p>
+
+<h3>1. Data yang Kami Kumpulkan</h3>
+<p>Kami mengumpulkan informasi berikut saat Anda menggunakan layanan kami:</p>
+<ul>
+  <li>Nama lengkap dan alamat email</li>
+  <li>Nomor telepon atau WhatsApp</li>
+  <li>Data transaksi dan riwayat pembelian</li>
+  <li>Alamat IP dan data penggunaan website</li>
+</ul>
+
+<h3>2. Penggunaan Data</h3>
+<p>Data Anda digunakan untuk:</p>
+<ul>
+  <li>Memproses dan mengirimkan pesanan Anda</li>
+  <li>Memberikan dukungan pelanggan yang lebih baik</li>
+  <li>Mengirimkan notifikasi transaksi dan promosi</li>
+  <li>Meningkatkan kualitas layanan kami</li>
+</ul>
+
+<h3>3. Keamanan Data</h3>
+<p>Kami menerapkan langkah-langkah keamanan tingkat tinggi untuk melindungi data Anda, termasuk enkripsi SSL dan sistem proteksi berlapis. Akses data dibatasi hanya untuk tim yang berwenang.</p>
+
+<h3>4. Berbagi Data dengan Pihak Ketiga</h3>
+<p>Kami <strong>tidak menjual atau menyewakan</strong> data pribadi Anda kepada pihak ketiga. Data hanya dibagikan kepada mitra pembayaran yang diperlukan untuk memproses transaksi Anda, dan mereka wajib menjaga kerahasiaannya.</p>
+
+<h3>5. Cookie dan Pelacakan</h3>
+<p>Website kami menggunakan cookie untuk meningkatkan pengalaman pengguna dan menganalisis traffic. Anda dapat menonaktifkan cookie melalui pengaturan browser, namun beberapa fitur mungkin tidak berfungsi optimal.</p>
+
+<h3>6. Hak-hak Anda</h3>
+<p>Anda memiliki hak untuk:</p>
+<ul>
+  <li>Mengakses data pribadi yang kami simpan</li>
+  <li>Memperbarui atau mengoreksi data Anda</li>
+  <li>Meminta penghapusan data Anda</li>
+  <li>Menolak penggunaan data untuk pemasaran</li>
+</ul>
+
+<h3>7. Retensi Data</h3>
+<p>Kami menyimpan data Anda selama diperlukan untuk keperluan layanan dan kepatuhan hukum, atau hingga Anda meminta penghapusannya.</p>
+
+<h3>8. Perubahan Kebijakan</h3>
+<p>Kami dapat memperbarui kebijakan privasi ini sewaktu-waktu. Perubahan signifikan akan diberitahukan melalui email atau notifikasi di website.</p>
+
+<h3>9. Kontak</h3>
+<p>Untuk pertanyaan tentang privasi data Anda, hubungi kami di <a href="mailto:privacy@Primexa.id">privacy@Primexa.id</a>.</p>`;
+
+  function loadContent() {
+    var saved = localStorage.getItem('ramx_page_privacy');
+    var html  = (saved !== null && saved.trim() !== '') ? saved : DEFAULT_PRIVACY;
+    document.getElementById('legalContent').innerHTML = html;
+
+    var headings = document.getElementById('legalContent').querySelectorAll('h3');
+    if (headings.length > 2) {
+      var tocList = document.getElementById('tocList');
+      headings.forEach(function(h, i) {
+        h.id = 'section-' + i;
+        var li = document.createElement('li');
+        li.innerHTML = '<a href="#section-'+i+'">'+h.textContent+'</a>';
+        tocList.appendChild(li);
+      });
+      document.getElementById('tocBox').style.display = 'block';
+    }
+  }
+
+  loadContent();
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'ramx_page_privacy') loadContent();
+  });
+</script>
+<script src="/shared-config.js"></script>
+</body>
+</html>

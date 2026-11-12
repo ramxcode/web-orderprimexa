@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Primexa &mdash; Toko Produk Digital</title>
+  <meta name="description" content="Beli aplikasi premium, voucher game, dan produk digital lainnya. Proses cepat, harga terjangkau.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="icon" href="/images/logo.jpg" type="image/jpeg">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.jpg" alt="Primexa" style="height:36px;width:auto;object-fit:contain;border-radius:8px;">
+  </a>
+  <div class="nav-search">
+    <svg class="nav-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" placeholder="Cari game, voucher, aplikasi..." id="searchInput">
+  </div>
+  <div class="nav-actions">
+    <a href="/track" class="nav-btn">
+      <i class="fa-solid fa-box-archive"></i>
+      Track Order
+    </a>
+    <!-- Theme toggle: hanya tampil di desktop -->
+    <button class="nav-btn nav-btn-icon desktop-theme-btn" onclick="toggleTheme()" title="Toggle theme" id="themeBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="themeIcon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <!-- Search icon: hanya tampil di mobile -->
+    <button class="nav-btn nav-btn-icon mobile-search-btn" onclick="toggleMobileSearch()" title="Cari" id="mobileSearchBtn">
+      <i class="fa-solid fa-magnifying-glass"></i>
+    </button>
+    <!-- Login / User state &mdash; dihandle JS -->
+    <a href="/login" class="nav-btn btn-login" id="navLoginBtn">
+      <i class="fa-solid fa-right-to-bracket"></i>
+      Login
+    </a>
+    <!-- User dropdown saat sudah login -->
+    <div class="nav-user-menu" id="navUserMenu" style="display:none; position:relative;">
+      <button class="nav-btn btn-login" onclick="toggleNavUserDropdown()" id="navUserBtn" style="gap:8px;">
+        <i class="fa-solid fa-circle-user"></i>
+        <span id="navUserName">Akun</span>
+        <i class="fa-solid fa-chevron-down" style="font-size:10px;"></i>
+      </button>
+      <div id="navUserDropdown" style="
+        display:none; position:absolute; top:calc(100% + 8px); right:0;
+        background:#111827; border:1px solid rgba(255,255,255,0.1);
+        border-radius:12px; padding:8px; min-width:180px;
+        box-shadow:0 16px 40px rgba(0,0,0,0.4); z-index:1000;
+      ">
+        <div style="padding:8px 12px; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:4px;">
+          <div style="font-size:12px; color:#94a3b8;">Masuk sebagai</div>
+          <div style="font-size:13px; font-weight:600; color:#f1f5f9;" id="navUserEmail">-</div>
+        </div>
+        <!-- Dashboard user (semua yang login) -->
+        <a href="/dashboard" id="navUserDashboard" style="display:none;align-items:center;gap:8px;padding:8px 12px;color:#94a3b8;font-size:13px;border-radius:8px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.06)';this.style.color='#f1f5f9'" onmouseout="this.style.background='';this.style.color='#94a3b8'">
+          <i class="fa-solid fa-gauge-high" style="width:14px;"></i> Dashboard
+        </a>
+        <!-- Dashboard Admin -->
+        <a href="/admin/dashboard" id="navAdminDashboard" style="display:none;align-items:center;gap:8px;padding:8px 12px;color:#818cf8;font-size:13px;border-radius:8px;text-decoration:none;transition:all 0.2s;font-weight:600;" onmouseover="this.style.background='rgba(99,102,241,0.12)';this.style.color='#a5b4fc'" onmouseout="this.style.background='';this.style.color='#818cf8'">
+          <i class="fa-solid fa-gauge-high" style="width:14px;"></i> Dashboard Admin
+        </a>
+        <a href="/profile" id="navProfileLink" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:#94a3b8;font-size:13px;border-radius:8px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.06)';this.style.color='#f1f5f9'" onmouseout="this.style.background='';this.style.color='#94a3b8'">
+          <i class="fa-solid fa-user" style="width:14px;"></i> Profil Saya
+        </a>
+        <a href="/track" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:#94a3b8;font-size:13px;border-radius:8px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.06)';this.style.color='#f1f5f9'" onmouseout="this.style.background='';this.style.color='#94a3b8'">
+          <i class="fa-solid fa-bag-shopping" style="width:14px;"></i> Pesanan Saya
+        </a>
+        <a href="/dashboard/saldo" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:#94a3b8;font-size:13px;border-radius:8px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.06)';this.style.color='#f1f5f9'" onmouseout="this.style.background='';this.style.color='#94a3b8'" id="navSaldoTopup" style="display:none;">
+          <i class="fa-solid fa-wallet" style="width:14px;"></i> Saldo &amp; Topup
+        </a>
+        <div style="height:1px;background:rgba(255,255,255,0.08);margin:4px 0;"></div>
+        <button onclick="handleLogout()" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:#f87171;font-size:13px;border-radius:8px;background:none;border:none;cursor:pointer;width:100%;font-family:inherit;transition:all 0.2s;" onmouseover="this.style.background='rgba(248,113,113,0.1)'" onmouseout="this.style.background=''">
+          <i class="fa-solid fa-right-from-bracket" style="width:14px;"></i> Keluar
+        </button>
+      </div>
+    </div>
+    <button class="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- ===== MOBILE SEARCH BAR ===== -->
+<div class="mobile-searchbar" id="mobileSearchbar">
+  <div class="mobile-searchbar-inner">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" placeholder="Cari game, voucher, aplikasi..." id="mobileSearchInput" autocomplete="off">
+    <button class="mobile-searchbar-close" onclick="toggleMobileSearch()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+</div>
+
+<!-- ===== MOBILE OVERLAY ===== -->
+<div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileMenu()"></div>
+
+<!-- ===== MOBILE MENU DRAWER ===== -->
+<div class="mobile-menu" id="mobileMenu">
+  <!-- Header -->
+  <div class="mobile-menu-header">
+    <span class="mobile-menu-title">Menu</span>
+    <button class="mobile-menu-close" onclick="toggleMobileMenu()">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+  </div>
+
+  <!-- Body (scrollable) -->
+  <div class="mobile-menu-body">
+    <!-- Menu utama -->
+    <nav class="mobile-nav">
+      <a href="/" class="mobile-nav-item active" onclick="toggleMobileMenu()">
+        <i class="fa-solid fa-house"></i>
+        <span>Beranda</span>
+      </a>
+      <a href="/produk-unggulan" onclick="navTo('/produk-unggulan','products'); toggleMobileMenu(); return false;" class="mobile-nav-item">
+        <i class="fa-solid fa-box-archive"></i>
+        <span>Produk Unggulan</span>
+      </a>
+      <a href="/contact" class="mobile-nav-item">
+        <i class="fa-solid fa-headset"></i>
+        <span>Hubungi Kami</span>
+      </a>
+    </nav>
+
+    <div class="mobile-menu-divider"></div>
+
+    <!-- Section Informasi -->
+    <div class="mobile-section-label">Informasi</div>
+    <nav class="mobile-nav">
+      <a href="javascript:void(0)" class="mobile-nav-item">
+        <i class="fa-regular fa-file-lines"></i>
+        <span>Syarat &amp; Ketentuan</span>
+      </a>
+      <a href="javascript:void(0)" class="mobile-nav-item">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Kebijakan Privasi</span>
+      </a>
+      <a href="/faq" class="mobile-nav-item">
+        <i class="fa-solid fa-circle-question"></i>
+        <span>FAQ &amp; Bantuan</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Footer: Theme + Login -->
+  <div class="mobile-menu-footer">
+    <button class="mobile-theme-btn" onclick="toggleTheme(); updateMobileThemeBtn();" id="mobileThemeBtn">
+      <i class="fa-solid fa-sun" id="mobileThemeIcon"></i>
+      <span id="mobileThemeText">Light Mode</span>
+    </button>
+    <button class="mobile-login-btn">
+      <i class="fa-solid fa-right-to-bracket"></i>
+      Login
+    </button>
+  </div>
+</div>
+
+
+<!-- ===== HERO BANNER ===== -->
+<section class="hero" id="heroBanner">
+  <div class="hero-content">
+    <div class="hero-text fade-in">
+      <div class="hero-badge">
+        <span id="heroBadgeText">Primexa</span>
+      </div>
+      <h1 class="hero-title" id="heroTitle">
+        Aplikasi Premium &amp;<br>Produk Digital
+      </h1>
+      <p class="hero-subtitle" id="heroSubtitle">
+        Beli <strong>aplikasi, voucher game, tools editing</strong>, dan produk digital lainnya. Proses instan, harga terjangkau.
+      </p>
+      <div class="hero-cta">
+        <a href="/produk" class="btn-primary" id="heroBtn1">
+          Lihat Katalog
+        </a>
+        <a href="/track" class="btn-outline" id="heroBtn2">
+          <i class="fa-solid fa-box-archive"></i>
+          Lacak Pesanan
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="stat1Num">Instan</div>
+          <div class="hero-stat-label" id="stat1Label">Proses Otomatis</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="stat2Num">QRIS</div>
+          <div class="hero-stat-label" id="stat2Label">Pembayaran Mudah</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num" id="stat3Num">24/7</div>
+          <div class="hero-stat-label" id="stat3Label">Layanan Aktif</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-phone-mockup">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <span class="phone-mini-logo">Primexa</span>
+          <span id="phoneMockupHeaderLogo"><i class="fa-solid fa-star" style="font-size:10px;color:#3b82f6"></i></span>
+        </div>
+        <div class="phone-search">
+          <i class="fa-solid fa-magnifying-glass" style="font-size:9px"></i>
+          Cari produk digital...
+        </div>
+        <div class="phone-categories" id="phoneMockupCategories">
+          <div class="phone-cat"><div class="phone-cat-icon" style="background:rgba(59,130,246,0.2)"><i class="fa-solid fa-gamepad"></i></div><span>Game</span></div>
+          <div class="phone-cat"><div class="phone-cat-icon" style="background:rgba(99,102,241,0.2)"><i class="fa-solid fa-mobile-screen"></i></div><span>App</span></div>
+          <div class="phone-cat"><div class="phone-cat-icon" style="background:rgba(234,179,8,0.2)"><i class="fa-solid fa-tv"></i></div><span>Stream</span></div>
+          <div class="phone-cat"><div class="phone-cat-icon" style="background:rgba(34,197,94,0.2)"><i class="fa-solid fa-palette"></i></div><span>Design</span></div>
+        </div>
+        <div class="phone-section-title">Produk Terpopuler</div>
+        <div class="phone-products">
+          <div class="phone-product-card">
+            <div class="phone-product-img" style="background:linear-gradient(135deg,#0c2340,#1a4a8a)"><i class="fa-solid fa-palette"></i></div>
+            <div class="phone-product-name">Canva Pro</div>
+            <div class="phone-product-price">Rp 5.000</div>
+          </div>
+          <div class="phone-product-card">
+            <div class="phone-product-img" style="background:linear-gradient(135deg,#111,#333)"><i class="fa-solid fa-scissors"></i></div>
+            <div class="phone-product-name">CapCut Pro</div>
+            <div class="phone-product-price">Rp 7.000</div>
+          </div>
+          <div class="phone-product-card">
+            <div class="phone-product-img" style="background:linear-gradient(135deg,#ff0000,#cc0000)"><i class="fa-brands fa-youtube"></i></div>
+            <div class="phone-product-name">YouTube P.</div>
+            <div class="phone-product-price">Rp 20.000</div>
+          </div>
+          <div class="phone-product-card">
+            <div class="phone-product-img" style="background:linear-gradient(135deg,#1a1a2e,#16213e)"><i class="fa-solid fa-film"></i></div>
+            <div class="phone-product-name">AM Pro</div>
+            <div class="phone-product-price">Rp 10.000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PRODUK UNGGULAN ===== -->
+<div class="featured-section">
+  <div class="featured-wrapper" id="products">
+    <div class="section-header">
+      <div class="section-title-wrap">
+        <span class="section-icon"><i class="fa-solid fa-fire"></i></span>
+        <h2 class="section-title">Produk Unggulan</h2>
+      </div>
+      <a href="/produk" onclick="navTo('/produk','categorySection'); return false;" class="section-link">Lihat Semua <i class="fa-solid fa-chevron-right"></i></a>
+    </div>
+    <div class="products-grid" id="featuredGrid">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== FILTER KATEGORI ===== -->
+<div class="categories-section">
+  <div class="categories-wrapper">
+    <div class="cat-pills" id="catPills">
+      <button class="cat-pill active" data-cat="semua" onclick="filterCat(this,'semua')">
+        <i class="fa-solid fa-border-all"></i> Semua
+      </button>
+      <button class="cat-pill" data-cat="aplikasi" onclick="filterCat(this,'aplikasi')">
+        <i class="fa-solid fa-mobile-screen"></i> Aplikasi Premium
+      </button>
+      <button class="cat-pill" data-cat="streaming" onclick="filterCat(this,'streaming')">
+        <i class="fa-solid fa-tv"></i> Streaming
+      </button>
+      <button class="cat-pill" data-cat="editing" onclick="filterCat(this,'editing')">
+        <i class="fa-solid fa-scissors"></i> Editing
+      </button>
+      <button class="cat-pill" data-cat="design" onclick="filterCat(this,'design')">
+        <i class="fa-solid fa-palette"></i> Design
+      </button>
+      <button class="cat-pill" data-cat="voucher" onclick="filterCat(this,'voucher')">
+        <i class="fa-solid fa-gamepad"></i> Voucher Game
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SECTION PRODUK PER KATEGORI ===== -->
+<div style="background:var(--bg-primary)">
+  <div class="section" id="categorySection">
+    <div class="section-header">
+      <div class="section-title-wrap">
+        <span class="section-icon" id="catSectionIcon"><i class="fa-solid fa-mobile-screen"></i></span>
+        <h2 class="section-title" id="catSectionTitle">Aplikasi Premium</h2>
+      </div>
+      <a href="/produk" onclick="navTo('/produk','categorySection'); return false;" class="section-link">Lihat Kategori <i class="fa-solid fa-chevron-right"></i></a>
+    </div>
+    <div class="products-grid" id="categoryGrid">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== KENAPA PILIH ===== -->
+<div class="benefits-section">
+  <div class="benefits-wrapper">
+    <h2 class="benefits-title">Kenapa belanja di <span class="highlight" id="shopNameBenefit">Primexa</span>?</h2>
+    <div class="benefits-grid" id="benefitsGrid">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="footer-logo">
+        <img src="/images/logo.jpg" alt="Primexa" style="height:36px;width:auto;object-fit:contain;border-radius:8px;">
+      </div>
+      <p class="footer-desc" id="footerDesc">
+        Primexa adalah toko produk digital yang menyediakan berbagai kebutuhan aplikasi premium, tools editing, hiburan, desain, dan produk online lainnya dengan proses cepat dan aman.
+      </p>
+      <div class="footer-socials">
+        <a href="javascript:void(0)" class="social-btn" title="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="javascript:void(0)" class="social-btn" title="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="javascript:void(0)" class="social-btn" title="TikTok"><i class="fa-brands fa-tiktok"></i></a>
+        <a href="javascript:void(0)" class="social-btn" title="YouTube"><i class="fa-brands fa-youtube"></i></a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Menu</div>
+      <div class="footer-links">
+        <a href="/" class="footer-link">Beranda</a>
+        <a href="/produk" class="footer-link">Semua Produk</a>
+        <a href="/track" class="footer-link">Lacak Pesanan</a>
+        <a href="/contact" class="footer-link">Hubungi Kami</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Informasi</div>
+      <div class="footer-links">
+        <a href="/terms" class="footer-link">Syarat &amp; Ketentuan</a>
+        <a href="/privacy" class="footer-link">Kebijakan Privasi</a>
+        <a href="/faq" class="footer-link">FAQ &amp; Bantuan</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Metode Pembayaran</div>
+      <div class="payment-methods">
+        <div class="payment-badge"><i class="fa-solid fa-qrcode"></i> QRIS</div>
+        <div class="payment-badge"><i class="fa-solid fa-wallet"></i> E-Wallet</div>
+        <div class="payment-badge"><i class="fa-solid fa-building-columns"></i> Bank Transfer</div>
+        <div class="payment-badge"><i class="fa-solid fa-money-bill-wave"></i> GoPay</div>
+        <div class="payment-badge"><i class="fa-solid fa-circle-dollar-to-slot"></i> OVO</div>
+        <div class="payment-badge"><i class="fa-solid fa-bag-shopping"></i> ShopeePay</div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copyright">© 2026 Primexa. All rights reserved.&nbsp;</span>
+  </div>
+</footer>
+
+<!-- ===== WHATSAPP FLOAT ===== -->
+<div class="wa-float" id="waFloat">
+  <div class="wa-bubble" id="waBubble">
+    Butuh bantuan? Chat kami sekarang!
+    <button class="wa-bubble-close" onclick="closeWaBubble()"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <button class="wa-btn" onclick="openWA()" title="Chat via WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+  </button>
+</div>
+
+<!-- Admin Panel telah dipindahkan ke Admin Dashboard > Kustomisasi > Konfigurasi Umum -->
+
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<script src="main.js"></script>
+</body>
+</html>

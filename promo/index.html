@@ -1,0 +1,476 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/images/logo.jpg" type="image/jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promo & Voucher &mdash; Primexa</title>
+  <meta name="description" content="Gunakan voucher berikut saat checkout untuk mendapatkan potongan harga di Primexa.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0a0f1e;--card:#111827;--border:rgba(255,255,255,.07);
+      --text:#f1f5f9;--muted:#64748b;--secondary:#94a3b8;
+      --accent:#3b82f6;--accent-light:#60a5fa;
+      --success:#22c55e;--warning:#f59e0b;--error:#ef4444;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+    /* Navbar */
+    .navbar{position:sticky;top:0;z-index:200;background:rgba(10,15,30,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;}
+    .nav-logo{font-size:17px;font-weight:900;color:var(--text);text-decoration:none;}
+    .nav-logo span{color:var(--accent);}
+    .nav-right{display:flex;align-items:center;gap:12px;}
+    .nav-btn{padding:7px 16px;background:var(--accent);color:#fff;border-radius:8px;font-size:13px;font-weight:700;text-decoration:none;}
+    .nav-link-item{font-size:13px;color:var(--secondary);text-decoration:none;font-weight:600;}
+    .nav-link-item:hover,.nav-link-item.active{color:var(--text);}
+
+    /* Container */
+    .container{max-width:860px;margin:0 auto;padding:0 20px;}
+
+    /* Back link */
+    .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--secondary);font-size:13px;font-weight:600;text-decoration:none;margin:28px 0 20px;transition:color .2s;}
+    .back-link:hover{color:var(--text);}
+
+    /* Page header */
+    .page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:28px;}
+    .page-title{font-size:32px;font-weight:900;color:var(--text);}
+    .page-subtitle{font-size:14px;color:var(--secondary);margin-top:4px;}
+    .active-badge{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:10px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);font-size:13px;font-weight:700;color:var(--accent-light);white-space:nowrap;flex-shrink:0;}
+
+    /* Voucher card */
+    .voucher-card{display:flex;align-items:stretch;background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;margin-bottom:14px;transition:border-color .2s,box-shadow .2s,transform .2s;}
+    .voucher-card:hover{border-color:rgba(59,130,246,.25);box-shadow:0 8px 32px rgba(0,0,0,.25);transform:translateY(-1px);}
+
+    /* Left panel */
+    .vc-left{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:90px;padding:20px 12px;background:linear-gradient(160deg,#1d4ed8,#3b82f6);color:#fff;text-align:center;flex-shrink:0;position:relative;}
+    .vc-left::after{content:'';position:absolute;right:-1px;top:12px;bottom:12px;border-right:2px dashed rgba(255,255,255,.15);}
+    .vc-notch-top,.vc-notch-bot{position:absolute;width:20px;height:20px;background:var(--bg);border-radius:50%;right:-10px;z-index:2;}
+    .vc-notch-top{top:-10px;} .vc-notch-bot{bottom:-10px;}
+    .vc-val{font-size:20px;font-weight:900;line-height:1.1;}
+    .vc-val-sub{font-size:10px;font-weight:800;opacity:.85;margin-top:2px;letter-spacing:.5px;}
+    .vc-val-sd{font-size:10px;font-weight:600;opacity:.7;margin-top:5px;}
+
+    /* Right panel */
+    .vc-right{flex:1;padding:16px 18px;min-width:0;}
+    .vc-top-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;}
+    .vc-name{font-size:14px;font-weight:800;color:var(--text);}
+    .vc-timer{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--secondary);white-space:nowrap;flex-shrink:0;}
+    .vc-timer.expiring{color:var(--warning);}
+    .vc-scope{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--secondary);margin-bottom:10px;}
+    .vc-bottom-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px;padding-top:10px;border-top:1px solid var(--border);}
+    .vc-code{font-family:monospace;font-size:13px;font-weight:900;color:#60a5fa;letter-spacing:1px;padding:5px 10px;background:rgba(59,130,246,.08);border:1.5px dashed rgba(59,130,246,.25);border-radius:7px;user-select:all;}
+    .vc-actions{display:flex;align-items:center;gap:8px;}
+
+    /* SK button */
+    .vc-sk-btn{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--secondary);background:none;border:none;cursor:pointer;font-family:inherit;padding:0;transition:color .2s;}
+    .vc-sk-btn:hover{color:var(--text);}
+
+    /* Copy button */
+    .vc-copy-btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);color:var(--accent-light);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap;}
+    .vc-copy-btn:hover{background:rgba(59,130,246,.18);}
+    .vc-copy-btn.copied{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.2);color:#4ade80;}
+
+    /* Featured badge */
+    .vc-featured-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;color:var(--warning);background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);padding:2px 7px;border-radius:5px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
+
+    /* ════════════════════════════════
+       S&K MODAL
+    ════════════════════════════════ */
+    .sk-overlay{
+      position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);
+      z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;
+    }
+    .sk-overlay.show{display:flex;}
+    .sk-modal{
+      background:#111827;border:1px solid rgba(255,255,255,.1);
+      border-radius:20px;width:100%;max-width:420px;
+      overflow:hidden;animation:skIn .22s ease;
+    }
+    @keyframes skIn{from{opacity:0;transform:scale(.96) translateY(8px)}to{opacity:1;transform:none}}
+
+    .sk-modal-header{
+      display:flex;align-items:flex-start;justify-content:space-between;
+      padding:22px 22px 16px;border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .sk-modal-header-left{display:flex;align-items:flex-start;gap:14px;}
+    .sk-icon-box{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;flex-shrink:0;}
+    .sk-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--accent-light);margin-bottom:4px;}
+    .sk-vname{font-size:18px;font-weight:900;color:var(--text);line-height:1.2;}
+    .sk-vcode{display:inline-block;margin-top:6px;font-family:monospace;font-size:12px;font-weight:800;color:#60a5fa;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.2);padding:2px 10px;border-radius:6px;letter-spacing:1px;}
+    .sk-close{background:rgba(255,255,255,.07);border:none;color:var(--secondary);cursor:pointer;width:32px;height:32px;border-radius:50%;font-size:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s;}
+    .sk-close:hover{background:rgba(255,255,255,.12);}
+
+    .sk-modal-body{padding:20px 22px;}
+
+    .sk-section-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);margin-bottom:12px;}
+    .sk-info-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+    .sk-info-icon{width:28px;height:28px;border-radius:8px;background:rgba(59,130,246,.1);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--accent-light);flex-shrink:0;}
+    .sk-info-text{font-size:13px;color:var(--text);}
+    .sk-info-text span{color:var(--secondary);}
+
+    .sk-divider{border:none;border-top:1px solid rgba(255,255,255,.06);margin:16px 0;}
+
+    .sk-syarat-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+    .sk-syarat-list li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--text);}
+    .sk-num{min-width:22px;height:22px;border-radius:6px;background:rgba(59,130,246,.12);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--accent-light);flex-shrink:0;}
+
+    .sk-modal-footer{padding:0 22px 22px;}
+    .sk-copy-main{
+      width:100%;padding:14px;background:var(--accent);color:#fff;
+      border:none;border-radius:12px;font-size:14px;font-weight:800;
+      cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;
+      transition:background .2s;
+    }
+    .sk-copy-main:hover{background:#2563eb;}
+    .sk-copy-main.copied{background:var(--success);}
+
+    /* Empty */
+    .empty{text-align:center;padding:60px 20px;color:var(--muted);}
+    .empty i{font-size:40px;margin-bottom:16px;display:block;opacity:.3;}
+
+    /* Toast */
+    #promoToast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1e293b;border:1px solid rgba(34,197,94,.3);color:#4ade80;padding:12px 22px;border-radius:12px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;z-index:99999;transition:transform .28s ease;pointer-events:none;white-space:nowrap;}
+
+    /* Skeleton */
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+    .skel{background:rgba(255,255,255,.05);border-radius:14px;animation:pulse 1.4s infinite;}
+
+    footer{border-top:1px solid var(--border);padding:24px;text-align:center;color:var(--muted);font-size:12px;margin-top:48px;}
+
+    @media(max-width:600px){
+      .navbar{padding:0 16px;}
+      .vc-left{min-width:72px;padding:16px 10px;}
+      .vc-val{font-size:17px;}
+      .page-title{font-size:24px;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <a href="/" class="nav-logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;">
+    <img src="/images/logo.jpg" alt="Primexa" style="height:36px;width:auto;object-fit:contain;border-radius:8px;">
+  </a>
+  <div class="nav-right">
+    <a href="/produk" class="nav-link-item">Produk</a>
+    <a href="/promo" class="nav-link-item active">Promo</a>
+    <a href="/login" class="nav-btn">Masuk</a>
+  </div>
+</nav>
+
+<div class="container">
+  <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda</a>
+
+  <div class="page-header">
+    <div>
+      <div class="page-title">Promo &amp; Voucher</div>
+      <div class="page-subtitle">Gunakan voucher berikut saat checkout untuk mendapatkan potongan harga.</div>
+    </div>
+    <div class="active-badge" id="activeBadge">
+      <i class="fa-solid fa-ticket-simple"></i> <span id="activeCount">&mdash;</span> promo aktif
+    </div>
+  </div>
+
+  <div id="promoList">
+    <div class="skel" style="height:110px;margin-bottom:14px;"></div>
+    <div class="skel" style="height:110px;margin-bottom:14px;"></div>
+    <div class="skel" style="height:110px;"></div>
+  </div>
+</div>
+
+<!-- S&K Modal -->
+<div class="sk-overlay" id="skOverlay" onclick="_skOverlayClose(event)">
+  <div class="sk-modal" id="skModal">
+    <div class="sk-modal-header">
+      <div class="sk-modal-header-left">
+        <div class="sk-icon-box"><i class="fa-solid fa-ticket-simple"></i></div>
+        <div>
+          <div class="sk-label">Syarat &amp; Ketentuan</div>
+          <div class="sk-vname" id="skVname">&mdash;</div>
+          <div class="sk-vcode" id="skVcode">&mdash;</div>
+        </div>
+      </div>
+      <button class="sk-close" onclick="_skClose()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+
+    <div class="sk-modal-body">
+      <div class="sk-section-title">Ketentuan Voucher</div>
+      <div class="sk-info-row">
+        <div class="sk-icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="sk-info-text">Berlaku untuk: <span id="skScope">&mdash;</span></div>
+      </div>
+      <div class="sk-info-row" id="skEndRow">
+        <div class="sk-icon-box"><i class="fa-regular fa-clock"></i></div>
+        <div class="sk-info-text">Berlaku s.d. <span id="skEnd">&mdash;</span></div>
+      </div>
+      <div class="sk-info-row" id="skQuotaRow">
+        <div class="sk-icon-box"><i class="fa-solid fa-circle-dot"></i></div>
+        <div class="sk-info-text">Sisa kuota: <span id="skQuota">&mdash;</span></div>
+      </div>
+      <div class="sk-info-row" id="skMinRow">
+        <div class="sk-icon-box"><i class="fa-solid fa-bag-shopping"></i></div>
+        <div class="sk-info-text">Min. pembelian: <span id="skMin">&mdash;</span></div>
+      </div>
+
+      <hr class="sk-divider">
+
+      <div class="sk-section-title">Syarat &amp; Ketentuan</div>
+      <ul class="sk-syarat-list" id="skSyaratList"></ul>
+    </div>
+
+    <div class="sk-modal-footer">
+      <button class="sk-copy-main" id="skCopyBtn" onclick="_skCopyAndClose()">
+        <i class="fa-regular fa-copy"></i> Salin kode &amp; pakai
+      </button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  &copy; 2026 Primexa &mdash; Semua hak dilindungi.
+  <a href="/terms" style="margin-left:12px;color:var(--secondary);">Syarat &amp; Ketentuan</a>
+</footer>
+
+<div id="promoToast">
+  <i class="fa-solid fa-circle-check"></i>
+  <span id="promoToastMsg">Kode disalin!</span>
+</div>
+
+<script>
+var _promoData  = [];
+var _countdowns = {};
+var _skCurrent  = null; // voucher yg sedang dibuka di modal
+
+/* ── Dummy data ──────────────────────────────────────────────── */
+var _promoDummy = [
+  {
+    id:'V001', code:'HEMAT20', name:'Voucher Kemerdekaan',
+    description:'Hanya bisa digunakan di bulan agustus',
+    type:'percent', value:20, minPurchase:50000, maxDiscount:100000,
+    endDate: new Date(Date.now() + 19*24*3600000 + 22*3600000).toISOString(),
+    quota:-1, quotaUsed:23, showPromo:true, isFeatured:true, isActive:true, scope:'all',
+  },
+  {
+    id:'V002', code:'GAJIAN50K', name:'Promo Gajian',
+    description:'Berlaku selama stok masih ada',
+    type:'nominal', value:50000, minPurchase:100000, maxDiscount:null,
+    endDate: new Date(Date.now() + 2*24*3600000 + 2*3600000).toISOString(),
+    quota:50, quotaUsed:31, showPromo:true, isFeatured:false, isActive:true, scope:'all',
+  },
+  {
+    id:'V003', code:'NEWUSER25', name:'Selamat Datang!',
+    description:'Khusus pelanggan baru yang belum pernah belanja',
+    type:'nominal', value:25000, minPurchase:0, maxDiscount:null,
+    endDate: new Date(Date.now() + 89*24*3600000 + 23*3600000).toISOString(),
+    quota:-1, quotaUsed:8, showPromo:true, isFeatured:false, isActive:true, scope:'all',
+  },
+];
+
+/* ── Load ───────────────────────────────────────────────────── */
+async function promoLoad(){
+  try{
+    var res=await fetch('/api/vouchers/public');
+    if(!res.ok) throw new Error();
+    var d=await res.json();
+    _promoData=(d.vouchers||[]).filter(function(v){return v.showPromo!==false;});
+  }catch(e){ _promoData=_promoDummy; }
+  promoRender();
+}
+
+/* ── Render ─────────────────────────────────────────────────── */
+function promoRender(){
+  var el=document.getElementById('promoList');
+  var cnt=document.getElementById('activeCount');
+  if(!el) return;
+  var list=_promoData.slice().sort(function(a,b){return (b.isFeatured?1:0)-(a.isFeatured?1:0);});
+  if(cnt) cnt.textContent=list.length;
+  if(!list.length){
+    el.innerHTML='<div class="empty"><i class="fa-solid fa-ticket-simple"></i>Belum ada promo yang tersedia</div>';
+    return;
+  }
+  el.innerHTML=list.map(function(v){return _vCard(v);}).join('');
+  list.forEach(function(v){if(v.endDate) _startCd(v.id, v.endDate);});
+}
+
+/* ── Card HTML ──────────────────────────────────────────────── */
+function _vCard(v){
+  var endMs=v.endDate?new Date(v.endDate).getTime():null;
+  var expiring=endMs&&(endMs-Date.now())<3*24*3600000&&(endMs-Date.now())>0;
+  var valStr='', subStr='', sdStr='';
+  if(v.type==='percent'){
+    valStr=v.value+'%'; subStr='DISKON';
+    if(v.maxDiscount) sdStr='s.d. '+_fmtShort(v.maxDiscount);
+  } else {
+    valStr='Rp'+_fmtShort(v.value); subStr='POTONGAN';
+  }
+  return (
+    '<div class="voucher-card" id="vc-'+v.id+'">' +
+      '<div class="vc-left">' +
+        '<div class="vc-notch-top"></div>' +
+        '<div class="vc-notch-bot"></div>' +
+        '<div class="vc-val">'+valStr+'</div>' +
+        '<div class="vc-val-sub">'+subStr+'</div>' +
+        (sdStr?'<div class="vc-val-sd">'+sdStr+'</div>':'') +
+      '</div>' +
+      '<div class="vc-right">' +
+        (v.isFeatured?'<div class="vc-featured-tag"><i class="fa-solid fa-star"></i> Promo Utama</div>':'') +
+        '<div class="vc-top-row">' +
+          '<div class="vc-name">'+_esc(v.name)+'</div>' +
+          '<div class="vc-timer'+(expiring?' expiring':'')+'"><i class="fa-regular fa-clock"></i> <span id="cd-'+v.id+'">'+_daysStr(endMs)+'</span></div>' +
+        '</div>' +
+        '<div class="vc-scope"><i class="fa-solid fa-tag"></i> '+(v.scope==='all'?'Semua produk':'Produk tertentu')+'</div>' +
+        '<div class="vc-bottom-row">' +
+          '<div class="vc-code" id="code-'+v.id+'">'+_esc(v.code)+'</div>' +
+          '<div class="vc-actions">' +
+            '<button class="vc-sk-btn" onclick="_openSK(\''+v.id+'\')">' +
+              '<i class="fa-solid fa-chevron-right" style="font-size:10px;"></i> S&amp;K' +
+            '</button>' +
+            '<button class="vc-copy-btn" id="copy-'+v.id+'" onclick="_copyCode(\''+v.id+'\',\''+_esc(v.code)+'\')">' +
+              '<i class="fa-regular fa-copy"></i> Salin' +
+            '</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+/* ── S&K Modal ──────────────────────────────────────────────── */
+function _openSK(id){
+  var v=_promoData.find(function(x){return x.id===id;});
+  if(!v) return;
+  _skCurrent=v;
+
+  document.getElementById('skVname').textContent=v.name;
+  document.getElementById('skVcode').textContent=v.code;
+  document.getElementById('skScope').textContent=v.scope==='all'?'Semua produk':'Produk tertentu';
+
+  // End date
+  var endEl=document.getElementById('skEnd');
+  var endRow=document.getElementById('skEndRow');
+  if(v.endDate){
+    var d=new Date(v.endDate);
+    endEl.textContent=d.toLocaleString('id-ID',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+    endRow.style.display='flex';
+  } else { endRow.style.display='none'; }
+
+  // Kuota
+  var qtEl=document.getElementById('skQuota');
+  var qtRow=document.getElementById('skQuotaRow');
+  if(v.quota===-1){ qtRow.style.display='none'; }
+  else{
+    qtEl.textContent=Math.max(0,v.quota-(v.quotaUsed||0));
+    qtRow.style.display='flex';
+  }
+
+  // Min pembelian
+  var minEl=document.getElementById('skMin');
+  var minRow=document.getElementById('skMinRow');
+  if(!v.minPurchase||v.minPurchase<=0){ minRow.style.display='none'; }
+  else{ minEl.textContent='Rp'+_fmtRp(v.minPurchase); minRow.style.display='flex'; }
+
+  // Syarat list \u2014 dari deskripsi + auto-generated
+  var syarats=[];
+  if(v.description&&v.description.trim()){
+    v.description.trim().split(/\n|;/).forEach(function(s){
+      if(s.trim()) syarats.push(s.trim());
+    });
+  }
+  if(v.maxDiscount) syarats.push('Maksimal diskon Rp'+_fmtRp(v.maxDiscount));
+  syarats.push('Tidak dapat digabung dengan voucher lain');
+
+  var listEl=document.getElementById('skSyaratList');
+  listEl.innerHTML=syarats.map(function(s,i){
+    return '<li><div class="sk-num">'+(i+1)+'</div><span>'+_esc(s)+'</span></li>';
+  }).join('');
+
+  // Copy button reset
+  var copyBtn=document.getElementById('skCopyBtn');
+  if(copyBtn){ copyBtn.classList.remove('copied'); copyBtn.innerHTML='<i class="fa-regular fa-copy"></i> Salin kode &amp; pakai'; }
+
+  document.getElementById('skOverlay').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+
+function _skClose(){
+  document.getElementById('skOverlay').classList.remove('show');
+  document.body.style.overflow='';
+  _skCurrent=null;
+}
+
+function _skOverlayClose(e){
+  if(e.target===document.getElementById('skOverlay')) _skClose();
+}
+
+function _skCopyAndClose(){
+  if(!_skCurrent) return;
+  var code=_skCurrent.code;
+  navigator.clipboard.writeText(code).then(function(){
+    var btn=document.getElementById('skCopyBtn');
+    if(btn){ btn.classList.add('copied'); btn.innerHTML='<i class="fa-solid fa-check"></i> Kode disalin!'; }
+    _toast('"'+code+'" berhasil disalin!');
+    setTimeout(function(){ _skClose(); }, 1200);
+  }).catch(function(){ _toast(code+' \u2014 salin manual'); });
+}
+
+/* ── Copy inline ────────────────────────────────────────────── */
+function _copyCode(id, code){
+  navigator.clipboard.writeText(code).then(function(){
+    var btn=document.getElementById('copy-'+id);
+    if(btn){ btn.classList.add('copied'); btn.innerHTML='<i class="fa-solid fa-check"></i> Disalin!'; }
+    _toast('"'+code+'" berhasil disalin!');
+    setTimeout(function(){ if(btn){ btn.classList.remove('copied'); btn.innerHTML='<i class="fa-regular fa-copy"></i> Salin'; } },2000);
+  }).catch(function(){_toast(code);});
+}
+
+/* ── Countdown ──────────────────────────────────────────────── */
+function _startCd(id, endDateStr){
+  if(_countdowns[id]) clearInterval(_countdowns[id]);
+  function tick(){
+    var el=document.getElementById('cd-'+id);
+    if(!el){clearInterval(_countdowns[id]);return;}
+    var diff=new Date(endDateStr).getTime()-Date.now();
+    if(diff<=0){el.textContent='Kedaluwarsa';clearInterval(_countdowns[id]);return;}
+    var d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000);
+    el.textContent=d>0?d+' hari '+h+' jam':h+' jam';
+  }
+  tick();
+  _countdowns[id]=setInterval(tick,30000);
+}
+
+/* ── Helpers ────────────────────────────────────────────────── */
+function _fmtRp(n){return (n||0).toLocaleString('id-ID');}
+function _fmtShort(n){
+  if(n>=1000000) return (n/1000000).toFixed(1).replace('.0','')+'jt';
+  if(n>=1000) return Math.round(n/1000)+'.000';
+  return String(n||0);
+}
+function _daysStr(ms){
+  if(!ms) return '';
+  var diff=ms-Date.now();
+  if(diff<=0) return 'Kedaluwarsa';
+  var d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000);
+  return d>0?d+' hari '+h+' jam':h+' jam';
+}
+function _esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function _toast(msg){
+  var t=document.getElementById('promoToast'), m=document.getElementById('promoToastMsg');
+  if(!t) return;
+  if(m) m.textContent=msg;
+  t.style.transform='translateX(-50%) translateY(0)';
+  setTimeout(function(){t.style.transform='translateX(-50%) translateY(80px)';},2500);
+}
+
+/* ── ESC key close ──────────────────────────────────────────── */
+document.addEventListener('keydown',function(e){if(e.key==='Escape') _skClose();});
+
+/* ── Init ───────────────────────────────────────────────────── */
+promoLoad();
+</script>
+<script src="/shared-config.js"></script>
+</body>
+</html>

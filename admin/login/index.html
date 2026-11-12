@@ -1,0 +1,200 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Admin &mdash; Primexa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#0d0e14;--card:#1a1c28;--border:rgba(255,255,255,.08);--text:#e2e4f0;--muted:#8b8fa8;--accent:#6366f1;--accent2:#818cf8;--surface:#13141d}
+    html,body{height:100%}
+    body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+    body::before{content:'';position:fixed;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(99,102,241,.12) 0%,transparent 70%);pointer-events:none}
+    .wrap{width:100%;max-width:420px;animation:fadeUp .4s ease}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+    .logo{text-align:center;margin-bottom:32px}
+    .logo-circle{width:64px;height:64px;background:linear-gradient(135deg,#6366f1,#818cf8);border-radius:18px;display:inline-flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff;margin-bottom:16px;box-shadow:0 8px 32px rgba(99,102,241,.35)}
+    .logo-name{font-size:22px;font-weight:800;background:linear-gradient(135deg,#e2e4f0,#6366f1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-.3px}
+    .logo-sub{font-size:13px;color:var(--muted);margin-top:4px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px}
+    .card-title{font-size:20px;font-weight:700;margin-bottom:6px}
+    .card-sub{font-size:13px;color:var(--muted);margin-bottom:28px}
+    .fg{margin-bottom:18px}
+    label{display:block;font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px}
+    .iw{position:relative}
+    .ii{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:14px;pointer-events:none}
+    input{width:100%;padding:12px 14px 12px 40px;background:var(--surface);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
+    input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+    input::placeholder{color:var(--muted)}
+    .pt{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:4px}
+    .pt:hover{color:var(--text)}
+    .alert{padding:12px 14px;border-radius:10px;font-size:13px;margin-bottom:18px;display:none;align-items:center;gap:10px}
+    .alert.show{display:flex}
+    .ae{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:#f87171}
+    .as{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:#4ade80}
+    .btn{width:100%;padding:13px;background:linear-gradient(135deg,#6366f1,#818cf8);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:opacity .2s,transform .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+    .btn:hover{opacity:.9}.btn:active{transform:scale(.98)}.btn:disabled{opacity:.6;cursor:not-allowed}
+    .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;display:none}
+    .btn.loading .spinner{display:block}.btn.loading .bt{display:none}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .footer{text-align:center;margin-top:24px;font-size:12px;color:var(--muted)}
+    .footer a{color:var(--accent2);text-decoration:none;font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="logo">
+      <img src="/images/logo.jpg" alt="Primexa" style="height:52px;width:auto;object-fit:contain;border-radius:10px;margin-bottom:4px;">
+      <div class="logo-sub">Admin Dashboard</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Selamat Datang 👋</div>
+      <div class="card-sub">Masuk ke panel admin Anda</div>
+      <div class="alert ae" id="alertBox">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        <span id="alertMsg"></span>
+      </div>
+      <form onsubmit="doLogin(event)">
+        <div class="fg">
+          <label for="email">Email Admin</label>
+          <div class="iw">
+            <i class="fa-solid fa-envelope ii"></i>
+            <input type="email" id="email" placeholder="Masukkan email admin" required autocomplete="email"/>
+          </div>
+        </div>
+        <div class="fg">
+          <label for="password">Password</label>
+          <div class="iw">
+            <i class="fa-solid fa-lock ii"></i>
+            <input type="password" id="password" placeholder="Masukkan password" required autocomplete="current-password"/>
+            <button type="button" class="pt" onclick="togglePass()"><i class="fa-solid fa-eye" id="pi"></i></button>
+          </div>
+        </div>
+        <button type="submit" class="btn" id="loginBtn">
+          <div class="spinner"></div>
+          <span class="bt"><i class="fa-solid fa-right-to-bracket"></i> Masuk ke Dashboard</span>
+        </button>
+      </form>
+    </div>
+    <div class="footer"><a href="/">← Kembali ke Website</a></div>
+  </div>
+  <script>
+    // Load logo & store name dari settings (publik, tanpa auth)
+    (async function loadBranding() {
+      const apiBase = (() => {
+        const h = window.location.hostname;
+        if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:5000/api';
+        return window.location.origin + '/api';
+      })();
+      try {
+        const r = await fetch(apiBase + '/config/store_settings', { credentials: 'include' });
+        if (r.ok) {
+          const j = await r.json();
+          const cfg = j.data || j.value || j;
+          const logoUrl = cfg.logoUrl || '';
+          const storeName = cfg.storeName || '';
+          const faviconUrl = cfg.faviconUrl || '';
+          // Apply logo
+          if (logoUrl) {
+            const el = document.querySelector('.logo-circle');
+            if (el) {
+              el.innerHTML = '<img src="' + logoUrl + '" style="width:100%;height:100%;object-fit:contain;border-radius:14px;" onerror="this.parentElement.textContent=\'R\'">';
+              el.style.background = 'transparent';
+              el.style.boxShadow = 'none';
+            }
+          }
+          // Apply store name
+          if (storeName) {
+            const nameEl = document.querySelector('.logo-name');
+            if (nameEl) nameEl.textContent = storeName;
+            document.title = 'Login Admin \u2014 ' + storeName;
+          }
+          // Apply favicon
+          if (faviconUrl) {
+            var favEl = document.querySelector('link[rel="icon"]') || document.querySelector('link[rel="shortcut icon"]');
+            if (!favEl) { favEl = document.createElement('link'); favEl.rel = 'icon'; document.head.appendChild(favEl); }
+            favEl.href = faviconUrl;
+          }
+        }
+      } catch(e) { /* silent */ }
+    })();
+
+    // Verifikasi ke server \u2014 gunakan cookie (credentials:include) sebagai sumber kebenaran
+    // Jangan redirect hanya karena localStorage ada \u2014 token mungkin expired
+    (async function checkAlreadyLoggedIn() {
+      const apiBase = (() => {
+        const h = window.location.hostname;
+        if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:5000/api';
+        return window.location.origin + '/api';
+      })();
+      // Coba verifikasi via cookie httpOnly atau Bearer token
+      const t = localStorage.getItem('ramx_admin_token') || localStorage.getItem('ramx_token') || '';
+      try {
+        const r = await fetch(apiBase + '/auth/me', {
+          headers: t ? { 'Authorization': 'Bearer ' + t } : {},
+          credentials: 'include',
+        });
+        if (r.ok) {
+          const d = await r.json();
+          if (d.user && (d.user.role === 'admin' || d.user.role === 'staff')) {
+            window.location.replace('/admin/dashboard');
+          }
+        }
+      } catch(e) { /* tidak bisa reach server, tetap di login page */ }
+    })();
+
+    const API = (() => {
+      const h = window.location.hostname;
+      if (h === 'localhost' || h === '127.0.0.1') return 'http://localhost:5000/api/auth/login';
+      return window.location.origin + '/api/auth/login';
+    })();
+
+    function showAlert(msg, cls) {
+      const b = document.getElementById('alertBox');
+      document.getElementById('alertMsg').textContent = msg;
+      b.className = 'alert show ' + cls;
+    }
+
+    async function doLogin(e) {
+      e.preventDefault();
+      const btn = document.getElementById('loginBtn');
+      const email = document.getElementById('email').value.trim();
+      const pass  = document.getElementById('password').value;
+      btn.classList.add('loading'); btn.disabled = true;
+      try {
+        const res  = await fetch(API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          // credentials:'include' agar browser menyimpan httpOnly cookie yang dikirim server
+          credentials: 'include',
+          body: JSON.stringify({ email, password: pass }),
+        });
+        const data = await res.json();
+        if (!res.ok) { showAlert(data.message || 'Login gagal.', 'ae'); return; }
+        // Simpan token di localStorage sebagai Bearer fallback
+        if (data.token) {
+          localStorage.setItem('ramx_admin_token', data.token);
+          localStorage.setItem('ramx_token', data.token);
+        }
+        if (data.user) localStorage.setItem('ramx_admin_user', JSON.stringify(data.user));
+        showAlert('Login berhasil! Mengalihkan...', 'as');
+        setTimeout(() => window.location.replace('/admin/dashboard'), 600);
+      } catch (err) {
+        showAlert('Tidak bisa terhubung ke server. Pastikan backend berjalan.', 'ae');
+      } finally {
+        btn.classList.remove('loading'); btn.disabled = false;
+      }
+    }
+
+    function togglePass() {
+      const inp = document.getElementById('password');
+      const ico = document.getElementById('pi');
+      if (inp.type === 'password') { inp.type = 'text'; ico.className = 'fa-solid fa-eye-slash'; }
+      else { inp.type = 'password'; ico.className = 'fa-solid fa-eye'; }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,875 @@
+﻿<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/images/logo.jpg" type="image/jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard &mdash; Primexa</title>
+  <meta name="description" content="Dashboard akun Primexa &mdash; kelola pesanan, saldo, dan profil kamu.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="/config.js"></script>
+  <style>
+    :root {
+      --bg:        #0a0f1e;
+      --bg2:       #0d1424;
+      --surface:   #111827;
+      --surface2:  #1a2235;
+      --border:    rgba(255,255,255,0.08);
+      --accent:    #3b82f6;
+      --accent2:   #6366f1;
+      --text:      #f1f5f9;
+      --muted:     #64748b;
+      --muted2:    #94a3b8;
+      --green:     #22c55e;
+      --yellow:    #eab308;
+      --red:       #ef4444;
+      --success:   #10b981;
+      --sidebar-w: 240px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 200;
+      transition: transform 0.3s;
+    }
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 15px; color: #fff;
+      flex-shrink: 0;
+    }
+    .logo-text { font-size: 15px; font-weight: 700; color: var(--text); }
+    .logo-text span { color: var(--accent); }
+
+    /* User card in sidebar */
+    .sidebar-user {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-avatar {
+      width: 46px; height: 46px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; color: #fff;
+      flex-shrink: 0;
+    }
+    .sidebar-user-top { display: flex; align-items: center; gap: 12px; }
+    .sidebar-user-info { min-width: 0; flex: 1; }
+    .sidebar-user-name {
+      font-size: 14px; font-weight: 600; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sidebar-user-email {
+      font-size: 11px; color: var(--muted2); margin-top: 2px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .sidebar-saldo-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 10px;
+    }
+    .sidebar-saldo-label {
+      font-size: 12px; color: var(--muted);
+    }
+    .sidebar-saldo-value {
+      font-size: 13px; font-weight: 700; color: var(--green);
+    }
+
+
+    /* Nav links */
+    .sidebar-nav {
+      flex: 1;
+      padding: 12px 0;
+      overflow-y: auto;
+    }
+    .nav-section-label {
+      font-size: 10px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 1px;
+      padding: 10px 20px 4px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 20px;
+      color: var(--muted2);
+      font-size: 13px; font-weight: 500;
+      text-decoration: none;
+      border-radius: 0;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none; background: none; width: 100%;
+      font-family: inherit;
+    }
+    .nav-item i { width: 16px; font-size: 14px; flex-shrink: 0; }
+    .nav-item:hover { color: var(--text); background: rgba(255,255,255,0.05); }
+    .nav-item.active {
+      color: var(--accent);
+      background: rgba(59,130,246,0.12);
+      border-left: 3px solid var(--accent);
+      padding-left: 17px;
+    }
+    .nav-item.active i { color: var(--accent); }
+    .nav-item.danger { color: var(--red); }
+    .nav-item.danger:hover { background: rgba(239,68,68,0.1); }
+
+    .sidebar-bottom {
+      padding: 12px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Top bar */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 28px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .topbar-title { font-size: 22px; font-weight: 800; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .topbar-user-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      color: var(--text);
+      font-size: 13px; font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .topbar-user-btn:hover { border-color: var(--accent); }
+    .user-dropdown-wrap { position: relative; }
+    .user-dropdown {
+      position: absolute; top: calc(100% + 8px); right: 0;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; min-width: 210px; z-index: 500;
+      overflow: hidden; display: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    }
+    .user-dropdown.open { display: block; animation: dropFade 0.15s ease; }
+    @keyframes dropFade { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+    .dropdown-info { padding: 14px 16px; border-bottom: 1px solid var(--border); }
+    .dropdown-dname { font-size: 14px; font-weight: 600; }
+    .dropdown-demail { font-size: 12px; color: var(--muted2); margin-top: 2px; }
+    .dropdown-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 16px; font-size: 13px; font-weight: 500;
+      color: var(--text); text-decoration: none; cursor: pointer;
+      background: none; border: none; width: 100%; font-family: inherit; transition: background 0.15s;
+    }
+    .dropdown-item:hover { background: rgba(255,255,255,0.06); }
+    .dropdown-item.danger { color: var(--red); }
+    .dropdown-item i { font-size: 13px; width: 16px; }
+    .btn-visit-store {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-top: 12px; padding: 8px 12px; border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); text-decoration: none;
+      font-size: 12px; font-weight: 500; transition: all 0.2s;
+    }
+    .btn-visit-store:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-visit-store i { font-size: 11px; }
+    .topbar-avatar {
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #fff;
+    }
+
+    /* Content area */
+    .content {
+      padding: 28px;
+      flex: 1;
+    }
+
+    /* Greeting banner */
+    .greeting-banner {
+      background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 50%, #6366f1 100%);
+      border-radius: 16px;
+      padding: 24px 28px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .greeting-banner::after {
+      content: '';
+      position: absolute;
+      right: -30px; top: -30px;
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 50%;
+    }
+    .greeting-banner::before {
+      content: '';
+      position: absolute;
+      right: 60px; bottom: -50px;
+      width: 150px; height: 150px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+    }
+    .greeting-date {
+      font-size: 13px; color: rgba(255,255,255,0.7);
+      margin-bottom: 6px; position: relative; z-index: 1;
+    }
+    .greeting-name {
+      font-size: 26px; font-weight: 800; color: #fff;
+      position: relative; z-index: 1;
+    }
+
+    /* Stats cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex; align-items: center; justify-content: space-between;
+      transition: all 0.2s;
+    }
+    .stat-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .stat-info {}
+    .stat-label { font-size: 12px; color: var(--muted2); margin-bottom: 6px; }
+    .stat-value { font-size: 24px; font-weight: 800; color: var(--text); }
+    .stat-icon {
+      width: 44px; height: 44px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .stat-icon.green  { background: rgba(34,197,94,0.15); color: var(--green); }
+    .stat-icon.blue   { background: rgba(59,130,246,0.15); color: var(--accent); }
+    .stat-icon.yellow { background: rgba(234,179,8,0.15); color: var(--yellow); }
+    .stat-icon.red    { background: rgba(239,68,68,0.15); color: var(--red); }
+    .stat-icon.pink   { background: rgba(236,72,153,0.15); color: #ec4899; }
+
+    /* Bottom panels */
+    .panels-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .panel-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .panel-title { font-size: 15px; font-weight: 700; }
+    .panel-link {
+      font-size: 12px; color: var(--accent);
+      text-decoration: none; font-weight: 600;
+      transition: opacity 0.2s;
+    }
+    .panel-link:hover { opacity: 0.7; }
+    .panel-body { padding: 0; }
+
+    /* Order row */
+    .order-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .order-row:last-child { border-bottom: none; }
+    .order-row:hover { background: rgba(255,255,255,0.03); }
+    .order-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: rgba(59,130,246,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; color: var(--accent); flex-shrink: 0;
+    }
+    .order-info { flex: 1; min-width: 0; }
+    .order-name { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .order-date { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .order-amount { font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; }
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 2px 8px; border-radius: 6px;
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+    }
+    .badge-success  { background: rgba(34,197,94,0.15);  color: var(--green); }
+    .badge-pending  { background: rgba(234,179,8,0.15);  color: var(--yellow); }
+    .badge-info     { background: rgba(59,130,246,0.15); color: var(--accent); }
+    .badge-danger   { background: rgba(239,68,68,0.15);  color: var(--red); }
+
+    /* Empty state */
+    .empty-state {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+    .empty-state i { font-size: 32px; margin-bottom: 10px; opacity: 0.4; }
+    .empty-state p { font-size: 13px; }
+
+    /* Topup entry */
+    .topup-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .topup-row:last-child { border-bottom: none; }
+    .topup-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; flex-shrink: 0;
+    }
+    .topup-icon.in  { background: rgba(34,197,94,0.12);  color: var(--green); }
+    .topup-icon.out { background: rgba(239,68,68,0.12);  color: var(--red); }
+    .topup-info { flex: 1; }
+    .topup-label { font-size: 13px; font-weight: 600; }
+    .topup-date  { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .topup-amount { font-size: 13px; font-weight: 700; }
+    .topup-amount.in  { color: var(--green); }
+    .topup-amount.out { color: var(--red); }
+
+    /* Mobile sidebar overlay */
+    .sidebar-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 199;
+    }
+
+    /* Mobile topbar hamburger */
+    .hamburger-btn {
+      display: none;
+      background: none; border: none;
+      color: var(--text); font-size: 18px;
+      cursor: pointer; padding: 4px;
+    }
+
+    /* ── Skeleton loader ── */
+    .skeleton {
+      background: linear-gradient(90deg, var(--surface) 25%, var(--surface2) 50%, var(--surface) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 6px;
+    }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .panels-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-overlay.open { display: block; }
+      .main { margin-left: 0; }
+      .topbar { padding: 12px 16px; }
+      .topbar-title { font-size: 18px; }
+      .content { padding: 16px; }
+      .hamburger-btn { display: block; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .greeting-name { font-size: 20px; }
+    }
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .stat-value { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar" id="sidebar">
+  <!-- Logo -->
+  <a href="/" class="sidebar-logo">
+    <img src="/images/logo.jpg" alt="Primexa" style="height:36px;width:auto;object-fit:contain;border-radius:8px;">
+  </a>
+
+  <!-- User Card -->
+  <div class="sidebar-user">
+    <div class="sidebar-user-top">
+      <div class="sidebar-avatar" id="sidebarAvatar">?</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name" id="sidebarName">Loading...</div>
+        <div class="sidebar-user-email" id="sidebarEmail">-</div>
+      </div>
+    </div>
+    <div class="sidebar-saldo-row">
+      <span class="sidebar-saldo-label">Saldo</span>
+      <span class="sidebar-saldo-value" id="sidebarSaldo">Rp 0</span>
+    </div>
+    <a href="/" target="_blank" class="btn-visit-store">
+      <i class="fa-solid fa-arrow-up-right-from-square"></i> Kunjungi Website Toko
+    </a>
+
+  </div>
+
+  <!-- Nav -->
+  <nav class="sidebar-nav">
+    <a href="/dashboard" class="nav-item active" id="navDashboard">
+      <i class="fa-solid fa-gauge-high"></i> Dashboard
+    </a>
+    <a href="/dashboard/pesanan" class="nav-item" id="navPesanan">
+      <i class="fa-solid fa-bag-shopping"></i> Pesanan Saya
+    </a>
+    <a href="/dashboard/saldo" class="nav-item" id="navSaldo">
+      <i class="fa-solid fa-wallet"></i> Saldo &amp; Topup
+    </a>
+    <a href="/dashboard/wishlist" class="nav-item" id="navWishlist">
+      <i class="fa-solid fa-heart"></i> Wishlist
+    </a>
+    <a href="/profile" class="nav-item" id="navProfil">
+      <i class="fa-solid fa-user"></i> Profil
+    </a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    <a href="/" class="nav-item">
+      <i class="fa-solid fa-arrow-left"></i> Kembali ke Toko
+    </a>
+    <button class="nav-item danger" onclick="handleLogout()">
+      <i class="fa-solid fa-right-from-bracket"></i> Keluar
+    </button>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="hamburger-btn" onclick="toggleSidebar()" aria-label="Menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <h1 class="topbar-title" id="pageTitle">Dashboard</h1>
+    </div>
+    <div class="topbar-right">
+      <a href="/" class="topbar-user-btn" style="display:none;" id="topbarBackBtn">
+        <i class="fa-solid fa-arrow-left" style="font-size:12px;"></i> Toko
+      </a>
+      <div class="user-dropdown-wrap" id="userDropdownWrap">
+        <div class="topbar-user-btn" id="topbarUser" onclick="toggleUserDropdown()">
+          <div class="topbar-avatar" id="topbarAvatar">?</div>
+          <span id="topbarName">Akun</span>
+          <i class="fa-solid fa-chevron-down" id="dropdownChevron" style="font-size:10px;opacity:.5;transition:transform 0.2s;"></i>
+        </div>
+        <div class="user-dropdown" id="userDropdown">
+          <div class="dropdown-info">
+            <div class="dropdown-dname" id="dropdownName">-</div>
+            <div class="dropdown-demail" id="dropdownEmail">-</div>
+          </div>
+          <a href="/profile" class="dropdown-item"><i class="fa-solid fa-user"></i> Profil Saya</a>
+          <a href="/" target="_blank" class="dropdown-item"><i class="fa-solid fa-store"></i> Kunjungi Toko</a>
+          <button class="dropdown-item danger" onclick="handleLogout()"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content" id="mainContent">
+
+    <!-- Greeting Banner -->
+    <div class="greeting-banner">
+      <div class="greeting-date" id="greetingDate">...</div>
+      <div class="greeting-name" id="greetingName">Halo!</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">Saldo</div>
+          <div class="stat-value" id="statSaldo">Rp 0</div>
+        </div>
+        <div class="stat-icon green"><i class="fa-solid fa-wallet"></i></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">Total Pesanan</div>
+          <div class="stat-value" id="statTotal">0</div>
+        </div>
+        <div class="stat-icon blue"><i class="fa-solid fa-bag-shopping"></i></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">Belum Dibayar</div>
+          <div class="stat-value" id="statPending">0</div>
+        </div>
+        <div class="stat-icon yellow"><i class="fa-solid fa-clock"></i></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-info">
+          <div class="stat-label">Wishlist</div>
+          <div class="stat-value" id="statWishlist">0</div>
+        </div>
+        <div class="stat-icon pink"><i class="fa-solid fa-heart"></i></div>
+      </div>
+    </div>
+
+    <!-- Panels -->
+    <div class="panels-grid">
+      <!-- Pesanan Terbaru -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Pesanan Terbaru</span>
+          <a href="/dashboard/pesanan" class="panel-link">Lihat Semua</a>
+        </div>
+        <div class="panel-body" id="recentOrders">
+          <div class="empty-state">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <p>Belum ada pesanan</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Riwayat Saldo -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="panel-title">Riwayat Saldo</span>
+          <a href="/dashboard/saldo" class="panel-link">Lihat Semua</a>
+        </div>
+        <div class="panel-body" id="balanceHistory">
+          <div class="empty-state">
+            <i class="fa-solid fa-wallet"></i>
+            <p>Belum ada riwayat saldo</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+/* ── CONFIG ── */
+var API = (typeof window.APP_CONFIG !== 'undefined' && window.APP_CONFIG.API_URL)
+  ? window.APP_CONFIG.API_URL
+  : (window.location.origin + '/api');
+
+/* ── AUTH GUARD ── */
+var user = null;
+var token = null;
+try {
+  user  = JSON.parse(localStorage.getItem('ramx_auth_user') || 'null');
+  token = localStorage.getItem('ramx_token');
+} catch(e) {}
+
+if (!user || !token) {
+  window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname);
+}
+
+/* ── HELPERS ── */
+function fmtRp(n) {
+  return 'Rp ' + (Number(n) || 0).toLocaleString('id-ID');
+}
+function fmtDate(d) {
+  var days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var months = ['January','February','March','April','May','June','July',
+                'August','September','October','November','December'];
+  var dt = new Date(d);
+  var day = String(dt.getDate()).padStart(2, '0');
+  return days[dt.getDay()] + ', ' + day + ' ' + months[dt.getMonth()] + ' ' + dt.getFullYear();
+}
+function fmtDateShort(d) {
+  return new Date(d).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' });
+}
+function initials(name) {
+  var n = (name || 'A').trim().split(' ');
+  return (n[0][0] + (n[1] ? n[1][0] : '')).toUpperCase();
+}
+
+var STATUS_BADGE = {
+  pending    : ['badge-pending',  'Menunggu'],
+  paid       : ['badge-info',     'Dibayar'],
+  processing : ['badge-info',     'Diproses'],
+  completed  : ['badge-success',  'Selesai'],
+  cancelled  : ['badge-danger',   'Dibatal'],
+  refunded   : ['badge-danger',   'Refund'],
+};
+
+/* ── LOGOUT ── */
+function handleLogout() {
+  localStorage.removeItem('ramx_auth_user');
+  localStorage.removeItem('ramx_token');
+  localStorage.removeItem('ramx_remember');
+  window.location.href = '/';
+}
+
+/* ── SIDEBAR TOGGLE (mobile) ── */
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+/* ── FILL USER INFO ── */
+function fillUser(u) {
+  var name  = u.name || u.telegram || 'Pengguna';
+  var email = u.email || ('@' + u.telegram) || '-';
+  var saldo = u.balance || 0;
+  var init  = initials(name);
+
+  // Helper: set avatar ke elemen (img atau teks inisial)
+  function setAvatar(el) {
+    if (!el) return;
+    if (u.avatar) {
+      el.innerHTML = '<img src="' + u.avatar + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent=\'' + init + '\'">';
+      el.style.fontSize = '0';
+    } else {
+      el.textContent = init;
+      el.style.fontSize = '';
+    }
+  }
+
+  // Sidebar
+  setAvatar(document.getElementById('sidebarAvatar'));
+  document.getElementById('sidebarName').textContent   = name;
+  document.getElementById('sidebarEmail').textContent  = email;
+  document.getElementById('sidebarSaldo').textContent  = fmtRp(saldo);
+
+  // Topbar
+  setAvatar(document.getElementById('topbarAvatar'));
+  document.getElementById('topbarName').textContent   = name;
+  var dname  = document.getElementById('dropdownName');
+  var demail = document.getElementById('dropdownEmail');
+  if (dname)  dname.textContent  = name;
+  if (demail) demail.textContent = email;
+
+  // Greeting
+  document.getElementById('greetingDate').textContent = fmtDate(new Date());
+  document.getElementById('greetingName').textContent = 'Halo, ' + name + '!';
+
+  // Stats saldo
+  document.getElementById('statSaldo').textContent = fmtRp(saldo);
+}
+
+function toggleUserDropdown() {
+  var dd = document.getElementById('userDropdown');
+  var ch = document.getElementById('dropdownChevron');
+  dd.classList.toggle('open');
+  ch.style.transform = dd.classList.contains('open') ? 'rotate(180deg)' : '';
+}
+document.addEventListener('click', function(e) {
+  var wrap = document.getElementById('userDropdownWrap');
+  var dd   = document.getElementById('userDropdown');
+  var ch   = document.getElementById('dropdownChevron');
+  if (wrap && !wrap.contains(e.target)) {
+    dd.classList.remove('open');
+    if (ch) ch.style.transform = '';
+  }
+});
+
+/* ── LOAD ORDERS ── */
+async function loadOrders() {
+  try {
+    var res  = await fetch(API + '/orders', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    , credentials: 'include' });
+    var data = await res.json();
+    var orders = data.data || data.orders || [];
+
+    // Stats
+    var pending   = orders.filter(function(o) { return o.status === 'pending'; }).length;
+    document.getElementById('statTotal').textContent   = orders.length;
+    document.getElementById('statPending').textContent = pending;
+
+    // Recent 5
+    var container = document.getElementById('recentOrders');
+    var recent    = orders.slice(0, 5);
+    if (!recent.length) {
+      container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-bag-shopping"></i><p>Belum ada pesanan</p></div>';
+      return;
+    }
+    container.innerHTML = recent.map(function(o) {
+      var badge    = STATUS_BADGE[o.status] || ['badge-info', o.status];
+      var item     = (o.items && o.items[0]) || {};
+      var prodName = item.productName || o.productName || o.orderId || o._id;
+      var variant  = item.variant || o.variantName || '';
+      var logoUrl  = item.logoUrl || o.logoUrl || '';
+      var logoHtml = logoUrl
+        ? '<img src="' + logoUrl + '" style="width:36px;height:36px;object-fit:contain;border-radius:8px;background:#1a2235;padding:2px;" onerror="this.style.display=\'none\'">'
+        : '<i class="fa-solid fa-box" style="font-size:16px;color:var(--muted2);"></i>';
+      var detailUrl = '/dashboard/pesanan/detail?id=' + (o.orderId || o._id);
+      var timeAgo = fmtDateShort(o.createdAt);
+      return '<a href="' + detailUrl + '" class="order-row" style="text-decoration:none;display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;">' +
+        '<div class="order-icon" style="width:40px;height:40px;border-radius:10px;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">' + logoHtml + '</div>' +
+        '<div class="order-info" style="flex:1;min-width:0;">' +
+          '<div class="order-name" style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + prodName + (variant ? ' \u2014 ' + variant : '') + '</div>' +
+          '<div class="order-date" style="font-size:11px;color:var(--muted);margin-top:2px;">' + (o.orderId || o._id) + ' · ' + timeAgo + '</div>' +
+        '</div>' +
+        '<div style="text-align:right;flex-shrink:0;">' +
+          '<div class="order-amount" style="font-size:13px;font-weight:700;">' + fmtRp(o.total) + '</div>' +
+          '<span class="badge ' + badge[0] + '" style="margin-top:4px;font-size:10px;">' + badge[1] + '</span>' +
+        '</div>' +
+      '</a>';
+    }).join('');
+  } catch(e) {
+    document.getElementById('recentOrders').innerHTML =
+      '<div class="empty-state"><i class="fa-solid fa-bag-shopping"></i><p>Belum ada pesanan</p></div>';
+  }
+}
+
+/* ── LOAD WISHLIST ── */
+async function loadWishlist() {
+  try {
+    var res  = await fetch(API + '/wishlist', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    , credentials: 'include' });
+    var data = await res.json();
+    var items = data.items || data.wishlist || data || [];
+    if (Array.isArray(items)) {
+      document.getElementById('statWishlist').textContent = items.length;
+    }
+  } catch(e) {
+    // Tetap 0 jika endpoint belum ada
+  }
+}
+
+/* ── LOAD FRESH USER (from API) ── */
+async function loadFreshUser() {
+  try {
+    var res  = await fetch(API + '/auth/me', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    , credentials: 'include' });
+    if (!res.ok) { throw new Error('unauthorized'); }
+    var data = await res.json();
+    var freshUser = data.user || data;
+    // Update localStorage
+    localStorage.setItem('ramx_auth_user', JSON.stringify(freshUser));
+    fillUser(freshUser);
+  } catch(e) {
+    // Fallback ke cached data
+    if (user) fillUser(user);
+    if (e.message === 'unauthorized') handleLogout();
+  }
+}
+
+/* ── LOAD BALANCE HISTORY ── */
+async function loadBalanceHistory() {
+  var container = document.getElementById('balanceHistory');
+  if (!container) return;
+  try {
+    var res  = await fetch(API + '/balance/history', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    , credentials: 'include' });
+    var data = await res.json();
+    var items = data.transactions || data.history || [];
+    if (!items.length) {
+      container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-wallet"></i><p>Belum ada riwayat saldo</p></div>';
+      return;
+    }
+    container.innerHTML = items.slice(0, 5).map(function(item) {
+      var isIn  = (item.type === 'in' || item.amount > 0);
+      var sign  = isIn ? '+' : '-';
+      var color = isIn ? 'var(--green)' : 'var(--red)';
+      var icon  = isIn ? 'fa-arrow-down' : 'fa-arrow-up';
+      var amt   = Math.abs(item.amount || 0);
+      var lbl   = item.description || (isIn ? 'Top Up' : 'Pembayaran');
+      return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);">' +
+        '<div style="width:32px;height:32px;border-radius:8px;background:' + (isIn ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)') + ';display:flex;align-items:center;justify-content:center;flex-shrink:0;">' +
+          '<i class="fa-solid ' + icon + '" style="font-size:13px;color:' + color + ';"></i>' +
+        '</div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div style="font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + lbl + '</div>' +
+          '<div style="font-size:11px;color:var(--muted);">' + (item.createdAt ? fmtDateShort(item.createdAt) : '') + '</div>' +
+        '</div>' +
+        '<div style="font-size:13px;font-weight:700;color:' + color + ';flex-shrink:0;">' + sign + fmtRp(amt) + '</div>' +
+      '</div>';
+    }).join('');
+  } catch(e) {
+    container.innerHTML = '<div class="empty-state"><i class="fa-solid fa-wallet"></i><p>Belum ada riwayat saldo</p></div>';
+  }
+}
+
+/* ── SET ACTIVE NAV ── */
+(function setActiveNav() {
+  var path = window.location.pathname;
+  document.querySelectorAll('.nav-item').forEach(function(el) {
+    el.classList.remove('active');
+    var href = el.getAttribute('href');
+    if (href && path === href) el.classList.add('active');
+  });
+  if (path === '/dashboard' || path === '/dashboard/') {
+    document.getElementById('navDashboard').classList.add('active');
+  }
+})();
+
+/* ── INIT ── */
+(async function init() {
+  // Show cached user first for speed
+  if (user) fillUser(user);
+
+  // Then fetch fresh data
+  await loadFreshUser();
+  await loadOrders();
+  await loadBalanceHistory();
+  await loadWishlist();
+
+  // Realtime polling setiap 30 detik
+  setInterval(async function() {
+    await loadFreshUser();
+    await loadOrders();
+    await loadBalanceHistory();
+  }, 30000);
+})();
+</script>
+<script src="/shared-user-avatar.js"></script>
+<script src="/shared-config.js"></script>
+</body>
+</html>

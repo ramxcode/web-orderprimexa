@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/images/logo.jpg" type="image/jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semua Produk &mdash; Primexa</title>
+  <meta name="description" content="Temukan semua produk digital premium di Primexa &mdash; aplikasi, streaming, voucher game, dan lebih banyak lagi.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../index.css">
+  <style>
+    .prod-hero {
+      background: linear-gradient(135deg, var(--bg-card) 0%, #0f2044 100%);
+      padding: 80px 24px 40px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .prod-hero h1  { font-size: clamp(26px, 5vw, 40px); font-weight: 800; margin-bottom: 8px; color: #f1f5f9; }
+    .prod-hero p   { color: var(--text-muted); font-size: 15px; }
+    .prod-hero .breadcrumb { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+    .prod-hero .breadcrumb a { color: var(--accent); text-decoration: none; }
+
+    .prod-toolbar {
+      max-width: 1200px; margin: 0 auto;
+      padding: 20px 24px 0;
+      display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+    }
+    .prod-search {
+      flex: 1; min-width: 200px;
+      display: flex; align-items: center; gap: 10px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 14px;
+    }
+    .prod-search input { background: none; border: none; outline: none; color: var(--text-primary); font-size: 14px; flex: 1; font-family: inherit; }
+    .prod-search i { color: var(--text-muted); }
+
+    .prod-cats { display: flex; flex-wrap: wrap; gap: 8px; }
+    .cat-chip {
+      padding: 7px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+      cursor: pointer; border: 1px solid var(--border);
+      background: var(--bg-card); color: var(--text-muted); transition: all 0.2s;
+    }
+    .cat-chip:hover, .cat-chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+    .prod-grid-wrap { max-width: 1200px; margin: 0 auto; padding: 24px 24px 80px; }
+    .prod-count      { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; }
+
+    .prod-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    @media (max-width: 480px) { .prod-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
+
+    .prod-empty { text-align: center; padding: 60px 24px; color: var(--text-muted); }
+    .prod-empty i { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.jpg" alt="Primexa" style="height:36px;width:auto;object-fit:contain;border-radius:8px;">
+  </a>
+  <div class="nav-actions" style="margin-left:auto;">
+    <a href="/" class="nav-btn"><i class="fa-solid fa-house"></i> Beranda</a>
+    <a href="/faq" class="nav-btn"><i class="fa-solid fa-circle-question"></i> FAQ</a>
+    <button class="nav-btn nav-btn-icon desktop-theme-btn" onclick="toggleTheme()" title="Toggle theme" id="themeBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="themeIcon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button class="nav-btn btn-login"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="prod-hero">
+  <div class="breadcrumb">
+    <a href="/">Beranda</a> &rsaquo; Semua Produk
+  </div>
+  <h1>Semua Produk</h1>
+  <p>Temukan produk digital premium pilihanmu dengan harga terbaik</p>
+</section>
+
+<!-- ===== TOOLBAR ===== -->
+<div class="prod-toolbar">
+  <div class="prod-search">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="prodSearch" placeholder="Cari produk..." oninput="filterProds()">
+  </div>
+  <div class="prod-cats" id="catChips">
+    <button class="cat-chip active" data-cat="semua" onclick="setcat(this,'semua')">Semua</button>
+  </div>
+</div>
+
+<!-- ===== PRODUCT GRID ===== -->
+<div class="prod-grid-wrap">
+  <div class="prod-count" id="prodCount"></div>
+  <div class="prod-grid" id="prodGrid"></div>
+</div>
+
+<script>
+  /* Theme */
+  (function() {
+    var t = localStorage.getItem('ramx-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+  function toggleTheme() {
+    var cur = document.documentElement.getAttribute('data-theme');
+    var next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('ramx-theme', next);
+  }
+
+  /* Produk data - diisi dari API (MongoDB) */
+  var products = [];
+
+  var activeCat = 'semua';
+
+  function setcat(el, cat) {
+    activeCat = cat;
+    document.querySelectorAll('.cat-chip').forEach(function(c) { c.classList.remove('active'); });
+    el.classList.add('active');
+    filterProds();
+  }
+
+  function filterProds() {
+    var q = (document.getElementById('prodSearch').value || '').toLowerCase().trim();
+    var filtered = products.filter(function(p) {
+      var matchCat    = activeCat === 'semua' || p.cat === activeCat;
+      var matchSearch = !q || p.name.toLowerCase().includes(q) || p.badge.toLowerCase().includes(q);
+      return matchCat && matchSearch;
+    });
+
+    document.getElementById('prodCount').textContent = filtered.length + ' produk ditemukan';
+
+    if (!filtered.length) {
+      document.getElementById('prodGrid').innerHTML = '<div class="prod-empty" style="grid-column:1/-1"><i class="fa-solid fa-box-open"></i><br>Produk tidak ditemukan</div>';
+      return;
+    }
+
+    document.getElementById('prodGrid').innerHTML = filtered.map(function(p) {
+      var imgHtml = p.imageUrl
+        ? '<img src="' + p.imageUrl + '" alt="' + p.name + '" style="width:100%;height:100%;object-fit:cover;border-radius:12px 12px 0 0;" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'
+          + '<span style="display:none;align-items:center;justify-content:center;width:100%;height:100%;"><i class="' + p.icon + '" style="font-size:52px;color:rgba(255,255,255,0.85);"></i></span>'
+        : '<i class="' + p.icon + '" style="font-size:52px;color:rgba(255,255,255,0.85);"></i>';
+      return [
+        '<div class="product-card" style="cursor:pointer;" onclick="location.href=\'/b/' + (p.slug || p.id) + '\'">' ,
+          '<div class="product-card-img" style="background:' + p.bg + ';min-height:130px;display:flex;align-items:center;justify-content:center;border-radius:12px 12px 0 0;overflow:hidden;">',
+            imgHtml,
+          '</div>',
+          '<div style="padding:14px;">',
+            '<div class="product-badge">' + (p.badge || '') + '</div>',
+            '<div class="product-name">' + p.name + '</div>',
+            '<div class="product-price">' + p.price + '</div>',
+            '<button class="btn-buy" style="width:100%;margin-top:10px;padding:9px;border-radius:8px;background:var(--accent);color:#fff;border:none;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;">',
+              '<i class="fa-solid fa-cart-shopping"></i> Beli Sekarang',
+            '</button>',
+          '</div>',
+        '</div>',
+      ].join('');
+    }).join('');
+  }
+
+  async function loadFromAPI() {
+    var apiBase = '/api';
+
+    // 1. Load categories dari MongoDB admin
+    try {
+      var catRes  = await fetch(apiBase + '/admin/categories');
+      var catJson = await catRes.json();
+      var apiCats = (catJson.success && Array.isArray(catJson.data))
+        ? catJson.data.filter(function(c) { return c.isActive !== false; })
+        : [];
+
+      // Rebuild cat-chips dari API + build catMap
+      var chipsEl = document.getElementById('catChips');
+      var catMap = {};
+      var html = '<button class="cat-chip active" data-cat="semua" onclick="setcat(this,\'semua\')">Semua</button>';
+      apiCats.forEach(function(c) {
+        var slug = c.slug || c.name.toLowerCase().replace(/\s+/g, '-');
+        catMap[c._id] = { name: c.name, slug: slug, color: c.color };
+        catMap[slug]  = { name: c.name, slug: slug, color: c.color };
+        html += '<button class="cat-chip" data-cat="' + slug + '" onclick="setcat(this,\'' + slug + '\')">' + c.name + '</button>';
+      });
+      if (chipsEl) chipsEl.innerHTML = html;
+      window._catMap = catMap;
+    } catch(e) {
+      console.warn('[produk] categories error:', e.message);
+    }
+
+    // 2. Load products dari MongoDB
+    try {
+      var prodRes  = await fetch(apiBase + '/products?limit=200');
+      var prodJson = await prodRes.json();
+      if (prodJson.success && Array.isArray(prodJson.data)) {
+        products = prodJson.data.map(function(p) {
+          var catMap  = window._catMap || {};
+          var catInfo = catMap[p.category] || catMap[(p.category||'').toLowerCase()] || {};
+          var catSlug = catInfo.slug || (p.category ? String(p.category).toLowerCase().replace(/\s+/g, '-') : '');
+          var catName = catInfo.name || '';
+          var minPrice = p.minPrice || p.basePrice || p.price || 0;
+          if (Array.isArray(p.variants) && p.variants.length > 0) {
+            var prices = p.variants.map(function(v) { return v.price || 0; }).filter(function(x) { return x > 0; });
+            if (prices.length) minPrice = Math.min.apply(null, prices);
+          }
+          return {
+            id:       p._id,
+            slug:     p.slug || p._id,
+            name:     p.name  || 'Produk',
+            cat:      catSlug,
+            badge:    catName,
+            price:    'Mulai Rp' + Number(minPrice).toLocaleString('id-ID'),
+            icon:     p.icon || 'fa-solid fa-box',
+            bg:       p.bgColor || p.color || 'linear-gradient(135deg,#1a1a2e,#16213e)',
+            imageUrl: p.imageUrl || '',
+          };
+        });
+      }
+    } catch(e) {
+      console.warn('[produk] products error:', e.message);
+    }
+
+    filterProds();
+  }
+
+  // Jalankan load dari API
+  loadFromAPI();
+</script>
+<script src="/shared-config.js"></script>
+</body>
+</html>

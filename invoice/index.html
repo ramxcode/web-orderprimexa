@@ -1,0 +1,851 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+  <link rel="icon" href="/images/logo.jpg" type="image/jpeg">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Invoice - Primexa</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0b1120;--bg-card:#131c30;--bg-input:#0f172a;--border:#1e2d4a;--text:#e2e8f0;--muted:#64748b;--sub:#94a3b8;--accent:#3b82f6;--accent-l:#60a5fa;--success:#22c55e;--warn:#f59e0b;--err:#ef4444;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh}
+a{color:inherit;text-decoration:none}
+.hdr{background:var(--bg-card);border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.hdr-back{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);cursor:pointer;transition:.2s}
+.hdr-back:hover{color:var(--text)}
+.hdr-inv{font-size:12px;color:var(--muted);font-family:monospace}
+#loadScreen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50}
+.spin-ring{width:64px;height:64px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--accent);animation:spin .8s linear infinite;margin-bottom:20px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.page{max-width:1000px;margin:0 auto;padding:28px 20px 60px;display:grid;grid-template-columns:1fr 360px;gap:20px}
+@media(max-width:720px){.page{grid-template-columns:1fr;padding:16px 14px 60px}}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:22px}
+.card+.card{margin-top:16px}
+.status-banner{padding:18px 22px;border-radius:16px;display:flex;align-items:center;gap:16px;margin-bottom:16px;background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(245,158,11,.04));border:1px solid rgba(245,158,11,.25)}
+.status-banner.paid{background:linear-gradient(135deg,rgba(34,197,94,.12),rgba(34,197,94,.04));border:1px solid rgba(34,197,94,.25)}
+.status-icon{width:52px;height:52px;border-radius:50%;background:rgba(245,158,11,.15);color:var(--warn);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.status-icon.paid{background:rgba(34,197,94,.15);color:var(--success)}
+.status-title{font-size:20px;font-weight:800}
+.status-sub{font-size:13px;color:var(--muted);margin-top:3px}
+.sec-label{font-size:11px;font-weight:700;letter-spacing:.8px;color:var(--muted);text-transform:uppercase;margin-bottom:14px}
+.prod-row{display:flex;align-items:center;gap:14px}
+.prod-img{width:52px;height:52px;border-radius:10px;background:linear-gradient(135deg,#0a0a22,#16163a);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;overflow:hidden}
+.prod-img img{width:100%;height:100%;object-fit:cover}
+.prod-name{font-size:16px;font-weight:700}
+.prod-var{font-size:13px;color:var(--muted);margin-top:2px}
+.prod-email{font-size:12px;color:var(--sub);margin-top:4px}
+.sum-row{display:flex;justify-content:space-between;font-size:13px;color:var(--sub);padding:5px 0}
+.sum-row.total{border-top:1px solid var(--border);margin-top:6px;padding-top:12px;font-size:16px;font-weight:800;color:var(--text)}
+.sum-row.total span:last-child{color:var(--accent-l)}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:480px){.info-grid{grid-template-columns:1fr}}
+.info-item label{font-size:11px;color:var(--muted);display:block;margin-bottom:4px}
+.info-item span{font-size:13px;font-weight:600}
+.qris-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.timer-bar{background:linear-gradient(135deg,var(--accent),#1d4ed8);padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+.timer-lbl{font-size:13px;font-weight:600;color:rgba(255,255,255,.85)}
+.timer-val{font-size:20px;font-weight:800;color:#fff;font-family:monospace}
+.timer-val.expired{color:#fca5a5}
+.qris-body{padding:22px;text-align:center}
+.qris-hint{font-size:12px;color:var(--muted);margin-bottom:16px}
+.qris-img-wrap{background:#fff;border-radius:12px;padding:14px;display:inline-block;margin-bottom:16px}
+.qris-img-wrap img{width:200px;height:200px;display:block}
+.qris-total-lbl{font-size:11px;color:var(--muted);margin-bottom:4px}
+.qris-total{font-size:22px;font-weight:800;color:var(--accent-l)}
+.qris-powered{font-size:11px;color:var(--muted);margin-top:8px}
+.qris-powered span{font-weight:700;color:var(--sub)}
+.instr-list{list-style:none;counter-reset:step}
+.instr-list li{counter-increment:step;display:flex;gap:12px;font-size:13px;color:var(--sub);padding:5px 0;line-height:1.5}
+.instr-list li::before{content:counter(step);width:22px;height:22px;border-radius:50%;background:rgba(59,130,246,.15);color:var(--accent-l);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.balance-box{text-align:center;padding:30px 20px}
+/* SUCCESS */
+.success-ov{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.75);display:flex;align-items:center;justify-content:center}
+.success-ov-box{background:var(--bg-card);border-radius:20px;padding:36px 32px;text-align:center;max-width:360px;width:90%}
+.success-check{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#22c55e);display:inline-flex;align-items:center;justify-content:center;font-size:30px;color:#fff;margin-bottom:20px;box-shadow:0 0 0 8px rgba(34,197,94,.15);animation:popIn .4s ease}
+@keyframes popIn{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+.success-page{max-width:720px;margin:0 auto;padding:0 20px 60px}
+.success-hero{text-align:center;padding:36px 16px 24px}
+.success-hero h1{font-size:30px;font-weight:800;color:#f1f5f9;margin-bottom:8px}
+.success-hero p{font-size:13px;color:var(--muted)}
+.prod-card-s{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
+.badges{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.badge-diproses{background:rgba(245,158,11,.15);color:var(--warn);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(245,158,11,.3)}
+.badge-siap{background:rgba(34,197,94,.15);color:var(--success);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(34,197,94,.3)}
+.badge-instan{background:rgba(59,130,246,.12);color:var(--accent-l);font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;border:1px solid rgba(59,130,246,.25)}
+.processing-box{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:12px;padding:16px;display:flex;align-items:flex-start;gap:12px;margin-top:12px}
+.info-akun-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
+.info-akun-title{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:800;margin-bottom:16px;color:var(--success)}
+.cred-box{background:var(--bg-input);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.cred-inner{flex:1;min-width:0}
+.cred-label{font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.cred-label i{font-size:11px;color:var(--accent-l)}
+.cred-val{font-size:14px;font-weight:600;color:var(--text);word-break:break-all;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;letter-spacing:.3px}
+.copy-btn{background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.25);color:var(--accent-l);font-size:12px;font-weight:600;padding:8px 14px;border-radius:8px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;transition:.2s;font-family:inherit;flex-shrink:0}
+.copy-btn:hover{background:rgba(59,130,246,.2)}
+.cred-notes-box{background:rgba(255,180,50,.06);border:1px solid rgba(255,180,50,.18);border-radius:12px;padding:16px 18px;margin-top:4px;margin-bottom:8px}
+.cred-notes-label{font-size:10px;font-weight:700;letter-spacing:.6px;color:var(--muted);text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.cred-notes-label i{font-size:11px;color:rgba(255,180,50,.8)}
+.cred-notes-content{font-size:12.5px;color:var(--sub);line-height:1.75;white-space:pre-wrap;word-break:break-word}
+.terms-box{background:rgba(59,130,246,.04);border:1px solid rgba(59,130,246,.12);border-radius:12px;padding:14px 16px;font-size:12px;color:var(--sub);line-height:1.8;white-space:pre-wrap}
+.txn-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-bottom:16px}
+.txn-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;color:var(--sub)}
+.txn-row:last-child{border-bottom:none}
+.txn-row.total{font-size:16px;font-weight:800;color:var(--text);padding-top:14px}
+.txn-row.total span:last-child{color:var(--success)}
+.txn-row span:last-child{font-weight:600;color:var(--text);text-align:right}
+.act-btns{display:flex;gap:12px;margin-top:20px}
+.btn-home{flex:1;padding:14px;background:var(--bg-input);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;transition:.2s}
+.btn-home:hover{border-color:var(--accent)}
+.btn-buy{flex:1;padding:14px;background:linear-gradient(135deg,#3b82f6,#2563eb);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;transition:.2s}
+.btn-buy:hover{opacity:.9}
+.locked-card{background:linear-gradient(135deg,rgba(59,130,246,.06),rgba(99,102,241,.04));border:1px solid rgba(59,130,246,.2);border-radius:16px;padding:24px;text-align:center;margin-bottom:16px}
+.locked-icon{width:56px;height:56px;border-radius:50%;background:rgba(59,130,246,.12);border:2px solid rgba(59,130,246,.25);display:inline-flex;align-items:center;justify-content:center;font-size:22px;color:var(--accent-l);margin-bottom:14px}
+.locked-title{font-size:16px;font-weight:800;margin-bottom:4px}
+.locked-sub{font-size:12px;color:var(--muted);margin-bottom:18px;line-height:1.6}
+.btn-unlock{background:linear-gradient(135deg,#3b82f6,#2563eb);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;padding:13px 28px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-family:inherit;transition:.2s}
+.btn-unlock:hover{opacity:.88}
+.pin-notice{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--sub);line-height:1.6;margin-top:14px;text-align:left;display:flex;align-items:flex-start;gap:8px}
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(6px);z-index:9000;display:flex;align-items:center;justify-content:center;padding:16px;animation:fadeOv .2s ease}
+@keyframes fadeOv{from{opacity:0}to{opacity:1}}
+.modal-box{background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:32px 28px;max-width:440px;width:100%;text-align:center;position:relative;animation:slideUp .25s ease}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;padding:4px}
+.modal-close:hover{color:var(--text)}
+.modal-icon{width:60px;height:60px;border-radius:50%;background:rgba(59,130,246,.12);border:2px solid rgba(59,130,246,.2);display:inline-flex;align-items:center;justify-content:center;font-size:24px;color:var(--accent-l);margin-bottom:16px}
+.modal-title{font-size:22px;font-weight:800;margin-bottom:8px}
+.modal-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+.pin-inputs{display:flex;gap:10px;justify-content:center;margin-bottom:22px}
+.pin-input{width:48px;height:58px;background:var(--bg-input);border:2px solid var(--border);border-radius:12px;font-size:26px;font-weight:800;color:var(--text);text-align:center;font-family:'Inter',monospace;outline:none;transition:.2s;-moz-appearance:textfield}
+.pin-input::-webkit-inner-spin-button,.pin-input::-webkit-outer-spin-button{-webkit-appearance:none}
+.pin-input:focus{border-color:var(--accent);background:rgba(59,130,246,.06)}
+.pin-input.filled{border-color:rgba(59,130,246,.5)}
+@media(max-width:400px){.pin-inputs{gap:6px}.pin-input{width:40px;height:50px;font-size:22px}}
+.btn-verify{width:100%;padding:14px;background:linear-gradient(135deg,#3b82f6,#2563eb);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:.2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:18px}
+.btn-verify:hover{opacity:.9}
+.btn-verify:disabled{opacity:.5;cursor:not-allowed}
+.pin-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:9px 14px;font-size:12px;color:#fca5a5;margin-bottom:14px;display:none}
+.resend-area{font-size:12px;color:var(--muted);margin-bottom:20px}
+.btn-resend{background:none;border:none;color:var(--accent-l);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;text-decoration:underline;padding:0}
+.btn-resend:disabled{color:var(--muted);cursor:not-allowed;text-decoration:none}
+.modal-footer{font-size:11px;color:var(--muted);display:flex;align-items:center;justify-content:center;gap:6px}
+.star-wrap{display:flex;gap:8px;justify-content:center;margin:14px 0 10px}
+.star-btn{background:none;border:none;font-size:28px;cursor:pointer;color:var(--border);transition:.15s;line-height:1;padding:2px}
+.star-btn.active{color:#f59e0b}
+.review-product-box{background:var(--bg-input);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-align:left;margin-bottom:16px}
+.review-product-name{font-size:14px;font-weight:700}
+.review-product-var{font-size:12px;color:var(--muted)}
+.review-textarea{width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;padding:12px;resize:vertical;min-height:88px;outline:none;transition:.2s;box-sizing:border-box}
+.review-textarea:focus{border-color:var(--accent)}
+.review-char{font-size:11px;color:var(--muted);text-align:right;margin-top:4px;margin-bottom:14px}
+.review-btns{display:flex;gap:10px}
+.btn-submit-review{flex:1;padding:13px;background:linear-gradient(135deg,#3b82f6,#2563eb);border:none;border-radius:10px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:6px;transition:.2s}
+.btn-submit-review:hover{opacity:.9}
+.btn-skip-review{padding:13px 18px;background:none;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-size:14px;cursor:pointer;font-family:inherit;transition:.2s}
+.btn-skip-review:hover{border-color:var(--accent);color:var(--text)}
+</style>
+</head>
+<body>
+<div id="loadScreen">
+  <div class="spin-ring"></div>
+  <div style="font-size:15px;color:var(--muted)">Memuat data pesanan...</div>
+</div>
+<div id="mainContent" style="display:none">
+  <div class="hdr">
+    <div class="hdr-back" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i> Kembali</div>
+    <div style="font-size:17px;font-weight:800">Primexa</div>
+    <div class="hdr-inv" id="hdrInvId"></div>
+  </div>
+  <div class="page">
+    <div>
+      <div id="statusBanner" class="status-banner">
+        <div class="status-icon" id="statusIcon"><i class="fa-solid fa-clock"></i></div>
+        <div><div class="status-title" id="statusTitle">Menunggu Pembayaran</div><div class="status-sub" id="statusSub">Selesaikan pembayaran sebelum waktu habis</div></div>
+      </div>
+      <div class="card"><div class="sec-label">Detail Pesanan</div><div class="prod-row"><div class="prod-img" id="prodImg"><i class="fa-solid fa-box" style="color:var(--muted)"></i></div><div><div class="prod-name" id="prodName">&mdash;</div><div class="prod-var" id="prodVar">&mdash;</div><div class="prod-email" id="prodEmail">&mdash;</div></div></div></div>
+      <div class="card"><div class="sec-label">Ringkasan Pembayaran</div><div id="sumRows"></div></div>
+      <div class="card" id="instrCard" style="display:none"><div class="sec-label">Cara Pembayaran QRIS</div><ol class="instr-list"><li>Buka aplikasi e-wallet (GoPay, OVO, Dana, dll) atau mobile banking</li><li>Pilih menu <strong>Scan QR / QRIS</strong></li><li>Scan QR Code yang ditampilkan</li><li>Pastikan nama merchant dan jumlah pembayaran benar</li><li>Konfirmasi dan selesaikan pembayaran</li></ol></div>
+      <div class="card"><div class="sec-label">Informasi Pesanan</div><div class="info-grid" id="infoGrid"></div></div>
+      <div style="margin-top:14px;text-align:center"><a href="/track" style="font-size:13px;color:var(--muted)">Lacak Pesanan</a><span style="color:var(--border);margin:0 8px">·</span><a href="/contact" style="font-size:13px;color:var(--muted)">Hubungi CS</a></div>
+    </div>
+    <div>
+      <div class="qris-card" id="qrisCard" style="display:none">
+        <div class="timer-bar"><div class="timer-lbl"><i class="fa-solid fa-clock"></i> Selesaikan dalam</div><div class="timer-val" id="timerVal">10:00</div></div>
+        <div class="qris-body">
+          <div class="qris-hint">Scan dengan aplikasi e-wallet atau mobile banking</div>
+          <div class="qris-img-wrap" id="qrisImgWrap"><div style="width:200px;height:200px;display:flex;align-items:center;justify-content:center"><i class="fa-solid fa-spinner fa-spin" style="font-size:32px;color:var(--muted)"></i></div></div>
+          <div class="qris-total-lbl">Total Pembayaran</div>
+          <div class="qris-total" id="qrisTotal">&mdash;</div>
+          <div class="qris-powered">Powered by <span>QRIS</span></div>
+        </div>
+      </div>
+      <div class="qris-card" id="balanceCard" style="display:none"><div class="balance-box"><div style="font-size:40px;color:var(--success);margin-bottom:14px"><i class="fa-solid fa-wallet"></i></div><div style="font-size:16px;font-weight:700;margin-bottom:6px">Pembayaran via Saldo</div><div style="font-size:13px;color:var(--muted)">Pesanan akan diproses setelah admin mengkonfirmasi pembayaran dari saldo akun Anda.</div></div></div>
+    </div>
+  </div>
+</div>
+<script>
+var _timer=null,_pollTimer=null;
+function fmt(n){return Number(n||0).toLocaleString('id-ID');}
+function fmtDate(d){if(!d)return '\u2014';var dt=new Date(d);return dt.toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'})+' '+dt.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function getOrderId(){var p=window.location.pathname.split('/').filter(Boolean);return p.length>=2?p[1]:null;}
+async function loadOrder(){
+  var id=getOrderId();
+  if(!id){showError('ID pesanan tidak ditemukan.');return;}
+  document.getElementById('hdrInvId').textContent=id;
+  try{
+    var r=await fetch('/api/orders/track/'+id);
+    var j=await r.json();
+    if(j.success&&j.data){
+      var st=j.data.status;
+      if(['paid','completed','processing'].includes(st)){
+        // Sudah dibayar \u2014 langsung tampilkan halaman sukses
+        await showSuccessPage(id,j.data,true);
+      } else if(['cancelled','cancel','expired','expire','failed'].includes(st)){
+        // Kedaluwarsa / dibatalkan \u2014 tampilkan halaman expired, jangan generate QRIS baru
+        localStorage.removeItem('rmx_timer_end_'+id);
+        renderExpired(j.data);
+      } else {
+        renderOrder(j.data);
+        // Mulai polling setiap 5 detik
+        _pollTimer=setInterval(async function(){
+          try{
+            var pr=await fetch('/api/orders/track/'+id);
+            var pj=await pr.json();
+            if(pj.success&&pj.data){
+              var ps=pj.data.status;
+              if(['paid','completed','processing'].includes(ps)){
+                clearInterval(_pollTimer);clearInterval(_timer);
+                localStorage.removeItem('rmx_timer_end_'+id);
+                await showSuccessPage(id,pj.data,false);
+              } else if(['cancelled','cancel','expired','expire','failed'].includes(ps)){
+                // Kedaluwarsa saat sedang menunggu
+                clearInterval(_pollTimer);clearInterval(_timer);
+                localStorage.removeItem('rmx_timer_end_'+id);
+                renderExpired(pj.data);
+              }
+            }
+          }catch(e){}
+        },5000);
+      }
+    } else showError('Pesanan tidak ditemukan: '+id);
+  }catch(e){showError('Gagal memuat: '+e.message);}
+}
+
+async function showSuccessPage(id,order,skipAnim){
+  if(!skipAnim){
+    // Tampilkan overlay animasi
+    var ov=document.createElement('div');
+    ov.className='success-ov';
+    ov.innerHTML='<div class="success-ov-box"><div class="success-check"><i class="fa-solid fa-check"></i></div><div style="font-size:20px;font-weight:800;margin-bottom:6px">Pembayaran Berhasil!</div><div style="font-size:13px;color:var(--muted);margin-bottom:14px">Pesanan Anda sedang diproses</div><div style="font-size:12px;color:var(--muted)"><i class="fa-solid fa-spinner fa-spin"></i> Memproses pesanan...</div></div>';
+    document.body.appendChild(ov);
+    await new Promise(function(r){setTimeout(r,2200);});
+    ov.remove();
+  }
+  // Render halaman sukses (credentials fetched via PIN system)
+  var img=order.productImage||'';
+  document.getElementById('loadScreen').style.display='none';
+  document.getElementById('mainContent').style.display='block';
+  var items=order.items&&order.items.length?order.items:[{productName:order.productName,variant:order.variantName,quantity:order.qty||1,price:order.price||0,subtotal:order.subtotal||(order.price||0)*(order.qty||1)}];
+  var item=items[0];
+  var subtotal=item.subtotal||(item.price||0)*(item.quantity||1)||order.subtotal||order.total||0;
+  var disc=order.discount||0;var total=order.total||0;
+  var payMap={balance:'Saldo Akun',qris:'QRIS GatePay'};
+  var payName=payMap[(order.paymentMethod||'').toLowerCase()]||order.paymentMethod||'\u2014';
+  var isCompleted = order.status === 'completed' || order.status === 'paid';
+  var badgeStatus=isCompleted
+    ?'<span class="badge-siap">✦ SIAP DIGUNAKAN</span>'
+    :'<span class="badge-diproses">⟳ DIPROSES</span>';
+  var hasImg=img?'<img src="'+esc(img)+'" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display=\'none\'">':'';
+  var imgHtml=hasImg?hasImg:'<i class="fa-solid fa-box" style="color:var(--muted)"></i>';
+  var html=[
+    '<div class="success-hero">',
+    '<h1>Pembayaran Berhasil!</h1>',
+    '<p>Transaksi untuk <strong>'+esc(id)+'</strong> telah selesai.</p>',
+    '</div>',
+    '<div class="prod-card-s">',
+    '<div class="badges">'+badgeStatus+'<span class="badge-instan"><i class="fa-solid fa-bolt"></i> INSTANT DELIVERY</span></div>',
+    '<div class="prod-row">',
+    '<div class="prod-img" style="flex-shrink:0">'+imgHtml+'</div>',
+    '<div>',
+    '<div class="prod-name">'+esc(item.productName||order.productName||'-')+'</div>',
+    '<div class="prod-var">'+esc(item.variant||order.variantName||'-')+'</div>',
+    '<div class="prod-email">Tujuan: '+esc(order.customerEmail||order.email||'-')+'</div>',
+    '</div>',
+    '</div>',
+    '</div>'
+  ].join('');
+  // Credential section \u2014 will be populated by _initCredAccess (PIN system)
+  html+='<div id="credSection"></div>';
+  html+='<div class="txn-card"><div class="sec-label">Detail Transaksi</div>';
+  html+='<div class="txn-row"><span>Tanggal &amp; Waktu</span><span>'+fmtDate(order.createdAt)+'</span></div>';
+  html+='<div class="txn-row"><span>Metode Pembayaran</span><span>'+esc(payName)+'</span></div>';
+  html+='<div class="txn-row"><span>Harga Produk</span><span>Rp '+fmt(subtotal)+'</span></div>';
+  if(disc>0)html+='<div class="txn-row"><span>Diskon Voucher ('+esc(order.voucherCode||'')+')</span><span style="color:var(--err)">- Rp '+fmt(disc)+'</span></div>';
+  html+='<div class="txn-row"><span>Biaya Layanan</span><span>Rp 0</span></div>';
+  if(order.uniqueCode)html+='<div class="txn-row"><span>Kode Unik</span><span>'+order.uniqueCode+'</span></div>';
+  html+='<div class="txn-row total"><span>Total Dibayar</span><span>Rp '+fmt(total)+'</span></div>';
+  html+='<div class="act-btns"><button class="btn-home" onclick="_goHome()"><i class="fa-solid fa-house"></i> Kembali ke Beranda</button><button class="btn-buy" onclick="_beliLagi()"><i class="fa-solid fa-cart-shopping"></i> Beli Lagi</button></div>';
+  html+='</div><div style="text-align:center;margin-top:8px"><a href="/contact" style="font-size:13px;color:var(--muted)">Butuh bantuan? <span style="color:var(--accent-l)">Hubungi Customer Service</span></a></div>';
+  // Replace page content
+  document.querySelector('.hdr').style.borderBottom='2px solid rgba(34,197,94,.2)';
+  document.getElementById('mainContent').querySelector('.page')?.remove();
+  var sp=document.createElement('div');sp.className='success-page';
+  sp.innerHTML=html;
+  document.getElementById('mainContent').appendChild(sp);
+  // Init credential access via PIN system
+  _initCredAccess(id, order);
+}
+// ── PIN & Credential Access System ──────────────────────────────────────────
+var _invoiceAccessToken=null; // temp token dari sessionStorage
+var _authToken=null;           // login JWT dari localStorage
+
+async function _initCredAccess(id, order){
+  // 0. Guest order (tanpa login) \u2014 langsung tampilkan data tanpa PIN
+  if(!order.userId){
+    await _fetchProtected(id, null, null);
+    return;
+  }
+
+  // 1. Cek session storage untuk token yang tersimpan sebelumnya
+  var storedToken=sessionStorage.getItem('inv_tok_'+id);
+  if(storedToken){
+    _invoiceAccessToken=storedToken;
+    await _fetchProtected(id, storedToken, null);
+    return;
+  }
+
+  // 2. Baca data user dari localStorage (disimpan saat login via api.js setSession)
+  var lsToken=localStorage.getItem('ramx_token')||localStorage.getItem('ramx_auth_token')||localStorage.getItem('ramx_admin_token')||'';
+  var cachedUser=null;
+  try{ cachedUser=JSON.parse(localStorage.getItem('ramx_auth_user')||'null'); }catch(e){}
+
+  // Jika ada data user di localStorage, cek email dan role
+  if(cachedUser&&cachedUser.email){
+    var userEmail=(cachedUser.email||'').toLowerCase();
+    var orderEmail=(order.customerEmail||order.email||'').toLowerCase();
+    var isAdmin=(cachedUser.role==='admin'||cachedUser.isAdmin===true);
+    if(userEmail===orderEmail||isAdmin){
+      _authToken=lsToken||'__cookie__';
+      await _fetchProtected(id, null, lsToken||null);
+      return;
+    }
+  }
+
+  // 3. Fallback: panggil /api/auth/me untuk verifikasi via cookie httpOnly
+  try{
+    var meHeaders={'Content-Type':'application/json'};
+    if(lsToken) meHeaders['Authorization']='Bearer '+lsToken;
+    var meR=await fetch('/api/auth/me',{headers:meHeaders,credentials:'include'});
+    if(meR.ok){
+      var meJ=await meR.json();
+      if(meJ.success&&(meJ.data||meJ.user)){
+        var meUser=meJ.data||meJ.user;
+        var uEmail=(meUser.email||'').toLowerCase();
+        var oEmail=(order.customerEmail||order.email||'').toLowerCase();
+        var iAdmin=(meUser.role==='admin'||meUser.isAdmin===true);
+        if(uEmail===oEmail||iAdmin){
+          _authToken=lsToken||'__cookie__';
+          await _fetchProtected(id, null, lsToken||null);
+          return;
+        }
+      }
+    }
+  }catch(e){}
+
+  // 4. Tidak ada akses \u2014 tampilkan locked card
+  _renderLockedCard(id);
+}
+
+async function _fetchProtected(id, invToken, authTok){
+  var headers={'Content-Type':'application/json'};
+  if(invToken) headers['X-Invoice-Token']=invToken;
+  // '__cookie__' berarti autentikasi via httpOnly cookie \u2014 tidak perlu Bearer header
+  if(authTok && authTok !== '__cookie__')  headers['Authorization']='Bearer '+authTok;
+  try{
+    var r=await fetch('/api/invoice/'+id+'/protected-data',{headers:headers,credentials:'include'});
+    var j=await r.json();
+    if(j.success&&j.data){
+      _renderCredentials(j.data, id, invToken, authTok);
+    }else{
+      // Token expired or invalid
+      sessionStorage.removeItem('inv_tok_'+id);
+      _renderLockedCard(id);
+    }
+  }catch(e){ _renderLockedCard(id); }
+}
+
+
+function _renderLockedCard(id){
+  var sec=document.getElementById('credSection');
+  if(!sec)return;
+  sec.innerHTML='<div class="info-akun-card">'+
+    '<div class="info-akun-title" style="color:var(--muted)"><i class="fa-solid fa-lock"></i> Data Produk Terkunci</div>'+
+    '<div class="locked-card">'+
+      '<div class="locked-icon"><i class="fa-solid fa-shield-halved"></i></div>'+
+      '<div class="locked-title">Data Dilindungi PIN</div>'+
+      '<div class="locked-sub">Verifikasi PIN untuk melihat<br>password produk Anda.</div>'+
+      '<button class="btn-unlock" onclick="_openPinModal(\x27'+id+'\x27)"><i class="fa-solid fa-eye"></i> Lihat Data Produk</button>'+
+    '</div>'+
+    '<div class="pin-notice"><i class="fa-solid fa-circle-info" style="color:var(--accent-l);margin-top:1px;flex-shrink:0"></i>'+
+    '<span>PIN transaksi telah dikirim ke email Anda saat pembayaran berhasil. Gunakan PIN tersebut untuk mengakses data produk.</span></div>'+
+  '</div>';
+}
+
+function _renderCredentials(data, id, invToken, authTok){
+  var sec=document.getElementById('credSection');
+  if(!sec)return;
+  // Badge update
+  document.querySelectorAll('.badge-diproses').forEach(function(b){b.className='badge-siap';b.textContent='✦ SIAP DIGUNAKAN';});
+  var cred=data.credentials||'';
+  var notes=data.credentialNotes||'';
+  var terms=data.termsAndConditions||'';
+  var html='<div class="info-akun-card"><div class="info-akun-title"><i class="fa-solid fa-lock-open"></i> Data Produk</div>';
+
+  // Icon mapping berdasarkan label
+  var _credIcon=function(label){
+    var l=(label||'').toLowerCase();
+    if(l.indexOf('email')>-1||l.indexOf('username')>-1||l.indexOf('user')>-1||l.indexOf('akun')>-1) return 'fa-envelope';
+    if(l.indexOf('password')>-1||l.indexOf('pass')>-1||l.indexOf('pin')>-1||l.indexOf('sandi')>-1) return 'fa-lock';
+    if(l.indexOf('link')>-1||l.indexOf('url')>-1) return 'fa-link';
+    if(l.indexOf('kode')>-1||l.indexOf('code')>-1||l.indexOf('key')>-1||l.indexOf('lisensi')>-1||l.indexOf('license')>-1) return 'fa-key';
+    return 'fa-circle-dot';
+  };
+
+  if(cred){
+    // Normalize format lama (pipe-separated: email@x.com| https://url) → newline-separated
+    var normalizedCred = cred;
+    // Deteksi format lama: 1 baris, mengandung '|' sebagai pemisah field
+    if(normalizedCred.indexOf('\n') === -1 && normalizedCred.indexOf('|') > -1){
+      var segments = normalizedCred.split('|');
+      var converted = segments.map(function(seg){
+        seg = seg.trim();
+        if(!seg) return null;
+        // Jika segment berupa URL (https:// atau http://) → jadikan "Link: url"
+        if(/^https?:\/\//i.test(seg)) return 'Link: ' + seg;
+        // Jika segment berupa email (ada @) → jadikan "Email: email"
+        if(/@/.test(seg)) return 'Email: ' + seg;
+        // Jika ada label eksplisit "key:value" (key pendek, tanpa @ atau //)
+        var ci = seg.indexOf(':');
+        if(ci > 0 && ci < 20 && !/[@\/]/.test(seg.substring(0, ci))){
+          var k = seg.substring(0, ci).trim();
+          var v = seg.substring(ci+1).trim();
+          k = k.charAt(0).toUpperCase() + k.slice(1);
+          return k + ': ' + v;
+        }
+        return seg;
+      }).filter(Boolean);
+      normalizedCred = converted.join('\n');
+    }
+    // Render credential lines dynamically
+    var lines=normalizedCred.split('\n').filter(function(l){return l.trim();});
+    lines.forEach(function(line){
+      var label, val;
+      var colonIdx = line.indexOf(':');
+      // Cek apakah ada label eksplisit sebelum titik dua pertama (bukan bagian dari email/URL)
+      if(colonIdx > 0 && colonIdx < 20 && !/[@\/]/.test(line.substring(0, colonIdx))){
+        // Format baru: "Label: value"
+        label = line.substring(0, colonIdx).trim();
+        val   = line.substring(colonIdx+1).trim();
+      } else {
+        // Format lama: raw value tanpa label \u2014 deteksi tipenya otomatis
+        val = line.trim();
+        if(/^https?:\/\//i.test(val))                    label = 'Link';
+        else if(/@/.test(val) || /^\S+@\S+\.\S+$/.test(val)) label = 'Email';
+        else                                               label = 'Password';
+      }
+      var safeVal=esc(val); var safeLabel=esc(label);
+      var icon=_credIcon(label);
+      html+='<div class="cred-box"><div class="cred-inner"><div class="cred-label"><i class="fa-solid '+icon+'"></i> '+safeLabel+'</div><div class="cred-val">'+safeVal+'</div></div>';
+      html+='<button class="copy-btn" onclick="_copyTxt(this.dataset.c,this)" data-c="'+safeVal+'"><i class="fa-solid fa-copy"></i></button></div>';
+    });
+    if(lines.length===0){
+      html+='<div class="cred-box"><div class="cred-inner"><div class="cred-label"><i class="fa-solid fa-lock"></i> Password</div><div class="cred-val">'+esc(cred)+'</div></div>';
+      html+='<button class="copy-btn" onclick="_copyTxt(this.dataset.c,this)" data-c="'+esc(cred)+'"><i class="fa-solid fa-copy"></i></button></div>';
+    }
+  }else{
+    html+='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">Produk belum tersedia. Silakan hubungi CS.</div>';
+  }
+  // Catatan \u2014 tampil sebagai card terpisah dengan icon notepad
+  if(notes){
+    html+='<div class="cred-notes-box"><div class="cred-notes-label"><i class="fa-solid fa-note-sticky"></i> CATATAN</div><div class="cred-notes-content">'+esc(notes)+'</div></div>';
+  }
+  if(terms)html+='<div class="terms-box"><i class="fa-solid fa-circle-info" style="color:var(--accent-l);margin-right:6px"></i>'+esc(terms)+'</div>';
+  html+='</div>';
+  sec.innerHTML=html;
+  // Tawarkan review setelah 2 detik (jika belum pernah)
+  if(!data.hasReview){
+    setTimeout(function(){ _openReviewModal(data, id, invToken, authTok); }, 2000);
+  }
+}
+
+// ── PIN Modal ─────────────────────────────────────────────────────────────────
+var _resendCountdown=null;
+function _openPinModal(id){
+  if(document.getElementById('pinModalOv'))return;
+  var ov=document.createElement('div');
+  ov.id='pinModalOv';ov.className='modal-ov';
+  ov.innerHTML='<div class="modal-box" id="pinModalBox">'+
+    '<button class="modal-close" onclick="document.getElementById(\x27pinModalOv\x27).remove()" aria-label="Tutup">&times;</button>'+
+    '<div class="modal-icon"><i class="fa-solid fa-lock"></i></div>'+
+    '<div class="modal-title">Verifikasi PIN</div>'+
+    '<div class="modal-sub">Masukkan PIN transaksi 6 digit yang dikirim<br>ke email Anda untuk melihat data produk.</div>'+
+    '<div class="pin-err" id="pinErr"></div>'+
+    '<div class="pin-inputs" id="pinInputs">'+
+      [0,1,2,3,4,5].map(function(i){return '<input class="pin-input" id="pi'+i+'" type="tel" inputmode="numeric" maxlength="1" autocomplete="one-time-code">';}).join('')+
+    '</div>'+
+    '<button class="btn-verify" id="btnVerify" onclick="_submitPin(\x27'+id+'\x27)"><i class="fa-solid fa-lock"></i> Buka Data Produk</button>'+
+    '<div class="resend-area">Tidak menerima PIN atau lupa?<br>'+
+      '<button class="btn-resend" id="btnResend" onclick="_resendPin(\x27'+id+'\x27)">Kirim Ulang PIN <i class="fa-solid fa-rotate"></i></button>'+
+    '</div>'+
+    '<div class="modal-footer"><i class="fa-solid fa-shield-halved"></i> Transaksi Aman Terenkripsi</div>'+
+  '</div>';
+  document.body.appendChild(ov);
+  ov.addEventListener('click',function(e){if(e.target===ov)ov.remove();});
+  _initPinInputs(id);
+}
+
+function _initPinInputs(id){
+  var inputs=[].slice.call(document.querySelectorAll('.pin-input'));
+  inputs.forEach(function(inp,i){
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Backspace'&&!inp.value&&i>0){inputs[i-1].focus();inputs[i-1].value='';inputs[i-1].classList.remove('filled');}
+      if(e.key==='Enter') _submitPin(id);
+    });
+    inp.addEventListener('input',function(){
+      inp.value=inp.value.replace(/\D/g,'').slice(-1);
+      if(inp.value){inp.classList.add('filled');if(i<5)inputs[i+1].focus();}else inp.classList.remove('filled');
+    });
+    inp.addEventListener('paste',function(e){
+      e.preventDefault();
+      var txt=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+      inputs.forEach(function(ip,j){ip.value=txt[j]||'';ip.classList.toggle('filled',!!txt[j]);});
+      var nxt=Math.min(txt.length,5);inputs[nxt].focus();
+    });
+  });
+  setTimeout(function(){inputs[0].focus();},80);
+}
+
+async function _submitPin(id){
+  var inputs=[].slice.call(document.querySelectorAll('.pin-input'));
+  var pin=inputs.map(function(i){return i.value;}).join('');
+  if(pin.length<6){_showPinErr('Masukkan PIN transaksi 6 digit.');return;}
+  var btn=document.getElementById('btnVerify');
+  btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Memverifikasi...';
+  try{
+    var r=await fetch('/api/invoice/'+id+'/verify-pin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pin:pin})});
+    var j=await r.json();
+    if(j.success&&j.accessToken){
+      _invoiceAccessToken=j.accessToken;
+      sessionStorage.setItem('inv_tok_'+id, j.accessToken);
+      var ov=document.getElementById('pinModalOv');if(ov)ov.remove();
+      await _fetchProtected(id, j.accessToken, null);
+    }else{
+      _showPinErr(j.message||'PIN yang Anda masukkan tidak sesuai.');
+      // Clear PIN boxes on wrong
+      inputs.forEach(function(i){i.value='';i.classList.remove('filled');});
+      inputs[0].focus();
+      btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-lock"></i> Buka Data Produk';
+    }
+  }catch(e){
+    _showPinErr('Terjadi kesalahan. Silakan coba lagi.');
+    btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-lock"></i> Buka Data Produk';
+  }
+}
+
+function _showPinErr(msg){
+  var el=document.getElementById('pinErr');if(!el)return;
+  el.textContent=msg;el.style.display='block';
+}
+
+async function _resendPin(id){
+  var btn=document.getElementById('btnResend');if(!btn)return;
+  btn.disabled=true;
+  try{
+    var r=await fetch('/api/invoice/'+id+'/resend-pin',{method:'POST'});
+    var j=await r.json();
+    if(j.success){
+      var msg=document.getElementById('pinErr');
+      if(msg){msg.style.background='rgba(34,197,94,.1)';msg.style.borderColor='rgba(34,197,94,.3)';msg.style.color='#86efac';msg.textContent=j.message||'PIN berhasil dikirim ulang.';msg.style.display='block';}
+      var retryAfter=j.retryAfter||60;
+      _startResendCountdown(retryAfter);
+    }else{
+      var secs=j.retryAfter||60;
+      _startResendCountdown(secs);
+      var msg2=document.getElementById('pinErr');
+      if(msg2){msg2.style.background='rgba(239,68,68,.1)';msg2.style.borderColor='rgba(239,68,68,.3)';msg2.style.color='#fca5a5';msg2.textContent=j.message||'Silakan tunggu sebelum kirim ulang.';msg2.style.display='block';}
+    }
+  }catch(e){btn.disabled=false;btn.textContent='Kirim Ulang PIN';}
+}
+
+function _startResendCountdown(secs){
+  if(_resendCountdown)clearInterval(_resendCountdown);
+  var btn=document.getElementById('btnResend');if(!btn)return;
+  var rem=secs;
+  function tick(){rem--;if(rem<=0){clearInterval(_resendCountdown);_resendCountdown=null;if(btn){btn.disabled=false;btn.innerHTML='Kirim Ulang PIN <i class="fa-solid fa-rotate"></i>';}}else{if(btn)btn.textContent='Kirim ulang dalam '+rem+'d';} }
+  btn.textContent='Kirim ulang dalam '+rem+'d';
+  _resendCountdown=setInterval(tick,1000);
+}
+
+// ── Review Modal ──────────────────────────────────────────────────────────────
+function _openReviewModal(data, id, invToken, authTok){
+  if(document.getElementById('reviewModalOv'))return;
+  var prodName=esc(data.productName||'');
+  var varName=esc(data.variantName||'');
+  var ov=document.createElement('div');
+  ov.id='reviewModalOv';ov.className='modal-ov';
+  ov.innerHTML='<div class="modal-box">'+
+    '<div class="modal-icon" style="background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.25)"><i class="fa-solid fa-star" style="color:#f59e0b"></i></div>'+
+    '<div class="modal-title">Bagaimana pengalamanmu?</div>'+
+    '<div class="modal-sub">Ulasanmu membantu pembeli lain memutuskan.</div>'+
+    '<div class="review-product-box"><div class="review-product-name">'+prodName+'</div><div class="review-product-var">'+varName+'</div></div>'+
+    '<div class="star-wrap" id="starWrap">'+
+      [1,2,3,4,5].map(function(n){return '<button class="star-btn" data-v="'+n+'" onclick="_setRating('+n+')">&#9733;</button>';}).join('')+
+    '</div>'+
+    '<textarea class="review-textarea" id="reviewText" placeholder="Ceritakan pengalamanmu (opsional)" maxlength="500" oninput="document.getElementById(\x27reviewCharCount\x27).textContent=this.value.length+\x27/500\x27"></textarea>'+
+    '<div class="review-char" id="reviewCharCount">0/500</div>'+
+    '<div class="review-btns">'+
+      '<button class="btn-submit-review" id="btnSubmitReview" onclick="_submitReview(\x27'+id+'\x27,\x27'+(invToken||'')+'\x27,\x27'+(authTok||'')+'\x27)"><i class="fa-solid fa-paper-plane"></i> Kirim Ulasan</button>'+
+      '<button class="btn-skip-review" onclick="document.getElementById(\x27reviewModalOv\x27).remove()">Nanti saja</button>'+
+    '</div>'+
+  '</div>';
+  document.body.appendChild(ov);
+}
+
+var _currentRating=0;
+function _setRating(n){
+  _currentRating=n;
+  document.querySelectorAll('.star-btn').forEach(function(b){
+    b.classList.toggle('active',parseInt(b.dataset.v)<=n);
+  });
+}
+
+async function _submitReview(id, invToken, authTok){
+  if(!_currentRating){alert('Pilih rating bintang terlebih dahulu.');return;}
+  var text=document.getElementById('reviewText').value||'';
+  var btn=document.getElementById('btnSubmitReview');
+  btn.disabled=true;btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+  var headers={'Content-Type':'application/json'};
+  if(invToken) headers['X-Invoice-Token']=invToken;
+  if(authTok && authTok !== '__cookie__')  headers['Authorization']='Bearer '+authTok;
+  try{
+    var r=await fetch('/api/invoice/'+id+'/review',{method:'POST',headers:headers,credentials:'include',body:JSON.stringify({rating:_currentRating,review:text})});
+
+    var j=await r.json();
+    if(j.success){
+      document.getElementById('reviewModalOv').remove();
+      // Toast
+      var toast=document.createElement('div');
+      toast.style.cssText='position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#16a34a,#22c55e);color:#fff;padding:13px 24px;border-radius:12px;font-size:14px;font-weight:700;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.4);animation:slideUp .3s ease';
+      toast.textContent='⭐ Terima kasih atas ulasan Anda!';
+      document.body.appendChild(toast);
+      setTimeout(function(){toast.remove();},3000);
+    }else{
+      alert(j.message||'Gagal mengirim ulasan.');
+      btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Kirim Ulasan';
+    }
+  }catch(e){
+    alert('Terjadi kesalahan. Silakan coba lagi.');
+    btn.disabled=false;btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Kirim Ulasan';
+  }
+}
+function _copyTxt(txt,btn){
+  navigator.clipboard.writeText(txt).then(function(){
+    var old=btn.innerHTML;btn.innerHTML='<i class="fa-solid fa-check"></i> Tersalin!';
+    setTimeout(function(){btn.innerHTML=old;},2000);
+  }).catch(function(){});
+}
+function _goHome(){ window.location.href='/'; }
+function _beliLagi(){
+  var ref=document.referrer;
+  if(ref&&ref.includes('/b/')){window.location.href=ref;}else{window.location.href='/';}
+}
+function renderExpired(o){
+  document.getElementById('loadScreen').style.display='none';
+  document.getElementById('mainContent').style.display='block';
+  // Update status banner
+  var sb=document.getElementById('statusBanner');
+  sb.className='status-banner';
+  sb.style.background='linear-gradient(135deg,rgba(220,38,38,0.12),rgba(185,28,28,0.08))';
+  sb.style.borderColor='rgba(220,38,38,0.3)';
+  var si=document.getElementById('statusIcon');
+  si.className='status-icon';
+  si.style.background='rgba(220,38,38,0.15)';
+  si.innerHTML='<i class="fa-solid fa-clock" style="color:#f87171"></i>';
+  document.getElementById('statusTitle').textContent='Pembayaran Kedaluwarsa';
+  document.getElementById('statusTitle').style.color='#f87171';
+  document.getElementById('statusSub').textContent='Waktu pembayaran telah habis.';
+  // Update produk info
+  var items=o.items&&o.items.length?o.items:[{productName:o.productName,variant:o.variantName,quantity:o.qty||1,price:o.price||0,subtotal:o.subtotal||(o.price||0)*(o.qty||1)}];
+  var item=items[0];
+  document.getElementById('prodName').textContent=item.productName||o.productName||'\u2014';
+  document.getElementById('prodVar').textContent=item.variant||o.variantName||'\u2014';
+  document.getElementById('prodEmail').textContent='Tujuan: '+(o.customerEmail||o.email||'\u2014');
+  if(o.productImage){document.getElementById('prodImg').innerHTML='<img src="'+esc(o.productImage)+'" onerror="this.style.display=\'none\'">';}
+  // Summary rows
+  var subtotal=item.subtotal||(item.price||0)*(item.quantity||1)||o.subtotal||o.total||0;
+  var total=o.total||0;
+  var rows='<div class="sum-row"><span>Subtotal</span><span>Rp '+fmt(subtotal)+'</span></div>';
+  rows+='<div class="sum-row"><span>Biaya Layanan</span><span style="color:var(--success)">Rp 0</span></div>';
+  rows+='<div class="sum-row total"><span>Total</span><span>Rp '+fmt(total)+'</span></div>';
+  document.getElementById('sumRows').innerHTML=rows;
+  // Info pesanan
+  var payMap={balance:'Saldo Akun',qris:'QRIS GatePay'};
+  var payName=payMap[(o.paymentMethod||'').toLowerCase()]||o.paymentMethod||'\u2014';
+  document.getElementById('infoGrid').innerHTML=
+    '<div class="info-item"><label>Invoice</label><span style="font-family:monospace;font-size:12px">'+esc(o.orderId||'\u2014')+'</span></div>'+
+    '<div class="info-item"><label>Tanggal</label><span>'+fmtDate(o.createdAt)+'</span></div>'+
+    '<div class="info-item"><label>Email</label><span>'+esc(o.customerEmail||o.email||'\u2014')+'</span></div>'+
+    '<div class="info-item"><label>Metode Pembayaran</label><span>'+esc(payName)+'</span></div>';
+  // Ganti QRIS card dengan pesan expired + tombol pesan ulang
+  var qrisCard=document.getElementById('qrisCard');
+  var balanceCard=document.getElementById('balanceCard');
+  if(qrisCard) qrisCard.style.display='none';
+  if(balanceCard) balanceCard.style.display='none';
+  // Buat expired card di tempat QRIS
+  var expDiv=document.createElement('div');
+  expDiv.className='qris-card';
+  expDiv.style.display='block';
+  expDiv.innerHTML='<div style="text-align:center;padding:28px 16px;">'
+    +'<div style="font-size:48px;margin-bottom:12px;">⏰</div>'
+    +'<div style="font-size:18px;font-weight:800;color:#f87171;margin-bottom:8px;">Pembayaran Kedaluwarsa</div>'
+    +'<div style="font-size:13px;color:var(--muted);margin-bottom:20px;">Waktu pembayaran telah habis.<br>Silakan buat pesanan baru.</div>'
+    +'<button onclick="_goHome()" style="background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;border:none;border-radius:10px;padding:13px 32px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:8px;">'
+    +'<i class="fa-solid fa-rotate-right"></i> Pesan Ulang</button>'
+    +'</div>';
+  // Insert setelah instrCard
+  var instrCard=document.getElementById('instrCard');
+  if(instrCard) instrCard.style.display='none';
+  // Insert expired card ke container
+  var container=document.querySelector('.page > div:nth-child(2)');
+  if(container){container.innerHTML='';container.appendChild(expDiv);}
+}
+function renderOrder(o){
+
+  document.getElementById('loadScreen').style.display='none';
+  document.getElementById('mainContent').style.display='block';
+  var isPaid=o.status==='paid'||o.status==='completed';
+  if(isPaid){
+    document.getElementById('statusBanner').className='status-banner paid';
+    var si=document.getElementById('statusIcon');si.className='status-icon paid';si.innerHTML='<i class="fa-solid fa-circle-check"></i>';
+    document.getElementById('statusTitle').textContent='Pembayaran Berhasil';
+    document.getElementById('statusSub').textContent='Pesanan Anda sedang diproses.';
+  }
+  var items=o.items&&o.items.length?o.items:[{productName:o.productName,variant:o.variantName,quantity:o.qty||1,price:o.price||0,subtotal:o.subtotal||(o.price||0)*(o.qty||1)}];
+  var item=items[0];
+  document.getElementById('prodName').textContent=item.productName||o.productName||'\u2014';
+  document.getElementById('prodVar').textContent=item.variant||o.variantName||'\u2014';
+  document.getElementById('prodEmail').textContent='Tujuan: '+(o.customerEmail||o.email||'\u2014');
+  if(o.productImage){document.getElementById('prodImg').innerHTML='<img src="'+esc(o.productImage)+'" onerror="this.style.display=\'none\'">';}
+  var subtotal=item.subtotal||(item.price||0)*(item.quantity||1)||o.subtotal||o.total||0;
+  var disc=o.discount||0;var total=o.total||0;
+  var rows='<div class="sum-row"><span>Subtotal</span><span>Rp '+fmt(subtotal)+'</span></div>';
+  if(disc>0)rows+='<div class="sum-row"><span>Diskon Voucher ('+esc(o.voucherCode||'')+')</span><span style="color:var(--err)">- Rp '+fmt(disc)+'</span></div>';
+  rows+='<div class="sum-row"><span>Biaya Layanan</span><span style="color:var(--success)">Rp 0</span></div>';
+  if(o.uniqueCode)rows+='<div class="sum-row"><span>Kode Unik</span><span>'+o.uniqueCode+'</span></div>';
+  rows+='<div class="sum-row total"><span>Total</span><span>Rp '+fmt(total)+'</span></div>';
+  document.getElementById('sumRows').innerHTML=rows;
+  var payMap={balance:'Saldo Akun',qris:'QRIS GatePay'};
+  var payName=payMap[(o.paymentMethod||'').toLowerCase()]||o.paymentMethod||'\u2014';
+  document.getElementById('infoGrid').innerHTML=
+    '<div class="info-item"><label>Invoice</label><span style="font-family:monospace;font-size:12px">'+esc(o.orderId||'\u2014')+'</span></div>'+
+    '<div class="info-item"><label>Tanggal</label><span>'+fmtDate(o.createdAt)+'</span></div>'+
+    '<div class="info-item"><label>Email</label><span>'+esc(o.customerEmail||o.email||'\u2014')+'</span></div>'+
+    '<div class="info-item"><label>Metode Pembayaran</label><span>'+esc(payName)+'</span></div>';
+  var isQris=(o.paymentMethod||'').toLowerCase().includes('qris');
+  if(isQris){
+    document.getElementById('qrisCard').style.display='block';
+    document.getElementById('instrCard').style.display='block';
+    document.getElementById('qrisTotal').textContent='Rp '+fmt(total);
+    if(!isPaid)startTimer(10*60);
+    generateQris(o.orderId,total);
+  }else{document.getElementById('balanceCard').style.display='block';}
+}
+async function generateQris(orderId,amount){
+  try{
+    var r=await fetch('/api/orders/'+orderId+'/generate-qris',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount:amount,orderId:orderId})});
+    var j=await r.json();
+    var w=document.getElementById('qrisImgWrap');
+    if(j.success&&j.data){
+      // Backend returns: { success, data: (PayGomerch response) }
+      // PayGomerch docs: { success, message, data: { transaction_id, qr_string, qr_url, checkout_url } }
+      var pg=j.data.data||j.data;  // j.data = PayGomerch resp, j.data.data = flat data per docs
+      var qrString  =pg.qr_string||'';
+      var qrUrl     =pg.qr_url||'';
+      var checkoutUrl=pg.checkout_url||'';
+      if(qrString){
+        // Priority 1: render qr_string via public QR API (no CORS issues)
+        var apiUrl='https://api.qrserver.com/v1/create-qr-code/?size=200x200&ecc=M&data='+encodeURIComponent(qrString);
+        w.innerHTML='<img src="'+apiUrl+'" style="width:200px;height:200px" alt="QRIS">';
+      }else if(qrUrl){
+        // Priority 2: direct QR image URL from PayGomerch
+        w.innerHTML='<img src="'+qrUrl+'" style="width:200px;height:200px;object-fit:contain" alt="QRIS">';
+      }else if(checkoutUrl){
+        // Priority 3: checkout link
+        w.innerHTML='<div style="width:200px;height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px"><i class="fa-solid fa-qrcode" style="font-size:36px;color:#666"></i><a href="'+checkoutUrl+'" target="_blank" style="font-size:12px;color:var(--accent-l);text-decoration:underline">Klik untuk Bayar</a></div>';
+      }else{
+        w.innerHTML='<div style="width:200px;height:200px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);padding:8px;text-align:center">QRIS tidak tersedia</div>';
+      }
+    }else{
+      w.innerHTML='<div style="width:200px;height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px"><i class="fa-solid fa-triangle-exclamation" style="font-size:24px;color:var(--err)"></i><span style="font-size:11px;color:var(--muted);padding:0 8px;text-align:center">'+(j.message||'Gagal generate QRIS')+'</span></div>';
+    }
+  }catch(e){
+    var w2=document.getElementById('qrisImgWrap');
+    if(w2)w2.innerHTML='<div style="width:200px;height:200px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted)">Gagal memuat QRIS</div>';
+  }
+}
+function startTimer(s){
+  var orderId=getOrderId();
+  var storageKey='rmx_timer_end_'+orderId;
+  var stored=localStorage.getItem(storageKey);
+  var now=Date.now();
+  var end;
+  if(stored&&parseInt(stored)>now){
+    end=parseInt(stored); // lanjut dari sisa waktu
+  }else{
+    end=now+s*1000;
+    localStorage.setItem(storageKey,String(end)); // simpan end time
+  }
+  var el=document.getElementById('timerVal');
+  function tick(){
+    var rem=Math.max(0,Math.floor((end-Date.now())/1000));
+    var m=Math.floor(rem/60),sec=rem%60;
+    el.textContent=String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+    if(rem===0){
+      clearInterval(_timer);
+      localStorage.removeItem(storageKey);
+      var qrisCard=document.getElementById('qrisCard');
+      if(qrisCard){
+        qrisCard.innerHTML='\
+          <div style="padding:48px 28px;text-align:center">\
+            <div style="width:72px;height:72px;border-radius:50%;background:rgba(100,116,139,.15);border:2px solid rgba(100,116,139,.2);display:inline-flex;align-items:center;justify-content:center;margin-bottom:24px">\
+              <i class="fa-regular fa-clock" style="font-size:30px;color:var(--muted)"></i>\
+            </div>\
+            <div style="font-size:22px;font-weight:800;margin-bottom:10px">Pembayaran Kedaluwarsa</div>\
+            <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:28px">Waktu pembayaran telah habis.<br>Silakan buat pesanan baru.</div>\
+            <button onclick="_peesanUlang()" style="display:inline-flex;align-items:center;gap:8px;padding:13px 28px;background:var(--accent);border:none;border-radius:12px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">\
+              <i class="fa-solid fa-rotate-right"></i> Pesan Ulang\
+            </button>\
+          </div>';
+      }
+      document.getElementById('statusTitle').textContent='Pembayaran Kedaluwarsa';
+      document.getElementById('statusSub').textContent='Waktu pembayaran telah habis.';
+    }
+  }
+  tick();_timer=setInterval(tick,1000);
+}
+function _peesanUlang(){
+  // Kembali ke halaman produk yang sama (dari referrer) atau ke home
+  var ref=document.referrer;
+  if(ref&&ref.includes('/b/')){window.location.href=ref;}
+  else{window.location.href='/';}
+}
+function showError(msg){
+  document.getElementById('loadScreen').style.display='none';document.getElementById('mainContent').style.display='block';
+  document.querySelector('.page').innerHTML='<div class="card" style="grid-column:1/-1;text-align:center;padding:40px"><i class="fa-solid fa-circle-exclamation" style="font-size:40px;color:var(--err);display:block;margin-bottom:16px"></i><div style="font-size:16px;font-weight:700;margin-bottom:8px">Pesanan Tidak Ditemukan</div><div style="font-size:13px;color:var(--muted)">'+msg+'</div><a href="/" style="display:inline-block;margin-top:20px;padding:10px 24px;background:var(--accent);color:#fff;border-radius:10px;font-weight:600;font-size:13px">Kembali ke Beranda</a></div>';
+}
+loadOrder();
+</script>
+</body>
+</html>

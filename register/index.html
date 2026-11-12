@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar Akun - Primexa</title>
+  <meta name="description" content="Buat akun Primexa untuk mulai belanja produk digital premium.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="icon" href="/images/logo.jpg" type="image/jpeg">
+  <script src="../config.js"></script>
+  <script src="../js/api.js"></script>
+  <script>if(!window.RAMX_CONFIG)window.RAMX_CONFIG={};</script>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#0a0f1e;--card:rgba(255,255,255,0.04);--border:rgba(255,255,255,0.09);--border2:rgba(99,102,241,0.4);--text:#f1f5f9;--muted:#94a3b8;--accent:#6366f1;--accent2:#818cf8;--tg:#2AABEE;--tg2:#229ED9;--error:#f87171;--success:#4ade80;--tr:0.2s ease}
+    [data-theme="light"]{--bg:#f0f4ff;--card:rgba(255,255,255,0.7);--border:rgba(0,0,0,0.1);--text:#0f172a;--muted:#64748b}
+    html,body{height:100%}
+    body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;position:relative}
+    .bg-canvas{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(99,102,241,.18),transparent),radial-gradient(ellipse 60% 40% at 90% 80%,rgba(139,92,246,.12),transparent),var(--bg)}
+    .bg-grid{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:40px 40px}
+    .navbar{position:relative;z-index:10;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid var(--border)}
+    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);font-weight:800;font-size:18px}
+    .logo-icon{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#4f46e5);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;box-shadow:0 0 20px rgba(99,102,241,.4)}
+    .logo-text span{color:var(--accent2)}
+    .theme-btn{width:38px;height:38px;border-radius:10px;background:var(--card);border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all var(--tr)}
+    .auth-wrap{position:relative;z-index:5;flex:1;display:flex;align-items:center;justify-content:center;padding:24px 16px 48px}
+    .auth-card{width:100%;max-width:520px;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:40px 36px;backdrop-filter:blur(24px);box-shadow:0 32px 80px rgba(0,0,0,.4)}
+    .auth-icon{width:60px;height:60px;border-radius:16px;margin:0 auto 20px;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;box-shadow:0 8px 32px rgba(16,185,129,.35)}
+    .auth-title{text-align:center;font-size:26px;font-weight:800;margin-bottom:8px}
+    .auth-sub{text-align:center;color:var(--muted);font-size:14px;margin-bottom:28px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .form-grid .full{grid-column:1/-1}
+    .form-group{margin-bottom:0}
+    .form-label{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px;display:block}
+    .input-wrap{position:relative;display:flex;align-items:center}
+    .input-wrap .icon{position:absolute;left:14px;color:var(--muted);font-size:14px;pointer-events:none}
+    .input-wrap input{width:100%;padding:13px 14px 13px 42px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;font-family:inherit;outline:none;transition:all var(--tr)}
+    .input-wrap input:focus{border-color:var(--accent);background:rgba(99,102,241,.08);box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+    .input-wrap .icon-right{position:absolute;right:14px;color:var(--muted);background:none;border:none;cursor:pointer;font-size:14px;transition:color var(--tr)}
+    .input-wrap input.has-right{padding-right:44px}
+    .input-wrap input.error{border-color:var(--error)}
+    .input-error{font-size:12px;color:var(--error);margin-top:5px;display:none}
+    .input-error.show{display:block}
+    .input-success{font-size:12px;color:var(--success);margin-top:5px;display:none;align-items:center;gap:4px}
+    .input-success.show{display:flex}
+    .input-wrap input.matched{border-color:var(--success);background:rgba(74,222,128,.06);}
+    .input-wrap input.matched:focus{border-color:var(--success);box-shadow:0 0 0 3px rgba(74,222,128,.12);}
+    .strength-bar{height:3px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin:6px 0 3px}
+    .strength-fill{height:100%;border-radius:99px;width:0%;transition:all .3s ease}
+    .strength-text{font-size:11px;color:var(--muted)}
+    .terms-wrap{display:flex;align-items:flex-start;gap:10px;padding:14px;margin:16px 0;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px;cursor:pointer}
+    .terms-wrap input{width:16px;height:16px;accent-color:var(--accent);margin-top:1px;flex-shrink:0}
+    .terms-wrap span{font-size:13px;color:var(--muted);line-height:1.5}
+    .terms-wrap a{color:var(--accent2);text-decoration:none;font-weight:600}
+    .tg-verified{display:flex;align-items:center;gap:8px;padding:10px 14px;margin-bottom:16px;background:rgba(42,171,238,.1);border:1px solid rgba(42,171,238,.3);border-radius:10px;font-size:13px;color:var(--tg);font-weight:600}
+    .btn{width:100%;padding:14px 20px;border:none;border-radius:12px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .25s ease;position:relative;overflow:hidden}
+    .btn-primary{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 4px 20px rgba(16,185,129,.3)}
+    .btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 28px rgba(16,185,129,.45)}
+    .btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .btn-primary.loading::after{content:'';position:absolute;width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+    .btn-primary.loading>*{visibility:hidden}
+    .btn-telegram{background:linear-gradient(135deg,var(--tg),var(--tg2));color:#fff;margin-top:12px;box-shadow:0 4px 20px rgba(42,171,238,.3)}
+    .btn-telegram:hover{transform:translateY(-1px)}
+    .btn-telegram:disabled{opacity:.6;cursor:not-allowed;transform:none}
+    .divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--muted);font-size:12px;font-weight:600;letter-spacing:.5px}
+    .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+    .auth-footer{text-align:center;margin-top:20px;font-size:14px;color:var(--muted)}
+    .auth-footer a{color:var(--accent2);text-decoration:none;font-weight:600}
+    .modal-backdrop{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:16px;opacity:0;pointer-events:none;transition:opacity .25s ease}
+    .modal-backdrop.open{opacity:1;pointer-events:all}
+    .modal{background:#111827;border:1px solid var(--border);border-radius:20px;width:100%;max-width:420px;padding:32px 28px;box-shadow:0 32px 80px rgba(0,0,0,.5);transform:scale(.95) translateY(10px);transition:transform .25s ease}
+    .modal-backdrop.open .modal{transform:scale(1) translateY(0)}
+    .modal-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px}
+    .modal-title{font-size:20px;font-weight:800}
+    .modal-close{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.08);border:none;color:var(--muted);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all var(--tr)}
+    .steps{display:flex;gap:6px;margin-bottom:24px}
+    .step{flex:1;height:3px;border-radius:99px;background:rgba(255,255,255,.1);transition:background .3s}
+    .step.active{background:var(--tg)}
+    .step.done{background:var(--success)}
+    .step-content{display:none}
+    .step-content.active{display:block}
+    .info-box{background:rgba(42,171,238,.1);border:1px solid rgba(42,171,238,.25);border-radius:10px;padding:12px 14px;font-size:13px;color:#93c5fd;margin-bottom:16px;line-height:1.5}
+    .tg-bot-link{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;margin:12px 0;background:rgba(42,171,238,.15);border:1px solid rgba(42,171,238,.3);border-radius:10px;color:var(--tg);font-weight:700;font-size:14px;text-decoration:none;transition:all var(--tr)}
+    .otp-inputs{display:flex;gap:10px;justify-content:center;margin:20px 0}
+    .otp-inputs input{width:50px;height:58px;background:rgba(255,255,255,.05);border:2px solid var(--border);border-radius:12px;text-align:center;font-size:22px;font-weight:700;color:var(--text);font-family:inherit;outline:none;transition:all var(--tr)}
+    .otp-inputs input:focus{border-color:var(--tg);background:rgba(42,171,238,.1)}
+    .otp-inputs input.filled{border-color:var(--tg2)}
+    .otp-inputs input.error{border-color:var(--error)}
+    .otp-timer{text-align:center;font-size:13px;color:var(--muted);margin-bottom:16px}
+    .otp-timer span{color:var(--tg);font-weight:700}
+    .otp-resend{text-align:center;font-size:13px}
+    .otp-resend button{background:none;border:none;color:var(--tg);cursor:pointer;font-weight:600;font-size:13px;font-family:inherit}
+    .otp-resend button:disabled{color:var(--muted);cursor:default}
+    .toast-wrap{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+    .toast{background:#1e293b;border:1px solid var(--border);border-radius:12px;padding:12px 16px;font-size:14px;font-weight:500;display:flex;align-items:center;gap:10px;min-width:260px;max-width:360px;box-shadow:0 8px 24px rgba(0,0,0,.3);animation:slideIn .3s ease}
+    .toast.success{border-color:rgba(74,222,128,.3)}
+    .toast.error{border-color:rgba(248,113,113,.3)}
+    .toast.info{border-color:rgba(42,171,238,.3)}
+    .toast i{font-size:16px}
+    .toast.success i{color:var(--success)}
+    .toast.error i{color:var(--error)}
+    .toast.info i{color:var(--tg)}
+    @keyframes slideIn{from{transform:translateX(20px);opacity:0}to{transform:translateX(0);opacity:1}}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .pw-rules{margin-top:10px;padding:12px 14px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:12px}
+    .pw-rules-title{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+    .pw-rules-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 16px}
+    .pw-rule{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);transition:color .2s}
+    .pw-rule i{font-size:13px;color:rgba(255,255,255,.15);transition:color .2s}
+    .pw-rule.met{color:var(--success)}
+    .pw-rule.met i{color:var(--success)}
+    .pw-strength-label{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+    .pw-strength-label span:first-child{font-size:11px;color:var(--muted)}
+    .pw-strength-label span:last-child{font-size:12px;font-weight:700}
+    @media(max-width:520px){.auth-card{padding:28px 18px}.form-grid{grid-template-columns:1fr}.form-grid .full{grid-column:1}.pw-rules-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="bg-canvas"></div>
+<div class="bg-grid"></div>
+<nav class="navbar">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.jpg" alt="Primexa" style="height:36px;width:auto;object-fit:contain;border-radius:8px;">
+  </a>
+  <button class="theme-btn" onclick="toggleTheme()"><i class="fa-solid fa-sun" id="themeIcon"></i></button>
+</nav>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-icon"><i class="fa-solid fa-user-plus"></i></div>
+    <h1 class="auth-title">Buat Akun Baru</h1>
+    <p class="auth-sub">Daftar untuk mulai belanja, isi saldo, dan simpan wishlist Anda.</p>
+
+    <div class="tg-verified" id="tgVerifiedBadge" style="display:none;">
+      <i class="fa-brands fa-telegram"></i>
+      <span>Telegram <b id="tgVerifiedUser"></b> terverifikasi âœ&ldquo;</span>
+    </div>
+
+    <form id="registerForm" onsubmit="handleRegister(event)" novalidate>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label class="form-label" for="fullname">Nama Lengkap</label>
+          <div class="input-wrap">
+            <i class="icon fa-solid fa-user"></i>
+            <input type="text" id="fullname" placeholder="Nama lengkap Anda" autocomplete="name">
+          </div>
+          <div class="input-error" id="nameErr">Nama minimal 3 karakter</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">Email</label>
+          <div class="input-wrap">
+            <i class="icon fa-solid fa-envelope"></i>
+            <input type="email" id="email" placeholder="email@example.com" autocomplete="email">
+          </div>
+          <div class="input-error" id="emailErr">Email tidak valid</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="phone">No. Telepon</label>
+          <div class="input-wrap">
+            <i class="icon fa-solid fa-phone"></i>
+            <input type="tel" id="phone" placeholder="08xxxxxxxxxx" autocomplete="tel">
+          </div>
+          <div class="input-error" id="phoneErr">Nomor tidak valid</div>
+        </div>
+        <div class="form-group full">
+          <label class="form-label" for="password">Kata Sandi</label>
+          <div class="input-wrap">
+            <i class="icon fa-solid fa-lock"></i>
+            <input type="password" id="password" class="has-right" placeholder="Min. 8 karakter" autocomplete="new-password" oninput="checkStrength(this.value)">
+            <button type="button" class="icon-right" onclick="togglePass('password','ep1')"><i class="fa-solid fa-eye" id="ep1"></i></button>
+          </div>
+          <div class="strength-bar"><div class="strength-fill" id="sFill"></div></div>
+          <div class="pw-strength-label"><span>Kekuatan Sandi:</span> <span id="sText"></span></div>
+          <div class="pw-rules">
+            <div class="pw-rules-title">Ketentuan Kata Sandi:</div>
+            <div class="pw-rules-grid">
+              <div class="pw-rule" id="ruleLen"><i class="fa-solid fa-circle-check"></i> Minimal 8 karakter</div>
+              <div class="pw-rule" id="ruleCase"><i class="fa-solid fa-circle-check"></i> Huruf besar &amp; kecil (A-Z, a-z)</div>
+              <div class="pw-rule" id="ruleNum"><i class="fa-solid fa-circle-check"></i> Setidaknya 1 angka (0-9)</div>
+              <div class="pw-rule" id="ruleMatch"><i class="fa-solid fa-circle-check"></i> Konfirmasi sandi cocok</div>
+            </div>
+          </div>
+          <div class="input-error" id="passErr">Minimal 8 karakter</div>
+        </div>
+        <div class="form-group full">
+          <label class="form-label" for="confirmPass">Konfirmasi Sandi</label>
+          <div class="input-wrap">
+            <i class="icon fa-solid fa-lock"></i>
+            <input type="password" id="confirmPass" class="has-right" placeholder="Ulangi kata sandi" autocomplete="new-password" oninput="checkConfirm()">
+            <button type="button" class="icon-right" onclick="togglePass('confirmPass','ep2')"><i class="fa-solid fa-eye" id="ep2"></i></button>
+          </div>
+          <div class="input-error" id="confirmErr">Kata sandi tidak cocok</div>
+          <div class="input-success" id="confirmOk"><i class="fa-solid fa-circle-check"></i> Konfirmasi password sudah cocok</div>
+        </div>
+      </div>
+      <label class="terms-wrap">
+        <input type="checkbox" id="agreeTerms">
+        <span>Saya setuju dengan <a href="/terms" target="_blank">Syarat &amp; Ketentuan</a> dan <a href="/privacy" target="_blank">Kebijakan Privasi</a>.</span>
+      </label>
+      <div class="input-error" id="termsErr" style="margin-top:-10px;margin-bottom:12px;">Anda harus menyetujui syarat & ketentuan</div>
+      <button type="submit" class="btn btn-primary" id="registerBtn">
+        <i class="fa-solid fa-user-plus"></i> Daftar Sekarang
+      </button>
+    </form>
+
+    <div class="divider">ATAU</div>
+    <button class="btn btn-telegram" onclick="openTgModal()">
+      <i class="fa-brands fa-telegram"></i> Daftar dengan Telegram
+    </button>
+    <p class="auth-footer">Sudah punya akun? <a href="/login">Masuk di sini</a></p>
+  </div>
+</div>
+
+<!-- Telegram Modal -->
+<div class="modal-backdrop" id="tgModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title">Verifikasi Telegram</h2>
+      <button class="modal-close" onclick="closeTgModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="steps">
+      <div class="step active" id="step1dot"></div>
+      <div class="step" id="step2dot"></div>
+      <div class="step" id="step3dot"></div>
+    </div>
+    <div class="step-content active" id="step1">
+      <div class="info-box"><b>Hubungkan akun Telegram Anda</b><br>Kami kirim kode verifikasi ke bot untuk konfirmasi identitas.</div>
+      <div class="form-group" style="margin-bottom:16px;">
+        <label class="form-label">Username Telegram</label>
+        <div class="input-wrap">
+          <i class="icon fa-brands fa-telegram"></i>
+          <input type="text" id="tgUsername" placeholder="@username_anda">
+        </div>
+        <div class="input-error" id="tgErr">Username tidak valid</div>
+      </div>
+      <button class="btn btn-telegram" onclick="goToStep2()" id="step1Btn">
+        <i class="fa-solid fa-arrow-right"></i> Lanjut
+      </button>
+    </div>
+    <div class="step-content" id="step2">
+      <div class="info-box">Klik tombol di bawah untuk membuka bot. Bot akan mengirim kode OTP.</div>
+      <a href="#" class="tg-bot-link" id="tgBotLink" target="_blank" rel="noopener">
+        <i class="fa-brands fa-telegram"></i>
+        <span id="tgBotText">Buka Bot Telegram</span>
+      </a>
+      <p style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:16px;">Setelah mendapat kode, klik tombol berikut:</p>
+      <button class="btn btn-primary" onclick="goToStep3()"><i class="fa-solid fa-key"></i> Saya Sudah Dapat Kode</button>
+    </div>
+    <div class="step-content" id="step3">
+      <p style="font-size:14px;color:var(--muted);margin-bottom:4px;">Masukkan 6 digit kode dari bot Telegram:</p>
+      <div class="otp-inputs">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="otp0" oninput="otpInput(this,0)" onkeydown="otpKeydown(event,0)" onpaste="otpPaste(event)">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="otp1" oninput="otpInput(this,1)" onkeydown="otpKeydown(event,1)" onpaste="otpPaste(event)">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="otp2" oninput="otpInput(this,2)" onkeydown="otpKeydown(event,2)" onpaste="otpPaste(event)">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="otp3" oninput="otpInput(this,3)" onkeydown="otpKeydown(event,3)" onpaste="otpPaste(event)">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="otp4" oninput="otpInput(this,4)" onkeydown="otpKeydown(event,4)" onpaste="otpPaste(event)">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" id="otp5" oninput="otpInput(this,5)" onkeydown="otpKeydown(event,5)" onpaste="otpPaste(event)">
+      </div>
+      <div class="otp-timer" id="otpTimer">Kode berlaku: <span id="otpCountdown">05:00</span></div>
+      <div class="otp-resend"><button onclick="resendOtp()" id="resendBtn" disabled>Kirim ulang kode</button></div>
+      <button class="btn btn-telegram" onclick="verifyOtp()" id="verifyBtn" style="margin-top:16px;">
+        <i class="fa-solid fa-check-circle"></i> Verifikasi
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+/* â”€â”€ Theme â”€â”€ */
+function applyTheme(){var t=localStorage.getItem('ramx_theme')||'dark';document.documentElement.setAttribute('data-theme',t);document.getElementById('themeIcon').className=t==='dark'?'fa-solid fa-sun':'fa-solid fa-moon';}
+function toggleTheme(){var c=document.documentElement.getAttribute('data-theme');localStorage.setItem('ramx_theme',c==='dark'?'light':'dark');applyTheme();}
+applyTheme();
+
+/* â”€â”€ Cek query param tg â”€â”€ */
+var _urlParams=new URLSearchParams(window.location.search);
+var _tgFromUrl=_urlParams.get('tg')||'';
+var _verifiedTg='';
+if(_tgFromUrl){document.getElementById('tgVerifiedBadge').style.display='flex';document.getElementById('tgVerifiedUser').textContent='@'+_tgFromUrl;_verifiedTg=_tgFromUrl;}
+
+/* â”€â”€ Toast â”€â”€ */
+function toast(type,msg){var icons={success:'fa-circle-check',error:'fa-circle-xmark',info:'fa-circle-info'};var el=document.createElement('div');el.className='toast '+type;el.innerHTML='<i class="fa-solid '+icons[type]+'"></i><span>'+msg+'</span>';document.getElementById('toastWrap').prepend(el);setTimeout(function(){el.style.opacity='0';el.style.transition='opacity .3s';setTimeout(function(){el.remove()},300)},3500);}
+
+/* â”€â”€ Utils â”€â”€ */
+function togglePass(id,btnId){var inp=document.getElementById(id),btn=document.getElementById(btnId),isPass=inp.type==='password';inp.type=isPass?'text':'password';btn.className='fa-solid '+(isPass?'fa-eye-slash':'fa-eye');}
+function showErr(id,inputId){document.getElementById(id).classList.add('show');if(inputId)document.getElementById(inputId).classList.add('error');}
+function clearErrs(){['nameErr','emailErr','phoneErr','passErr','confirmErr','termsErr'].forEach(function(i){document.getElementById(i).classList.remove('show');});['fullname','email','phone','password','confirmPass'].forEach(function(i){document.getElementById(i).classList.remove('error');});}
+function checkStrength(v){var f=document.getElementById('sFill'),t=document.getElementById('sText');var rl=document.getElementById('ruleLen'),rc=document.getElementById('ruleCase'),rn=document.getElementById('ruleNum');if(!v){f.style.width='0%';t.textContent='';t.style.color='';rl.classList.remove('met');rc.classList.remove('met');rn.classList.remove('met');checkConfirm();return;}var hasLen=v.length>=8;var hasCase=/[A-Z]/.test(v)&&/[a-z]/.test(v);var hasNum=/[0-9]/.test(v);var hasSym=/[^A-Za-z0-9]/.test(v);rl.classList.toggle('met',hasLen);rc.classList.toggle('met',hasCase);rn.classList.toggle('met',hasNum);var s=0;if(hasLen)s++;if(/[A-Z]/.test(v))s++;if(hasNum)s++;if(hasSym)s++;var lv=[{w:'25%',c:'#f87171',t:'Lemah'},{w:'50%',c:'#fb923c',t:'Sedang'},{w:'75%',c:'#facc15',t:'Kuat'},{w:'100%',c:'#4ade80',t:'Sangat Kuat'}][Math.max(0,s-1)];f.style.width=lv.w;f.style.background=lv.c;t.textContent=lv.t;t.style.color=lv.c;checkConfirm();}
+function checkConfirm(){
+  var pass=document.getElementById('password').value;
+  var confirm=document.getElementById('confirmPass').value;
+  var inp=document.getElementById('confirmPass');
+  var errEl=document.getElementById('confirmErr');
+  var okEl=document.getElementById('confirmOk');
+  var rm=document.getElementById('ruleMatch');
+  inp.classList.remove('error','matched');
+  errEl.classList.remove('show');
+  okEl.classList.remove('show');
+  if(rm)rm.classList.remove('met');
+  if(!confirm)return;
+  if(pass===confirm){
+    inp.classList.add('matched');
+    okEl.classList.add('show');
+    if(rm)rm.classList.add('met');
+  } else {
+    inp.classList.add('error');
+    errEl.classList.add('show');
+  }
+}
+
+/* â”€â”€ Register \u2014 Pakai Backend API â”€â”€ */
+async function handleRegister(e){
+  e.preventDefault();
+  clearErrs();
+  var name=document.getElementById('fullname').value.trim();
+  var email=document.getElementById('email').value.trim();
+  var phone=document.getElementById('phone').value.trim();
+  var pass=document.getElementById('password').value;
+  var confirm=document.getElementById('confirmPass').value;
+  var agreed=document.getElementById('agreeTerms').checked;
+  var valid=true;
+  if(!name||name.length<3){showErr('nameErr','fullname');valid=false;}
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){showErr('emailErr','email');valid=false;}
+  if(!phone||phone.length<9){showErr('phoneErr','phone');valid=false;}
+  if(!pass||pass.length<8){showErr('passErr','password');valid=false;}
+  if(pass!==confirm){showErr('confirmErr','confirmPass');valid=false;}
+  if(!agreed){document.getElementById('termsErr').classList.add('show');valid=false;}
+  if(!valid)return;
+  var btn=document.getElementById('registerBtn');
+  btn.classList.add('loading');btn.disabled=true;
+  try{
+    var res=await api.auth.register({name,email,phone,password:pass,telegramUsername:_verifiedTg||undefined});
+    toast('success','Akun berhasil dibuat! Mengalihkan ke halaman verifikasi...');
+    setTimeout(function(){
+      window.location.href='/verify-email?email='+encodeURIComponent(email);
+    },1200);
+  }catch(err){
+    toast('error',err.message||'Registrasi gagal');
+    if(err.message&&err.message.toLowerCase().includes('email'))showErr('emailErr','email');
+  }finally{
+    btn.classList.remove('loading');btn.disabled=false;
+  }
+}
+
+/* â”€â”€ Telegram Modal â”€â”€ */
+var _tgUser='',_otpTimer=null,_otpSec=300;
+function openTgModal(){document.getElementById('tgModal').classList.add('open');setStep(1);}
+function closeTgModal(){document.getElementById('tgModal').classList.remove('open');clearInterval(_otpTimer);setStep(1);document.getElementById('tgUsername').value='';}
+function setStep(n){[1,2,3].forEach(function(i){document.getElementById('step'+i).classList.toggle('active',i===n);var d=document.getElementById('step'+i+'dot');d.className='step'+(i<n?' done':i===n?' active':'');});}
+
+async function goToStep2(){
+  var val=document.getElementById('tgUsername').value.trim().replace(/^@/,'');
+  if(!val||val.length<3){document.getElementById('tgErr').classList.add('show');return;}
+  document.getElementById('tgErr').classList.remove('show');
+  _tgUser=val;
+  var btn=document.getElementById('step1Btn');
+  btn.classList.add('loading');btn.disabled=true;
+  try{
+    var res=await api.auth.sendOtp({telegramUsername:val});
+    document.getElementById('tgBotLink').href=res.deepLink;
+    document.getElementById('tgBotText').textContent='Buka @'+(res.botUsername||'Bot');
+    if(res.sentDirect){
+      // Sudah pernah start bot \u2014 OTP langsung dikirim, skip step 2
+      toast('info','âœ… OTP langsung dikirim ke Telegram Anda!');
+      goToStep3();
+    } else {
+      setStep(2);
+    }
+  }catch(err){
+    toast('error',err.message||'Gagal kirim OTP');
+  }finally{
+    btn.classList.remove('loading');btn.disabled=false;
+  }
+}
+
+function goToStep3(){setStep(3);startTimer();document.getElementById('otp0').focus();}
+function otpInput(el,idx){var v=el.value.replace(/[^0-9]/g,'');el.value=v?v[v.length-1]:'';el.classList.toggle('filled',!!el.value);if(el.value&&idx<5)document.getElementById('otp'+(idx+1)).focus();if(getOtp().length===6)setTimeout(verifyOtp,300);}
+function otpKeydown(e,idx){if(e.key==='Backspace'&&!e.target.value&&idx>0)document.getElementById('otp'+(idx-1)).focus();}
+function otpPaste(e){
+  e.preventDefault();
+  var pasted=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+  for(var i=0;i<6;i++){var el=document.getElementById('otp'+i);el.value=pasted[i]||'';el.classList.toggle('filled',!!el.value);}
+  var focus=Math.min(pasted.length,5);
+  document.getElementById('otp'+focus).focus();
+  if(pasted.length===6)setTimeout(verifyOtp,300);
+}
+function getOtp(){var c='';for(var i=0;i<6;i++)c+=document.getElementById('otp'+i).value;return c;}
+function clearOtp(){for(var i=0;i<6;i++){var el=document.getElementById('otp'+i);el.value='';el.classList.remove('filled','error');}}
+function startTimer(){_otpSec=300;clearInterval(_otpTimer);document.getElementById('resendBtn').disabled=true;document.getElementById('otpTimer').innerHTML='Kode berlaku: <span id="otpCountdown">05:00</span>';_otpTimer=setInterval(function(){_otpSec--;var m=Math.floor(_otpSec/60),s=_otpSec%60;var el=document.getElementById('otpCountdown');if(el)el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;if(_otpSec<=0){clearInterval(_otpTimer);document.getElementById('otpTimer').innerHTML='<span style="color:var(--error)">Kadaluarsa</span>';document.getElementById('resendBtn').disabled=false;}},1000);}
+async function resendOtp(){clearOtp();await goToStep2();}
+
+async function verifyOtp(){
+  var code=getOtp();
+  if(code.length<6){toast('error','Masukkan 6 digit kode OTP.');return;}
+  var btn=document.getElementById('verifyBtn');
+  btn.classList.add('loading');btn.disabled=true;
+  try{
+    var res=await api.auth.verifyOtp({telegramUsername:_tgUser,code});
+    closeTgModal();
+    _verifiedTg=_tgUser;
+    document.getElementById('tgVerifiedBadge').style.display='flex';
+    document.getElementById('tgVerifiedUser').textContent='@'+_tgUser;
+    toast('success','Telegram @'+_tgUser+' berhasil diverifikasi!');
+  }catch(err){
+    for(var i=0;i<6;i++)document.getElementById('otp'+i).classList.add('error');
+    toast('error',err.message||'Kode OTP salah');
+    setTimeout(clearOtp,1000);
+  }finally{
+    btn.classList.remove('loading');btn.disabled=false;
+  }
+}
+
+/* â”€â”€ Global keyboard â”€â”€ */
+document.addEventListener('keydown',function(e){
+  var modal=document.getElementById('tgModal');
+  if(!modal||!modal.classList.contains('open'))return;
+  if(e.key==='Escape'){closeTgModal();return;}
+  if(e.key==='Enter'){
+    e.preventDefault();
+    if(document.getElementById('step1').classList.contains('active'))goToStep2();
+    else if(document.getElementById('step2').classList.contains('active'))goToStep3();
+    else if(document.getElementById('step3').classList.contains('active'))verifyOtp();
+  }
+});
+document.getElementById('tgModal').addEventListener('click',function(e){if(e.target===this)closeTgModal();});
+
+if(api.auth.isLoggedIn())window.location.href='/';
+</script>
+<script src="/shared-config.js"></script>
+</body>
+</html>

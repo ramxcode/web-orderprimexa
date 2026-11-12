@@ -1,0 +1,393 @@
+﻿<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/images/logo.jpg" type="image/jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hubungi Kami - Primexa</title>
+  <meta name="description" content="Hubungi tim Primexa melalui email, telepon, WhatsApp, atau media sosial. Kami siap membantu Anda.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../index.css">
+  <style>
+    /* â&rdquo;€â&rdquo;€ Contact Page â&rdquo;€â&rdquo;€ */
+    .contact-hero {
+      padding: 90px 24px 48px;
+      text-align: center;
+      background: linear-gradient(180deg, #0b1120 0%, var(--bg-primary) 100%);
+    }
+    .contact-hero h1 { font-size: clamp(28px,6vw,44px); font-weight: 800; margin-bottom: 12px; color: #f1f5f9; }
+    .contact-hero p  { color: var(--text-muted); font-size: 16px; max-width: 520px; margin: 0 auto; line-height: 1.7; }
+
+    .contact-body {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media(max-width:768px) { .contact-body { grid-template-columns: 1fr; } }
+
+    /* Info cards */
+    .contact-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 16px;
+    }
+    .contact-card h2 { font-size: 22px; font-weight: 800; margin-bottom: 20px; }
+
+    /* Contact info items */
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+      transition: border-color 0.2s, background 0.2s;
+      cursor: pointer;
+    }
+    .contact-item:hover { border-color: var(--accent); background: rgba(59,130,246,0.06); }
+    .contact-item-icon {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .icon-blue   { background: rgba(59,130,246,0.15); color: #3b82f6; }
+    .icon-green  { background: rgba(37,211,102,0.15); color: #25D366; }
+    .icon-purple { background: rgba(139,92,246,0.15); color: #8b5cf6; }
+    .icon-orange { background: rgba(249,115,22,0.15); color: #f97316; }
+    .contact-item-info { flex: 1; }
+    .contact-item-label { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .contact-item-value { font-size: 14px; font-weight: 600; color: var(--text-primary); margin-top: 2px; }
+    .contact-item-arrow { color: var(--text-muted); font-size: 13px; }
+
+    /* Social grid */
+    .social-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .social-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .social-item:hover { border-color: var(--accent); background: rgba(59,130,246,0.06); transform: translateY(-1px); }
+    .social-item i { font-size: 20px; width: 28px; text-align: center; }
+    .si-fb   i { color: #1877f2; }
+    .si-ig   i { color: #e1306c; }
+    .si-tt   i { color: #fff; }
+    .si-yt   i { color: #ff0000; }
+
+    /* Jam Operasional */
+    .jam-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+    }
+    .jam-row:last-of-type { border-bottom: none; }
+    .jam-label { color: var(--text-muted); }
+    .jam-value { font-weight: 700; color: var(--text-primary); }
+    .jam-note {
+      margin-top: 14px;
+      padding: 12px 16px;
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.25);
+      border-radius: 10px;
+      font-size: 13px;
+      color: #60a5fa;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Form card */
+    .form-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; }
+    .form-card h2 { font-size: 22px; font-weight: 800; margin-bottom: 24px; }
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-secondary);
+    }
+    .form-group label span { color: #ef4444; margin-left: 2px; }
+    .form-control {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 14px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .form-control:focus { border-color: var(--accent); }
+    .form-control::placeholder { color: var(--text-muted); }
+    textarea.form-control { resize: vertical; min-height: 130px; line-height: 1.6; }
+    .char-count { font-size: 12px; color: var(--text-muted); text-align: right; margin-top: 4px; }
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 4px;
+    }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,0.35); }
+    .form-note { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 12px; }
+    .form-note a { color: var(--accent); }
+
+    /* Toast sukses */
+    .form-toast {
+      display: none;
+      padding: 14px 18px;
+      background: rgba(16,185,129,0.12);
+      border: 1px solid rgba(16,185,129,0.3);
+      border-radius: 10px;
+      color: #34d399;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* WA Float */
+    .wa-float { position: fixed; bottom: 24px; right: 24px; z-index: 9000; display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+    .wa-btn   { width: 56px; height: 56px; border-radius: 50%; background: #25D366; border: none; cursor: pointer; font-size: 28px; color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(37,211,102,0.4); transition: transform 0.2s; }
+    .wa-btn:hover { transform: scale(1.1); }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.jpg" alt="Primexa" style="height:36px;width:auto;object-fit:contain;border-radius:8px;">
+  </a>
+  <div style="flex:1"></div>
+  <div class="nav-actions">
+    <a href="/" class="nav-btn"><i class="fa-solid fa-house"></i> Beranda</a>
+    <a href="/produk" class="nav-btn"><i class="fa-solid fa-box"></i> Produk</a>
+    <a href="/track" class="nav-btn"><i class="fa-solid fa-box-archive"></i> Track Order</a>
+    <a href="/faq" class="nav-btn"><i class="fa-solid fa-circle-question"></i> FAQ</a>
+    <button class="nav-btn nav-btn-icon desktop-theme-btn" onclick="toggleTheme()" title="Toggle theme" id="themeBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="themeIcon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button class="nav-btn btn-login"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="contact-hero">
+  <h1>Hubungi Kami</h1>
+  <p>Ada pertanyaan atau butuh bantuan? Kami siap membantu Anda. Pilih cara yang paling nyaman untuk menghubungi kami.</p>
+</section>
+
+<!-- ===== BODY ===== -->
+<div class="contact-body">
+
+  <!-- KOLOM KIRI -->
+  <div>
+    <!-- Informasi Kontak -->
+    <div class="contact-card">
+      <h2>Informasi Kontak</h2>
+
+      <a href="mailto:admin@Primexa.id" class="contact-item">
+        <div class="contact-item-icon icon-blue"><i class="fa-solid fa-envelope"></i></div>
+        <div class="contact-item-info">
+          <div class="contact-item-label">Email</div>
+          <div class="contact-item-value">admin@Primexa.id</div>
+        </div>
+        <i class="fa-solid fa-arrow-right contact-item-arrow"></i>
+      </a>
+
+      <a href="tel:081234567890" class="contact-item">
+        <div class="contact-item-icon icon-purple"><i class="fa-solid fa-phone"></i></div>
+        <div class="contact-item-info">
+          <div class="contact-item-label">Telepon</div>
+          <div class="contact-item-value">081234567890</div>
+        </div>
+        <i class="fa-solid fa-arrow-right contact-item-arrow"></i>
+      </a>
+
+      <a href="https://wa.me/6281234567890?text=Halo, saya butuh bantuan" target="_blank" class="contact-item">
+        <div class="contact-item-icon icon-green"><i class="fa-brands fa-whatsapp"></i></div>
+        <div class="contact-item-info">
+          <div class="contact-item-label">WhatsApp</div>
+          <div class="contact-item-value">6281234567890</div>
+        </div>
+        <i class="fa-solid fa-arrow-right contact-item-arrow"></i>
+      </a>
+    </div>
+
+    <!-- Media Sosial -->
+    <div class="contact-card">
+      <h2>Media Sosial</h2>
+      <div class="social-grid">
+        <a href="javascript:void(0)" class="social-item si-fb">
+          <i class="fa-brands fa-facebook-f"></i>
+          <span>Facebook</span>
+        </a>
+        <a href="javascript:void(0)" class="social-item si-ig">
+          <i class="fa-brands fa-instagram"></i>
+          <span>Instagram</span>
+        </a>
+        <a href="javascript:void(0)" class="social-item si-tt">
+          <i class="fa-brands fa-tiktok"></i>
+          <span>TikTok</span>
+        </a>
+        <a href="javascript:void(0)" class="social-item si-yt">
+          <i class="fa-brands fa-youtube"></i>
+          <span>YouTube</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Jam Operasional -->
+    <div class="contact-card">
+      <h2>Jam Operasional</h2>
+      <div class="jam-row">
+        <span class="jam-label">Senin &mdash; Jumat</span>
+        <span class="jam-value">09:00 &mdash; 21:00 WIB</span>
+      </div>
+      <div class="jam-row">
+        <span class="jam-label">Sabtu &mdash; Minggu</span>
+        <span class="jam-value">10:00 &mdash; 18:00 WIB</span>
+      </div>
+      <div class="jam-note">
+        <i class="fa-solid fa-circle-info"></i>
+        Transaksi otomatis diproses 24 jam.
+      </div>
+    </div>
+  </div>
+
+  <!-- KOLOM KANAN: Form Kirim Pesan -->
+  <div>
+    <div class="form-card">
+      <h2>Kirim Pesan</h2>
+
+      <div class="form-toast" id="formToast">
+        <i class="fa-solid fa-circle-check"></i>
+        Pesan berhasil dikirim! Kami akan menghubungi Anda segera.
+      </div>
+
+      <form id="contactForm" onsubmit="submitForm(event)">
+        <div class="form-group">
+          <label>Nama Lengkap <span>*</span></label>
+          <input type="text" class="form-control" id="fNama" placeholder="Masukkan nama lengkap" required>
+        </div>
+        <div class="form-group">
+          <label>Email <span>*</span></label>
+          <input type="email" class="form-control" id="fEmail" placeholder="contoh@email.com" required>
+        </div>
+        <div class="form-group">
+          <label>Subjek <span>*</span></label>
+          <input type="text" class="form-control" id="fSubjek" placeholder="Subjek pesan" required>
+        </div>
+        <div class="form-group">
+          <label>Pesan <span>*</span></label>
+          <textarea class="form-control" id="fPesan" placeholder="Tulis pesan Anda di sini..." maxlength="2000" oninput="updateCharCount(this)" required></textarea>
+          <div class="char-count"><span id="charCount">0</span> / 2000 karakter</div>
+        </div>
+
+        <button type="submit" class="btn-submit">
+          <i class="fa-solid fa-paper-plane"></i>
+          Kirim Pesan
+        </button>
+        <p class="form-note">Dengan mengirim pesan, Anda menyetujui <a href="/privacy">Kebijakan Privasi</a> kami.</p>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<!-- WA Float -->
+<div class="wa-float">
+  <button class="wa-btn" onclick="window.open('https://wa.me/6281234567890','_blank')" title="Chat via WhatsApp">
+    <i class="fa-brands fa-whatsapp"></i>
+  </button>
+</div>
+
+<script>
+  /* Theme */
+  (function() {
+    var t = localStorage.getItem('ramx-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+    var icon = document.getElementById('themeIcon');
+    if (icon && t === 'light') icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  })();
+  function toggleTheme() {
+    var cur  = document.documentElement.getAttribute('data-theme');
+    var next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('ramx-theme', next);
+    var icon = document.getElementById('themeIcon');
+    if (icon) {
+      icon.innerHTML = next === 'light'
+        ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+        : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+    }
+  }
+
+  function updateCharCount(el) {
+    document.getElementById('charCount').textContent = el.value.length;
+  }
+
+  function submitForm(e) {
+    e.preventDefault();
+    var btn = e.target.querySelector('.btn-submit');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+    setTimeout(function() {
+      var toast = document.getElementById('formToast');
+      toast.style.display = 'flex';
+      document.getElementById('contactForm').reset();
+      document.getElementById('charCount').textContent = '0';
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Pesan';
+      toast.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 1200);
+  }
+</script>
+<script src="/shared-config.js"></script>
+</body>
+</html>

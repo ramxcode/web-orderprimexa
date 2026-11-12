@@ -1,0 +1,858 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/images/logo.jpg" type="image/jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Primexa &mdash; Mini App</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0f1e;
+      --card: #111827;
+      --border: rgba(255,255,255,.08);
+      --text: #f1f5f9;
+      --muted: #64748b;
+      --secondary: #94a3b8;
+      --accent: #3b82f6;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --error: #ef4444;
+    }
+
+    /* Use Telegram theme if available */
+    body.tg-theme {
+      --bg: var(--tg-theme-bg-color, #0a0f1e);
+      --text: var(--tg-theme-text-color, #f1f5f9);
+      --accent: var(--tg-theme-button-color, #3b82f6);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button {
+      -webkit-appearance: none;
+      appearance: none;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+      border: none;
+      border-radius: 0;
+      background: none;
+      box-shadow: none;
+    }
+    html, body { height: 100%; overflow: hidden; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    .app-header {
+      background: rgba(10,15,30,.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .app-logo {
+      font-size: 16px;
+      font-weight: 900;
+      color: var(--text);
+    }
+    .app-logo span { color: var(--accent); }
+    .header-user {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header-avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+    }
+    .header-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ── Tab Bar ── */
+    .tab-bar {
+      display: flex;
+      background: rgba(10,15,30,.98);
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      padding-left: 0;
+      padding-right: 0;
+      padding-bottom: calc(env(safe-area-inset-bottom, 20px) + 8px);
+      flex-shrink: 0;
+      position: relative;
+      z-index: 100;
+      overflow: hidden;
+    }
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 6px 0;
+      cursor: pointer;
+      border: none;
+      border-radius: 0 !important;
+      background: transparent !important;
+      background-color: transparent !important;
+      color: var(--muted);
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: 600;
+      transition: color .2s;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      -webkit-tap-highlight-color: transparent !important;
+      -webkit-focus-ring-color: transparent !important;
+      outline: none !important;
+      box-shadow: none !important;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      min-height: 48px;
+    }
+    .tab-item:focus,
+    .tab-item:focus-visible,
+    .tab-item:focus-within,
+    .tab-item:active,
+    .tab-item:hover {
+      outline: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+      background-color: transparent !important;
+      border-radius: 0 !important;
+    }
+    .tab-item.active { color: var(--accent); }
+    .tab-item i { font-size: 20px; line-height: 1; display: block; }
+
+    /* ── Content ── */
+    .app-content {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .page { display: none; padding: 16px; }
+    .page.active { display: block; }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 12px;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .card-subtitle {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── User info card ── */
+    .user-hero {
+      background: linear-gradient(135deg, rgba(59,130,246,.15), rgba(139,92,246,.1));
+      border: 1px solid rgba(59,130,246,.2);
+      border-radius: 20px;
+      padding: 22px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .user-hero-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; font-weight: 900; color: #fff;
+      margin: 0 auto 12px;
+    }
+    .user-hero-name {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .user-hero-username {
+      font-size: 13px;
+      color: var(--secondary);
+      margin-top: 2px;
+    }
+    .saldo-box {
+      margin-top: 16px;
+      background: rgba(59,130,246,.1);
+      border: 1px solid rgba(59,130,246,.15);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+    .saldo-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; }
+    .saldo-value { font-size: 24px; font-weight: 900; color: var(--accent); margin-top: 4px; }
+
+    /* ── Info rows ── */
+    .info-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 8px;
+    }
+    .info-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .info-label { font-size: 12px; color: var(--muted); }
+    .info-value { font-size: 13px; font-weight: 700; color: var(--text); text-align: right; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      width: 100%; padding: 13px;
+      border: none; border-radius: 12px;
+      font-size: 14px; font-weight: 800;
+      cursor: pointer; font-family: inherit;
+      transition: transform .1s, opacity .2s;
+    }
+    .btn:active { transform: scale(.97); }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-outline { background: rgba(255,255,255,.05); border: 1px solid var(--border); color: var(--text); }
+    .btn-success { background: var(--success); color: #fff; }
+
+    /* ── Product card ── */
+    .product-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .product-card:active { border-color: rgba(59,130,246,.4); }
+    .product-icon {
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      background: rgba(59,130,246,.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .product-name { font-size: 14px; font-weight: 700; color: var(--text); }
+    .product-price { font-size: 12px; color: var(--accent); font-weight: 700; margin-top: 2px; }
+    .product-stock { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+    /* ── Order card ── */
+    .order-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+    }
+    .order-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .order-id { font-size: 13px; font-weight: 800; color: var(--text); }
+    .order-date { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .order-status {
+      font-size: 11px; font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+    .status-completed { background: rgba(34,197,94,.1); color: var(--success); }
+    .status-pending   { background: rgba(245,158,11,.1); color: var(--warning); }
+    .status-cancelled { background: rgba(239,68,68,.1);  color: var(--error); }
+    .status-paid      { background: rgba(59,130,246,.1); color: #60a5fa; }
+    .status-processing{ background: rgba(168,85,247,.1); color: #a855f7; }
+    .order-total { font-size: 14px; font-weight: 800; color: var(--accent); }
+
+    /* ── Connect account ── */
+    .connect-box {
+      background: linear-gradient(135deg, rgba(59,130,246,.08), rgba(139,92,246,.06));
+      border: 1px solid rgba(59,130,246,.15);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .connect-icon {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+    .connect-title {
+      font-size: 17px; font-weight: 800; color: var(--text);
+      margin-bottom: 6px;
+    }
+    .connect-desc {
+      font-size: 13px; color: var(--secondary);
+      line-height: 1.5; margin-bottom: 18px;
+    }
+
+    /* ── Form ── */
+    .form-group { margin-bottom: 14px; }
+    .form-label {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .5px;
+      display: block; margin-bottom: 6px;
+    }
+    .form-input {
+      width: 100%; padding: 12px 14px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+    }
+    .form-input:focus { border-color: rgba(59,130,246,.4); }
+    .form-hint { font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+    /* ── Loading / empty ── */
+    .loading {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; padding: 40px;
+      color: var(--muted); font-size: 13px;
+    }
+    .empty {
+      text-align: center; padding: 40px 20px;
+      color: var(--muted);
+    }
+    .empty i { font-size: 36px; margin-bottom: 12px; display: block; opacity: .3; }
+
+    /* ── Toast ── */
+    #toast {
+      position: fixed; bottom: 80px; left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1e293b;
+      border: 1px solid rgba(34,197,94,.2);
+      color: #4ade80;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 13px; font-weight: 700;
+      z-index: 9999;
+      transition: transform .25s ease;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spin { animation: spin 1s linear infinite; display: inline-block; }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+<!-- Header -->
+<header class="app-header">
+  <div class="app-logo">Ramx<span>premium</span></div>
+  <div class="header-user" id="headerUser">
+    <div class="header-avatar" id="headerAvatar">?</div>
+    <div class="header-name" id="headerName">Guest</div>
+  </div>
+</header>
+
+<!-- Content -->
+<div class="app-content">
+
+  <!-- Home Tab -->
+  <div class="page active" id="pageHome">
+    <div class="user-hero" id="userHero">
+      <div class="user-hero-avatar" id="heroAvatar">?</div>
+      <div class="user-hero-name" id="heroName">Loading...</div>
+      <div class="user-hero-username" id="heroUsername">&mdash;</div>
+      <div class="saldo-box">
+        <div class="saldo-label">Saldo Kamu</div>
+        <div class="saldo-value" id="heroSaldo">Rp. 0</div>
+      </div>
+    </div>
+
+    <div class="card" id="userInfoCard">
+      <div class="card-title">Informasi Akun</div>
+      <div id="userInfoRows">
+        <div class="loading"><i class="fa-solid fa-spinner spin"></i> Memuat...</div>
+      </div>
+    </div>
+
+    <div id="connectSection" style="display:none;">
+      <div class="connect-box">
+        <div class="connect-icon">🔗</div>
+        <div class="connect-title">Hubungkan Akun Website</div>
+        <div class="connect-desc">Login dengan email untuk menghubungkan akun Telegram kamu ke website dan mengakses semua fitur.</div>
+        <button class="btn btn-primary" onclick="showConnectForm()">
+          <i class="fa-solid fa-link"></i> Hubungkan Sekarang
+        </button>
+      </div>
+    </div>
+
+    <!-- Connect Form (hidden by default) -->
+    <div class="card" id="connectForm" style="display:none;">
+      <div class="card-title">Login ke Website</div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="connectEmail" placeholder="email@kamu.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="connectPassword" placeholder="••••••••">
+      </div>
+      <button class="btn btn-primary" onclick="doConnect()" style="margin-bottom:10px;" id="connectBtn">
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Login & Hubungkan
+      </button>
+      <button class="btn btn-outline" onclick="document.getElementById('connectForm').style.display='none'">
+        Batal
+      </button>
+      <div class="form-hint" style="margin-top:10px;text-align:center;">
+        Belum punya akun? <a href="#" onclick="showRegisterForm()" style="color:var(--accent);">Daftar</a>
+      </div>
+    </div>
+
+    <!-- Register Form -->
+    <div class="card" id="registerForm" style="display:none;">
+      <div class="card-title">Daftar Akun</div>
+      <div class="form-group">
+        <label class="form-label">Nama Lengkap</label>
+        <input type="text" class="form-input" id="regName" placeholder="Nama kamu">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="regEmail" placeholder="email@kamu.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="regPassword" placeholder="Minimal 8 karakter">
+      </div>
+      <button class="btn btn-success" onclick="doRegister()" style="margin-bottom:10px;" id="regBtn">
+        <i class="fa-solid fa-user-plus"></i> Daftar Sekarang
+      </button>
+      <button class="btn btn-outline" onclick="document.getElementById('registerForm').style.display='none'">
+        Batal
+      </button>
+    </div>
+  </div>
+
+  <!-- Produk Tab -->
+  <div class="page" id="pageProducts">
+    <div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;">
+      <div style="font-size:18px;font-weight:900;">Daftar Produk</div>
+      <div id="productCount" style="font-size:12px;color:var(--muted);"></div>
+    </div>
+    <div id="productList">
+      <div class="loading"><i class="fa-solid fa-spinner spin"></i> Memuat produk...</div>
+    </div>
+  </div>
+
+  <!-- Riwayat Tab -->
+  <div class="page" id="pageHistory">
+    <div style="font-size:18px;font-weight:900;margin-bottom:16px;">Riwayat Transaksi</div>
+    <div id="historyList">
+      <div class="loading"><i class="fa-solid fa-spinner spin"></i> Memuat...</div>
+    </div>
+  </div>
+
+  <!-- Akun Tab -->
+  <div class="page" id="pageAccount">
+    <div style="font-size:18px;font-weight:900;margin-bottom:16px;">Akun</div>
+    <div class="card">
+      <div class="card-title">Telegram</div>
+      <div id="accountTgInfo">
+        <div class="loading"><i class="fa-solid fa-spinner spin"></i></div>
+      </div>
+    </div>
+    <div class="card" id="accountLinkedCard" style="display:none;">
+      <div class="card-title">Website Account</div>
+      <div id="accountLinkedInfo"></div>
+      <button class="btn btn-outline" onclick="doLogout()" style="margin-top:14px;">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Keluar
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Tab Bar -->
+<nav class="tab-bar">
+  <button class="tab-item active" id="tabHome"     onclick="switchTab('Home')">
+    <i class="fa-solid fa-house"></i>Beranda
+  </button>
+  <button class="tab-item"        id="tabProducts" onclick="switchTab('Products')">
+    <i class="fa-solid fa-box-open"></i>Produk
+  </button>
+  <button class="tab-item"        id="tabHistory"  onclick="switchTab('History')">
+    <i class="fa-solid fa-list-check"></i>Riwayat
+  </button>
+  <button class="tab-item"        id="tabAccount"  onclick="switchTab('Account')">
+    <i class="fa-solid fa-user"></i>Akun
+  </button>
+</nav>
+
+<div id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   TELEGRAM WEB APP INIT
+   ══════════════════════════════════════════════════════════════ */
+var tg       = window.Telegram && window.Telegram.WebApp;
+var tgUser   = tg ? (tg.initDataUnsafe && tg.initDataUnsafe.user) : null;
+var _token   = localStorage.getItem('tgapp_token') || '';
+var _apiBase = window.location.origin;
+
+if (tg) {
+  tg.ready();
+  tg.expand();
+  // Apply Telegram theme
+  document.body.classList.add('tg-theme');
+  if (tg.colorScheme === 'light') {
+    document.documentElement.style.setProperty('--bg','#ffffff');
+    document.documentElement.style.setProperty('--card','#f3f4f6');
+    document.documentElement.style.setProperty('--text','#111827');
+    document.documentElement.style.setProperty('--muted','#9ca3af');
+    document.documentElement.style.setProperty('--border','rgba(0,0,0,.08)');
+  }
+  tg.MainButton.hide();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   NAV
+   ══════════════════════════════════════════════════════════════ */
+function switchTab(name) {
+  document.querySelectorAll('.page').forEach(function(el) { el.classList.remove('active'); });
+  document.querySelectorAll('.tab-item').forEach(function(el) { el.classList.remove('active'); });
+  document.getElementById('page'+name).classList.add('active');
+  document.getElementById('tab'+name).classList.add('active');
+  if (name === 'Products' && !_productsLoaded) loadProducts();
+  if (name === 'History')  loadHistory();
+  if (name === 'Account')  loadAccount();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   API HELPER
+   ══════════════════════════════════════════════════════════════ */
+async function api(path, opts) {
+  opts = opts || {};
+  var headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+  if (_token) headers['Authorization'] = 'Bearer ' + _token;
+  var res = await fetch(_apiBase + path, Object.assign({}, opts, { headers: headers, credentials: 'include' }));
+  return res.json();
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   HOME / USER INFO
+   ══════════════════════════════════════════════════════════════ */
+async function initHome() {
+  var tgName     = tgUser ? (tgUser.first_name + (tgUser.last_name ? ' '+tgUser.last_name : '')) : 'Guest';
+  var tgUsername = tgUser ? (tgUser.username || '-') : '-';
+  var initial    = tgName.charAt(0).toUpperCase();
+
+  // Header
+  document.getElementById('headerAvatar').textContent = initial;
+  document.getElementById('headerName').textContent   = tgName;
+  document.getElementById('heroAvatar').textContent   = initial;
+  document.getElementById('heroName').textContent     = tgName;
+  document.getElementById('heroUsername').textContent = '@' + tgUsername;
+
+  // Try to load website account
+  if (_token) {
+    var me = await api('/api/auth/me');
+    if (me.success && me.user) {
+      renderUserInfo(me.user);
+      return;
+    } else {
+      _token = '';
+      localStorage.removeItem('tgapp_token');
+    }
+  }
+
+  // Not logged in \u2014 show connect section
+  renderGuestInfo(tgUser);
+}
+
+function renderUserInfo(user) {
+  var saldo = user.balance || 0;
+  document.getElementById('heroSaldo').textContent = 'Rp. ' + saldo.toLocaleString('id-ID');
+
+  var rows = [
+    { label: 'Nama', value: user.name },
+    { label: 'Email', value: user.email || '\u2014' },
+    { label: 'Role', value: user.role },
+    { label: 'Status', value: user.isVerified ? '✅ Terverifikasi' : '⏳ Belum verifikasi' },
+  ];
+
+  document.getElementById('userInfoRows').innerHTML = rows.map(function(r) {
+    return '<div class="info-row"><span class="info-label">'+r.label+'</span><span class="info-value">'+r.value+'</span></div>';
+  }).join('');
+  document.getElementById('connectSection').style.display = 'none';
+}
+
+function renderGuestInfo(tgUser) {
+  document.getElementById('heroSaldo').textContent = 'Rp. 0';
+  var rows = [
+    { label: 'Telegram ID', value: tgUser ? tgUser.id : '\u2014' },
+    { label: 'Username', value: tgUser ? ('@'+(tgUser.username||'\u2014')) : '\u2014' },
+    { label: 'Status', value: '⚠️ Belum terhubung ke website' },
+  ];
+  document.getElementById('userInfoRows').innerHTML = rows.map(function(r) {
+    return '<div class="info-row"><span class="info-label">'+r.label+'</span><span class="info-value">'+r.value+'</span></div>';
+  }).join('');
+  document.getElementById('connectSection').style.display = 'block';
+}
+
+function showConnectForm() {
+  document.getElementById('connectForm').style.display = 'block';
+  document.getElementById('registerForm').style.display = 'none';
+}
+function showRegisterForm() {
+  document.getElementById('registerForm').style.display = 'block';
+  document.getElementById('connectForm').style.display  = 'none';
+}
+
+async function doConnect() {
+  var email    = document.getElementById('connectEmail').value.trim();
+  var password = document.getElementById('connectPassword').value;
+  var btn      = document.getElementById('connectBtn');
+  if (!email || !password) return showToast('Email dan password wajib diisi');
+
+  btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Memproses...';
+
+  try {
+    var r = await api('/api/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email: email, password: password })
+    });
+    if (r.success && r.token) {
+      _token = r.token;
+      localStorage.setItem('tgapp_token', _token);
+      // Link telegramUsername if available
+      if (tgUser && tgUser.username) {
+        await api('/api/auth/profile', {
+          method: 'PUT',
+          body: JSON.stringify({ name: r.user.name })
+        });
+      }
+      showToast('✅ Akun berhasil terhubung!');
+      document.getElementById('connectForm').style.display = 'none';
+      setTimeout(function() { initHome(); }, 500);
+    } else {
+      showToast(r.message || 'Login gagal');
+    }
+  } catch(e) { showToast('Error: ' + e.message); }
+  finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-arrow-right-to-bracket"></i> Login & Hubungkan'; }
+}
+
+async function doRegister() {
+  var name     = document.getElementById('regName').value.trim();
+  var email    = document.getElementById('regEmail').value.trim();
+  var password = document.getElementById('regPassword').value;
+  var btn      = document.getElementById('regBtn');
+  if (!name || !email || !password) return showToast('Semua field wajib diisi');
+
+  btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Mendaftar...';
+
+  try {
+    var tgUsername = tgUser ? (tgUser.username || '') : '';
+    var r = await api('/api/auth/register', {
+      method: 'POST',
+      body: JSON.stringify({ name: name, email: email, password: password, telegramUsername: tgUsername })
+    });
+    if (r.success) {
+      showToast('✅ Daftar berhasil! Cek email untuk verifikasi.');
+      document.getElementById('registerForm').style.display = 'none';
+    } else {
+      showToast(r.message || 'Pendaftaran gagal');
+    }
+  } catch(e) { showToast('Error: ' + e.message); }
+  finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Daftar Sekarang'; }
+}
+
+function doLogout() {
+  _token = '';
+  localStorage.removeItem('tgapp_token');
+  showToast('Berhasil keluar');
+  setTimeout(function() { initHome(); }, 500);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PRODUCTS
+   ══════════════════════════════════════════════════════════════ */
+var _productsLoaded = false;
+
+async function loadProducts() {
+  _productsLoaded = true;
+  var el = document.getElementById('productList');
+
+  try {
+    var r = await api('/api/products?limit=50');
+    var products = r.data || [];
+
+    document.getElementById('productCount').textContent = products.length + ' produk';
+
+    if (!products.length) {
+      el.innerHTML = '<div class="empty"><i class="fa-solid fa-box-open"></i>Belum ada produk</div>';
+      return;
+    }
+
+    el.innerHTML = products.map(function(p) {
+      var minPrice = p.variants && p.variants.length
+        ? Math.min.apply(null, p.variants.map(function(v) { return v.price || 0; }))
+        : (p.price || 0);
+      var stock = p.variants && p.variants.length
+        ? p.variants.reduce(function(s, v) { return s + (v.stock||0); }, 0)
+        : (p.stock || 0);
+      return '<div class="product-card" onclick="openProduct(\'' + p._id + '\')">' +
+        '<div class="product-icon">📦</div>' +
+        '<div style="flex:1;min-width:0;">' +
+          '<div class="product-name">' + _esc(p.name) + '</div>' +
+          '<div class="product-price">Rp. ' + minPrice.toLocaleString('id-ID') + '</div>' +
+          '<div class="product-stock">Stok: ' + stock + '</div>' +
+        '</div>' +
+        '<i class="fa-solid fa-chevron-right" style="color:var(--muted);font-size:12px;flex-shrink:0;"></i>' +
+      '</div>';
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i>Gagal memuat produk</div>';
+  }
+}
+
+function openProduct(id) {
+  if (tg && tg.openLink) {
+    var url = _apiBase + '/produk?id=' + id;
+    tg.openLink(url);
+  } else {
+    window.open(_apiBase + '/produk?id=' + id, '_blank');
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   HISTORY
+   ══════════════════════════════════════════════════════════════ */
+async function loadHistory() {
+  var el = document.getElementById('historyList');
+  if (!_token) {
+    el.innerHTML = '<div class="empty"><i class="fa-solid fa-lock"></i>Login untuk melihat riwayat transaksi</div>';
+    return;
+  }
+  el.innerHTML = '<div class="loading"><i class="fa-solid fa-spinner spin"></i> Memuat...</div>';
+  try {
+    var r = await api('/api/orders?limit=20');
+    var orders = r.data || r.orders || [];
+    if (!orders.length) {
+      el.innerHTML = '<div class="empty"><i class="fa-solid fa-receipt"></i>Belum ada transaksi</div>';
+      return;
+    }
+    var statusClass = { completed:'status-completed', pending:'status-pending',
+      cancelled:'status-cancelled', paid:'status-paid', processing:'status-processing' };
+    var statusLabel = { completed:'Selesai', pending:'Menunggu', cancelled:'Dibatal',
+      paid:'Dibayar', processing:'Diproses' };
+    el.innerHTML = orders.map(function(o) {
+      var cls = statusClass[o.status] || 'status-pending';
+      var lbl = statusLabel[o.status] || o.status;
+      var date = new Date(o.createdAt).toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' });
+      return '<div class="order-card">' +
+        '<div class="order-top">' +
+          '<div><div class="order-id">' + o.orderId + '</div><div class="order-date">' + date + '</div></div>' +
+          '<span class="order-status ' + cls + '">' + lbl + '</span>' +
+        '</div>' +
+        '<div class="order-total">Rp. ' + (o.total||0).toLocaleString('id-ID') + '</div>' +
+      '</div>';
+    }).join('');
+  } catch(e) {
+    el.innerHTML = '<div class="empty"><i class="fa-solid fa-triangle-exclamation"></i>Gagal memuat</div>';
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   ACCOUNT
+   ══════════════════════════════════════════════════════════════ */
+async function loadAccount() {
+  var tgEl = document.getElementById('accountTgInfo');
+  var tgRows = [
+    { label: 'Nama', value: tgUser ? (tgUser.first_name + (tgUser.last_name?' '+tgUser.last_name:'')) : 'Guest' },
+    { label: 'Username', value: tgUser ? ('@'+(tgUser.username||'\u2014')) : '\u2014' },
+    { label: 'ID', value: tgUser ? tgUser.id : '\u2014' },
+  ];
+  tgEl.innerHTML = tgRows.map(function(r) {
+    return '<div class="info-row"><span class="info-label">'+r.label+'</span><span class="info-value">'+r.value+'</span></div>';
+  }).join('');
+
+  var linkedCard = document.getElementById('accountLinkedCard');
+  if (_token) {
+    var me = await api('/api/auth/me');
+    if (me.success) {
+      linkedCard.style.display = 'block';
+      var u = me.user;
+      document.getElementById('accountLinkedInfo').innerHTML = [
+        { label:'Nama', value: u.name },
+        { label:'Email', value: u.email || '\u2014' },
+        { label:'Saldo', value: 'Rp. ' + (u.balance||0).toLocaleString('id-ID') },
+        { label:'Status', value: u.isVerified ? '✅ Terverifikasi' : '⏳ Belum verifikasi' },
+      ].map(function(r) {
+        return '<div class="info-row"><span class="info-label">'+r.label+'</span><span class="info-value">'+r.value+'</span></div>';
+      }).join('');
+    }
+  } else {
+    linkedCard.style.display = 'none';
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   UTILS
+   ══════════════════════════════════════════════════════════════ */
+function _esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+var _toastTimer;
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function() {
+    el.style.transform = 'translateX(-50%) translateY(80px)';
+  }, 2800);
+}
+
+/* ══════════════════════════════════════════════════════════════
+   INIT
+   ══════════════════════════════════════════════════════════════ */
+initHome();
+</script>
+</body>
+</html>

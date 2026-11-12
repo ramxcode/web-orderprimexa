@@ -1,0 +1,367 @@
+﻿<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/images/logo.jpg" type="image/jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detail Pesanan &mdash; Primexa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="/config.js"></script>
+  <style>
+    :root {
+      --bg:#0a0f1e;--bg2:#0d1424;--surface:#111827;--surface2:#1a2235;
+      --border:rgba(255,255,255,0.08);--accent:#3b82f6;--accent2:#6366f1;
+      --text:#f1f5f9;--muted:#64748b;--muted2:#94a3b8;
+      --green:#22c55e;--yellow:#eab308;--red:#ef4444;--sidebar-w:240px;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{height:100%;}
+    body{font-family:'Plus Jakarta Sans',-apple-system,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
+    /* SIDEBAR */
+    .sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:200;transition:transform 0.3s;}
+    .sidebar-logo{display:flex;align-items:center;gap:10px;padding:20px 20px 16px;border-bottom:1px solid var(--border);text-decoration:none;}
+    .logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:9px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;color:#fff;flex-shrink:0;}
+    .logo-text{font-size:15px;font-weight:700;color:var(--text);}
+    .logo-text span{color:var(--accent);}
+    .sidebar-user{padding:16px 20px;border-bottom:1px solid var(--border);}
+    .sidebar-avatar{width:46px;height:46px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#fff;margin-bottom:8px;}
+    .sidebar-name{font-size:14px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .sidebar-email{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;}
+    .sidebar-saldo-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+    .sidebar-saldo-label{font-size:11px;color:var(--muted);}
+    .sidebar-saldo-value{font-size:12px;font-weight:700;color:var(--green);}
+    .sidebar-nav{flex:1;padding:12px 12px;overflow-y:auto;}
+    .nav-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;text-decoration:none;color:var(--muted2);font-size:13.5px;font-weight:500;transition:all 0.15s;margin-bottom:2px;}
+    .nav-item:hover{background:var(--surface2);color:var(--text);}
+    .nav-item.active{background:rgba(59,130,246,0.12);color:var(--accent);font-weight:600;}
+    .nav-item i{width:18px;text-align:center;font-size:14px;}
+    .nav-divider{height:1px;background:var(--border);margin:10px 0;}
+    .sidebar-footer{padding:16px 12px;border-top:1px solid var(--border);}
+    /* MAIN */
+    .main{flex:1;margin-left:var(--sidebar-w);display:flex;flex-direction:column;min-height:100vh;}
+    .topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 28px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+    .topbar-left{display:flex;align-items:center;gap:12px;}
+    .content{padding:28px;max-width:900px;margin:0 auto;width:100%;}
+    /* CARDS */
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:24px;margin-bottom:20px;}
+    .card-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:18px;}
+    /* ORDER HEADER */
+    .order-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+    .order-id{font-size:22px;font-weight:800;color:var(--text);}
+    .order-date{font-size:13px;color:var(--muted);margin-top:4px;}
+    /* BADGE */
+    .badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;}
+    .badge-success{background:rgba(34,197,94,0.12);color:var(--green);}
+    .badge-pending{background:rgba(234,179,8,0.12);color:var(--yellow);}
+    .badge-info{background:rgba(59,130,246,0.12);color:var(--accent);}
+    .badge-danger{background:rgba(239,68,68,0.12);color:var(--red);}
+    /* ITEM */
+    .item-row{display:flex;align-items:flex-start;gap:14px;padding:16px 0;border-bottom:1px solid var(--border);}
+    .item-row:last-child{border-bottom:none;}
+    .item-logo{width:52px;height:52px;border-radius:12px;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+    .item-logo img{width:100%;height:100%;object-fit:contain;padding:4px;}
+    .item-info{flex:1;}
+    .item-name{font-size:15px;font-weight:700;color:var(--text);}
+    .item-variant{font-size:12px;color:var(--muted);margin-top:2px;}
+    .item-price{font-size:15px;font-weight:700;color:var(--text);flex-shrink:0;}
+    /* CREDENTIALS */
+    .cred-box{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:12px;}
+    .cred-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;}
+    .cred-value{font-family:monospace;font-size:14px;color:var(--text);word-break:break-all;line-height:1.6;}
+    .cred-note{font-size:13px;color:var(--muted2);line-height:1.7;white-space:pre-wrap;margin-top:12px;}
+    /* SUMMARY */
+    .summary-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;}
+    .summary-row:last-child{border-bottom:none;}
+    .summary-row.total{font-weight:800;font-size:15px;color:var(--accent);}
+    /* SKELETON */
+    .skeleton{background:linear-gradient(90deg,var(--surface2) 25%,rgba(255,255,255,0.04) 50%,var(--surface2) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;height:20px;margin-bottom:10px;}
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    /* BACK */
+    .back-btn{display:inline-flex;align-items:center;gap:6px;color:var(--muted2);font-size:13px;font-weight:500;text-decoration:none;margin-bottom:20px;transition:color 0.15s;}
+    .back-btn:hover{color:var(--text);}
+    /* PAGE TITLE */
+    .page-title{font-size:26px;font-weight:800;color:var(--text);margin-bottom:6px;}
+    /* COPY BTN */
+    .copy-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;margin-top:8px;transition:opacity 0.15s;}
+    .copy-btn:hover{opacity:0.85;}
+    /* SIDEBAR OVERLAY */
+    .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:199;}
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-100%);}
+      .sidebar.open{transform:translateX(0);}
+      .sidebar-overlay.open{display:block;}
+      .main{margin-left:0;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <a href="/" class="sidebar-logo">
+    <img src="/images/logo.jpg" alt="Primexa" style="height:36px;width:auto;object-fit:contain;border-radius:8px;">
+  </a>
+  <div class="sidebar-user">
+    <div class="sidebar-avatar" id="sidebarAvatar">?</div>
+    <div class="sidebar-name" id="sidebarName">Memuat...</div>
+    <div class="sidebar-email" id="sidebarEmail"></div>
+    <div class="sidebar-saldo-row">
+      <span class="sidebar-saldo-label">Saldo</span>
+      <span class="sidebar-saldo-value" id="sidebarSaldo">Rp 0</span>
+    </div>
+    <a href="/dashboard/saldo" style="display:inline-block;margin-top:8px;font-size:11px;color:var(--accent);text-decoration:none;">Kunjungi Website Toko</a>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="/dashboard" class="nav-item" id="navDashboard"><i class="fa-solid fa-grid-2"></i> Dashboard</a>
+    <a href="/dashboard/pesanan" class="nav-item active" id="navPesanan"><i class="fa-solid fa-bag-shopping"></i> Pesanan Saya</a>
+    <a href="/dashboard/saldo" class="nav-item" id="navSaldo"><i class="fa-solid fa-wallet"></i> Saldo & Topup</a>
+    <a href="/dashboard/wishlist" class="nav-item" id="navWishlist"><i class="fa-solid fa-heart"></i> Wishlist</a>
+    <a href="/dashboard/profil" class="nav-item" id="navProfil"><i class="fa-solid fa-user"></i> Profil</a>
+    <div class="nav-divider"></div>
+    <a href="/" class="nav-item"><i class="fa-solid fa-store"></i> Kembali ke Toko</a>
+  </nav>
+  <div class="sidebar-footer">
+    <button onclick="handleLogout()" style="display:flex;align-items:center;gap:8px;padding:10px 12px;color:var(--red);font-size:13px;border-radius:10px;background:none;border:none;cursor:pointer;width:100%;font-family:inherit;">
+      <i class="fa-solid fa-right-from-bracket"></i> Keluar dari akun
+    </button>
+  </div>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <button onclick="toggleSidebar()" style="background:none;border:none;color:var(--muted2);cursor:pointer;padding:4px;font-size:18px;"><i class="fa-solid fa-bars"></i></button>
+      <span style="font-size:15px;font-weight:600;color:var(--text);">Detail Pesanan</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div id="topbarAvatar" style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer;" onclick="handleLogout()">?</div>
+      <span id="topbarName" style="font-size:13px;font-weight:600;color:var(--text);">Akun</span>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <h1 class="page-title">Detail Pesanan</h1>
+    <a href="/dashboard/pesanan" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Kembali ke pesanan</a>
+
+    <!-- Loading skeleton -->
+    <div id="skeletonArea">
+      <div class="card"><div class="skeleton" style="height:32px;width:70%;margin-bottom:8px;"></div><div class="skeleton" style="height:16px;width:30%;"></div></div>
+      <div class="card"><div class="skeleton" style="height:20px;margin-bottom:12px;"></div><div class="skeleton" style="height:80px;"></div></div>
+    </div>
+
+    <!-- Order content (hidden until loaded) -->
+    <div id="orderContent" style="display:none;">
+      <!-- Header -->
+      <div class="card">
+        <div class="order-header">
+          <div>
+            <div class="order-id" id="detOrderId">&mdash;</div>
+            <div class="order-date" id="detOrderDate">&mdash;</div>
+          </div>
+          <span class="badge" id="detStatusBadge">&mdash;</span>
+        </div>
+      </div>
+
+      <!-- Items -->
+      <div class="card">
+        <div class="card-title">Item Pesanan</div>
+        <div id="detItemList"></div>
+      </div>
+
+      <!-- Payment Summary -->
+      <div class="card">
+        <div class="card-title">Ringkasan Pembayaran</div>
+        <div id="detSummary"></div>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div id="errorArea" style="display:none;" class="card">
+      <div style="text-align:center;padding:40px 0;">
+        <i class="fa-solid fa-triangle-exclamation" style="font-size:40px;color:var(--red);margin-bottom:16px;display:block;"></i>
+        <div style="font-size:16px;font-weight:700;color:var(--text);" id="errorMsg">Pesanan tidak ditemukan</div>
+        <a href="/dashboard/pesanan" style="display:inline-block;margin-top:16px;padding:10px 20px;background:var(--accent);color:#fff;border-radius:10px;text-decoration:none;font-size:13px;font-weight:600;">Kembali ke Pesanan</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var API = (typeof window.APP_CONFIG !== 'undefined' && window.APP_CONFIG.API_URL)
+  ? window.APP_CONFIG.API_URL : (window.location.origin + '/api');
+
+/* ── AUTH ── */
+var user = null, token = null;
+try { user = JSON.parse(localStorage.getItem('ramx_auth_user')||'null'); token = localStorage.getItem('ramx_token'); } catch(e){}
+if (!user || !token) { window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname + window.location.search); }
+
+/* ── HELPERS ── */
+function fmtRp(n){ return 'Rp ' + (Number(n)||0).toLocaleString('id-ID'); }
+function fmtDateTime(d){
+  if (!d) return '\u2014';
+  var dt = new Date(d);
+  var days = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  var months = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  var pad = function(x){return String(x).padStart(2,'0');};
+  return days[dt.getDay()+0] + ', ' + pad(dt.getDate()) + ' ' + months[dt.getMonth()] + ' ' + dt.getFullYear() + ' ' + pad(dt.getHours()) + ':' + pad(dt.getMinutes());
+}
+function initials(name){ var n=(name||'A').trim().split(' '); return (n[0][0]+(n[1]?n[1][0]:'')).toUpperCase(); }
+function handleLogout(){
+  localStorage.removeItem('ramx_auth_user'); localStorage.removeItem('ramx_token'); localStorage.removeItem('ramx_remember');
+  window.location.href = '/';
+}
+function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('open'); }
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebarOverlay').classList.remove('open'); }
+
+var STATUS_BADGE = {
+  pending   : ['badge-pending','Menunggu Pembayaran'],
+  paid      : ['badge-info','Dibayar'],
+  processing: ['badge-info','Diproses'],
+  completed : ['badge-success','Berhasil'],
+  cancelled : ['badge-danger','Kedaluwarsa'],
+  refunded  : ['badge-danger','Refund'],
+};
+
+/* ── FILL USER ── */
+function fillUser(u){
+  var name = u.name || 'Pengguna', email = u.email || '-', saldo = u.balance || 0;
+  var init = initials(name);
+  function setAv(el){ if(!el)return; if(u.avatar){el.innerHTML='<img src="'+u.avatar+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;" onerror="this.parentElement.textContent=\''+init+'\'">'; el.style.fontSize='0';} else {el.textContent=init; el.style.fontSize='';} }
+  setAv(document.getElementById('sidebarAvatar'));
+  setAv(document.getElementById('topbarAvatar'));
+  document.getElementById('sidebarName').textContent = name;
+  document.getElementById('sidebarEmail').textContent = email;
+  document.getElementById('sidebarSaldo').textContent = fmtRp(saldo);
+  document.getElementById('topbarName').textContent = name;
+}
+
+/* ── COPY TEXT ── */
+function copyText(text, btn){
+  navigator.clipboard.writeText(text).then(function(){
+    var orig = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-check"></i> Disalin!';
+    setTimeout(function(){ btn.innerHTML = orig; }, 2000);
+  }).catch(function(){
+    var ta = document.createElement('textarea'); ta.value = text;
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+    document.body.removeChild(ta);
+    var orig = btn.innerHTML; btn.innerHTML = '<i class="fa-solid fa-check"></i> Disalin!';
+    setTimeout(function(){ btn.innerHTML = orig; }, 2000);
+  });
+}
+
+/* ── LOAD ORDER ── */
+async function loadOrder(){
+  var params = new URLSearchParams(window.location.search);
+  var orderId = params.get('id');
+  if (!orderId) { showError('ID pesanan tidak ditemukan.'); return; }
+
+  try {
+    // Fetch order info (public track endpoint)
+    var res = await fetch(API + '/orders/track/' + orderId, { credentials: 'include', headers: { 'Authorization': 'Bearer ' + token } });
+    var j   = await res.json();
+    if (!j.success || !j.data) { showError('Pesanan tidak ditemukan atau tidak bisa diakses.'); return; }
+
+    var o = j.data;
+
+    // Render header
+    document.getElementById('detOrderId').textContent  = o.orderId || o._id;
+    document.getElementById('detOrderDate').textContent = fmtDateTime(o.createdAt || o.paidAt);
+    var bdg = STATUS_BADGE[o.status] || ['badge-info', o.status];
+    document.getElementById('detStatusBadge').className = 'badge ' + bdg[0];
+    document.getElementById('detStatusBadge').textContent = bdg[1];
+
+    // Render items
+    var items = o.items && o.items.length ? o.items : [{ productName: o.productName || '\u2014', variant: o.variantName || '', price: o.total || 0 }];
+    var itemHtml = items.map(function(item){
+      var istat = STATUS_BADGE[item.status] || STATUS_BADGE[o.status] || ['badge-info',''];
+      var logoHtml = item.logoUrl
+        ? '<img src="' + item.logoUrl + '" onerror="this.parentElement.innerHTML=\'<i class=&quot;fa-solid fa-box&quot; style=&quot;font-size:22px;color:var(--muted2)&quot;></i>\'">'
+        : '<i class="fa-solid fa-box" style="font-size:22px;color:var(--muted2);"></i>';
+      return '<div class="item-row">' +
+        '<div class="item-logo">' + logoHtml + '</div>' +
+        '<div class="item-info">' +
+          '<div class="item-name">' + (item.productName || '\u2014') + '</div>' +
+          '<div class="item-variant">' + (item.variant || '') + '</div>' +
+          (istat[1] ? '<span class="badge ' + istat[0] + '" style="margin-top:6px;font-size:10px;">' + istat[1] + '</span>' : '') +
+        '</div>' +
+        '<div class="item-price">' + fmtRp(item.price || item.subtotal || 0) + '</div>' +
+      '</div>';
+    }).join('');
+    document.getElementById('detItemList').innerHTML = itemHtml;
+
+    // Try fetch credentials (protected-data)
+    try {
+      var cr = await fetch(API + '/invoice/' + orderId + '/protected-data', {
+        credentials: 'include',
+        headers: { 'Authorization': 'Bearer ' + token }
+      });
+      var cj = await cr.json();
+      if (cj.success && cj.credentials && cj.credentials.length) {
+        var credHtml = cj.credentials.map(function(c, ci){
+          var val = c.value || c.credential || c.account || c.data || '';
+          var note = c.note || c.notes || c.sellerNote || '';
+          var accessAt = c.accessAt || c.website || '';
+          var allCred = [val, c.password ? 'Password: '+c.password : '', c.pin ? 'PIN: '+c.pin : ''].filter(Boolean).join(' | ');
+          return '<div class="cred-box">' +
+            '<div class="cred-label">Info Pengiriman' + (cj.credentials.length > 1 ? ' #' + (ci+1) : '') + '</div>' +
+            (allCred ? '<div class="cred-value">' + allCred + '</div><button class="copy-btn" onclick="copyText(\'' + allCred.replace(/'/g,"\'") + '\',this)"><i class="fa-solid fa-copy"></i> Salin</button>' : '') +
+            (accessAt ? '<div style="font-size:11px;color:var(--muted);margin-top:6px;"><i class="fa-solid fa-globe"></i> Akses Di: ' + accessAt + '</div>' : '') +
+            (note ? '<div class="cred-label" style="margin-top:14px;">Catatan Penjual:</div><div class="cred-note">' + note + '</div>' : '') +
+          '</div>';
+        }).join('');
+        // Append credentials to each item
+        var itemRows = document.querySelectorAll('.item-row');
+        if (itemRows.length > 0) {
+          itemRows[itemRows.length-1].insertAdjacentHTML('afterend', credHtml);
+        }
+      }
+    } catch(credErr){ /* credentials optional */ }
+
+    // Render payment summary
+    var discount = o.discount || o.voucherDiscount || 0;
+    var voucher  = o.voucherCode || '';
+    var summHtml =
+      '<div class="summary-row"><span style="color:var(--muted);">Subtotal</span><span>' + fmtRp(o.subtotal || o.total || 0) + '</span></div>' +
+      (discount ? '<div class="summary-row"><span style="color:var(--muted);">Diskon' + (voucher ? ' Voucher (' + voucher + ')' : '') + '</span><span style="color:var(--green);">-' + fmtRp(discount) + '</span></div>' : '') +
+      '<div class="summary-row total"><span>Total</span><span>' + fmtRp(o.total || 0) + '</span></div>' +
+      '<div class="summary-row"><span style="color:var(--muted);">Metode Pembayaran</span><span style="color:var(--muted2);">' + (o.paymentMethod === 'balance' ? 'Saldo Akun' : o.paymentMethod || '\u2014') + '</span></div>' +
+      (o.customerEmail ? '<div class="summary-row"><span style="color:var(--muted);">Email Tujuan</span><span style="color:var(--muted2);font-size:13px;">' + o.customerEmail + '</span></div>' : '') +
+      '<div class="summary-row"><a href="/invoice/' + (o.orderId||o._id) + '" target="_blank" style="color:var(--accent);font-size:13px;font-weight:600;text-decoration:none;"><i class="fa-solid fa-receipt"></i> Lihat Invoice Lengkap</a><span></span></div>';
+    document.getElementById('detSummary').innerHTML = summHtml;
+
+    // Show content
+    document.getElementById('skeletonArea').style.display = 'none';
+    document.getElementById('orderContent').style.display = 'block';
+
+  } catch(e) {
+    showError('Gagal memuat pesanan. Coba refresh halaman.');
+  }
+}
+
+function showError(msg){
+  document.getElementById('skeletonArea').style.display = 'none';
+  document.getElementById('errorMsg').textContent = msg;
+  document.getElementById('errorArea').style.display = 'block';
+}
+
+/* ── INIT ── */
+(async function(){
+  if (user) fillUser(user);
+  try {
+    var r = await fetch(API + '/auth/me', { headers: {'Authorization':'Bearer '+token}, credentials:'include' });
+    var d = await r.json();
+    if (d.success && d.user) { fillUser(d.user); localStorage.setItem('ramx_auth_user', JSON.stringify(d.user)); }
+  } catch(e){}
+  await loadOrder();
+})();
+</script>
+<script src="/shared-user-avatar.js"></script>
+<script src="/shared-config.js"></script>
+</body>
+</html>

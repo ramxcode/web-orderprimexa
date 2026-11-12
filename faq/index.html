@@ -1,0 +1,221 @@
+﻿<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/images/logo.jpg" type="image/jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ & Bantuan &mdash; Primexa</title>
+  <meta name="description" content="Pertanyaan yang sering ditanyakan seputar produk digital Primexa.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../index.css">
+  <style>
+    /* â&rdquo;€â&rdquo;€ FAQ Page Styles â&rdquo;€â&rdquo;€ */
+    .faq-hero {
+      background: linear-gradient(135deg, var(--bg-card) 0%, #0f2044 100%);
+      padding: 80px 24px 48px;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .faq-hero h1 { font-size: clamp(28px, 5vw, 42px); font-weight: 800; margin-bottom: 12px; color: #f1f5f9; }
+    .faq-hero p  { color: var(--text-muted); font-size: 16px; max-width: 520px; margin: 0 auto 24px; }
+    .faq-search  {
+      max-width: 480px; margin: 0 auto;
+      display: flex; align-items: center; gap: 12px;
+      background: var(--bg-elevated); border: 1px solid var(--border);
+      border-radius: 12px; padding: 12px 16px;
+    }
+    .faq-search input { background: none; border: none; outline: none; color: var(--text-primary); font-size: 15px; flex: 1; font-family: inherit; }
+    .faq-search i { color: var(--text-muted); }
+
+    .faq-container { max-width: 760px; margin: 0 auto; padding: 48px 24px 80px; }
+    .faq-category   { margin-bottom: 40px; }
+    .faq-cat-label  { font-size: 12px; font-weight: 700; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px; }
+
+    .faq-item { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; transition: border-color 0.2s; }
+    .faq-item:hover { border-color: var(--accent); }
+    .faq-question {
+      width: 100%; background: var(--bg-card); border: none; text-align: left;
+      padding: 18px 20px; cursor: pointer; color: var(--text-primary);
+      font-size: 15px; font-weight: 600; font-family: inherit;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .faq-question i { color: var(--text-muted); font-size: 13px; transition: transform 0.25s; flex-shrink: 0; }
+    .faq-question.open i { transform: rotate(180deg); color: var(--accent); }
+    .faq-answer {
+      background: var(--bg-elevated); color: var(--text-muted);
+      font-size: 14px; line-height: 1.75; padding: 0 20px;
+      max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.25s ease;
+    }
+    .faq-answer.open { max-height: 400px; padding: 16px 20px; }
+    .faq-answer a { color: var(--accent); }
+
+    .faq-cta { text-align: center; padding: 40px 24px; background: var(--bg-card); border-top: 1px solid var(--border); }
+    .faq-cta h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .faq-cta p  { color: var(--text-muted); margin-bottom: 20px; }
+    .faq-cta .faq-wa-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #25D366;
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 15px;
+      font-family: inherit;
+      line-height: 1;
+      white-space: nowrap;
+      box-shadow: 0 4px 20px rgba(37, 211, 102, 0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .faq-cta .faq-wa-link i { font-size: 20px; flex-shrink: 0; }
+    .faq-cta .faq-wa-link:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37, 211, 102, 0.45); }
+  </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" id="navbar">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.jpg" alt="Primexa" style="height:36px;width:auto;object-fit:contain;border-radius:8px;">
+  </a>
+  <div class="nav-actions" style="margin-left:auto;">
+    <a href="/" class="nav-btn"><i class="fa-solid fa-house"></i> Beranda</a>
+    <a href="/produk" class="nav-btn"><i class="fa-solid fa-box"></i> Produk</a>
+    <button class="nav-btn nav-btn-icon desktop-theme-btn" onclick="toggleTheme()" title="Toggle theme" id="themeBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" id="themeIcon"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
+    <button class="nav-btn btn-login"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+  </div>
+</nav>
+
+<!-- ===== FAQ HERO ===== -->
+<section class="faq-hero">
+  <h1>FAQ &amp; Bantuan</h1>
+  <p>Temukan jawaban atas pertanyaan yang sering ditanyakan seputar produk dan layanan kami.</p>
+  <div class="faq-search">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input type="text" id="faqSearch" placeholder="Cari pertanyaan..." oninput="filterFaq(this.value)">
+  </div>
+</section>
+
+<!-- ===== FAQ CONTENT ===== -->
+</div>
+
+<!-- FAQ rendered here by JS -->
+<div class="faq-container" id="faqContainer"></div>
+
+
+
+<!-- ===== CTA ===== -->
+<div class="faq-cta">
+  <h3>Masih punya pertanyaan?</h3>
+  <p>Tim CS kami siap membantu Anda 24 jam sehari, 7 hari seminggu.</p>
+  <a href="https://wa.me/628123456789?text=Halo, saya butuh bantuan" target="_blank" class="faq-wa-link"><i class="fa-brands fa-whatsapp"></i> Chat via WhatsApp</a>
+</div>
+
+<script>
+  // Theme
+  (function() {
+    var t = localStorage.getItem('ramx-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', t);
+  })();
+  function toggleTheme() {
+    var cur = document.documentElement.getAttribute('data-theme');
+    var next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('ramx-theme', next);
+  }
+
+  // â”€â”€ Default FAQ data â”€â”€
+  var DEFAULT_FAQ = [
+    {
+      cat: 'Pembelian & Pembayaran',
+      items: [
+        { q: 'Apa saja metode pembayaran yang tersedia?', a: 'Kami mendukung berbagai metode pembayaran: Transfer Bank (BCA, Mandiri, BNI, BRI), QRIS, GoPay, OVO, Dana, ShopeePay, dan kartu kredit/debit Visa/Mastercard.' },
+        { q: 'Berapa lama proses pengiriman produk digital?', a: 'Produk digital dikirim secara <strong>otomatis dan instan</strong> setelah pembayaran terverifikasi \u2014 biasanya kurang dari 5 menit. Jika belum diterima dalam 15 menit, hubungi CS kami via WhatsApp.' },
+        { q: 'Apakah ada biaya tambahan saat checkout?', a: 'Tidak ada biaya tersembunyi. Harga yang tertera di halaman produk adalah harga final yang Anda bayar.' }
+      ]
+    },
+    {
+      cat: 'Produk & Akun',
+      items: [
+        { q: 'Bagaimana cara menggunakan produk yang saya beli?', a: 'Setelah pembayaran berhasil, Anda akan menerima instruksi lengkap melalui email dan/atau WhatsApp.' },
+        { q: 'Apakah akun yang saya beli aman digunakan?', a: 'Ya, semua produk yang kami jual telah diverifikasi dan aman digunakan. Kami memberikan garansi ganti akun jika terjadi masalah dalam periode garansi yang berlaku.' },
+        { q: 'Berapa lama masa garansi produk?', a: 'Masa garansi bervariasi tergantung produk \u2014 biasanya antara 1 hingga 30 hari. Detail garansi tercantum di halaman masing-masing produk.' }
+      ]
+    },
+    {
+      cat: 'Refund & Keluhan',
+      items: [
+        { q: 'Apakah bisa refund jika produk tidak sesuai?', a: 'Refund dapat dilakukan jika produk tidak berfungsi sesuai deskripsi dan masih dalam periode garansi. Hubungi CS kami dengan menyertakan bukti transaksi.' },
+        { q: 'Bagaimana cara melaporkan masalah dengan pesanan saya?', a: 'Hubungi CS kami melalui tombol WhatsApp, atau kirim email ke <a href="mailto:support@Primexa.id">support@Primexa.id</a>. Sertakan nomor order Anda.' }
+      ]
+    }
+  ];
+
+  // â”€â”€ Render FAQ dari data â”€â”€
+  function renderFaq(data) {
+    var html = '';
+    data.forEach(function(cat) {
+      if (!cat.items || cat.items.length === 0) return;
+      html += '<div class="faq-category" data-cat="' + escAttr(cat.cat) + '">';
+      html += '<div class="faq-cat-label">' + cat.cat + '</div>';
+      cat.items.forEach(function(item) {
+        if (!item.q) return;
+        html += '<div class="faq-item">';
+        html += '<button class="faq-question" onclick="toggleFaq(this)">' + item.q + ' <i class="fa-solid fa-chevron-down"></i></button>';
+        html += '<div class="faq-answer">' + (item.a || '') + '</div>';
+        html += '</div>';
+      });
+      html += '</div>';
+    });
+    document.getElementById('faqContainer').innerHTML = html || '<div style="text-align:center;padding:40px;color:var(--text-muted);">Belum ada pertanyaan.</div>';
+  }
+
+  function escAttr(s) { return s ? s.replace(/"/g, '&quot;') : ''; }
+
+  // â”€â”€ Load dari localStorage atau default â”€â”€
+  function loadFaq() {
+    var saved = localStorage.getItem('ramx_page_faq');
+    var data = DEFAULT_FAQ;
+    if (saved) { try { data = JSON.parse(saved); } catch(e) {} }
+    renderFaq(data);
+  }
+
+  loadFaq();
+
+  // Sinkronisasi antar tab
+  window.addEventListener('storage', function(e) {
+    if (e.key === 'ramx_page_faq') loadFaq();
+  });
+
+  // FAQ accordion
+  function toggleFaq(btn) {
+    var answer = btn.nextElementSibling;
+    var isOpen = answer.classList.contains('open');
+    document.querySelectorAll('.faq-answer.open').forEach(function(a) { a.classList.remove('open'); });
+    document.querySelectorAll('.faq-question.open').forEach(function(b) { b.classList.remove('open'); });
+    if (!isOpen) { answer.classList.add('open'); btn.classList.add('open'); }
+  }
+
+  // Filter FAQ
+  function filterFaq(q) {
+    q = q.toLowerCase().trim();
+    document.querySelectorAll('.faq-item').forEach(function(item) {
+      var text = item.textContent.toLowerCase();
+      item.style.display = (!q || text.includes(q)) ? '' : 'none';
+    });
+    document.querySelectorAll('.faq-category').forEach(function(cat) {
+      var visible = Array.from(cat.querySelectorAll('.faq-item')).some(function(i) { return i.style.display !== 'none'; });
+      cat.style.display = visible ? '' : 'none';
+    });
+  }
+</script>
+<script src="/shared-config.js"></script>
+</body>
+</html>

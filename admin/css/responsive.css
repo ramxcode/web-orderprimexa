@@ -1,0 +1,272 @@
+/* ============================================================
+   responsive.css — Admin Panel Full Responsive Fix
+   v20260728a
+   ============================================================ */
+
+/* ── Topbar Responsive ───────────────────────────────────────── */
+.topbar {
+  min-width: 0;
+  overflow: hidden;
+}
+.topbar-left {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.topbar-search {
+  width: clamp(120px, 30vw, 380px);
+  flex-shrink: 1;
+}
+.topbar-right {
+  flex-shrink: 0;
+  gap: 6px;
+}
+
+/* ── Table Scroll Fix ────────────────────────────────────────── */
+.table-wrap,
+.data-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.data-table {
+  min-width: 600px;
+}
+
+/* ── Page Content Overflow ───────────────────────────────────── */
+.page-content {
+  overflow-x: hidden;
+  min-width: 0;
+}
+
+/* ── Card & Grid Overflow ────────────────────────────────────── */
+.card {
+  min-width: 0;
+  overflow: hidden;
+}
+.grid-4, .grid-3, .grid-2 {
+  min-width: 0;
+}
+
+/* ════════════════════════════════════════════════════════════
+   BREAKPOINT: ≤ 1200px — tablet landscape
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 1200px) {
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .topbar-search {
+    width: clamp(120px, 25vw, 280px);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   BREAKPOINT: ≤ 1024px — tablet portrait
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  /* Stat grids jadi 2 kolom */
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* 3-col grid jadi 2 */
+  .grid-3 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* Page padding dikurangi */
+  .page-content {
+    padding: 20px 18px;
+  }
+  /* Page header stack */
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .page-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   BREAKPOINT: ≤ 900px — shrink topbar
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  .topbar-search input::placeholder {
+    font-size: 12px;
+  }
+  .topbar-search kbd {
+    display: none;
+  }
+  /* Topbar username hide */
+  .topbar-username {
+    display: none;
+  }
+  .topbar-user {
+    display: none;
+  }
+  /* Notif button compact */
+  .topbar-icon-btn {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   BREAKPOINT: ≤ 768px — mobile drawer sidebar
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Sidebar menjadi drawer */
+  .sidebar {
+    position: fixed !important;
+    left: 0; top: 0; bottom: 0;
+    transform: translateX(-100%);
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 500;
+    width: 260px !important;
+    box-shadow: 8px 0 32px rgba(0,0,0,0.4);
+  }
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+  /* Main content full width */
+  .main-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  /* Hamburger visible */
+  .sidebar-open-btn {
+    display: flex !important;
+  }
+  /* Topbar search lebih kecil */
+  .topbar-search {
+    width: clamp(100px, 40vw, 240px);
+    font-size: 12px;
+  }
+  /* Page content padding */
+  .page-content {
+    padding: 16px 14px 28px;
+  }
+  /* Stat cards single column */
+  .grid-4,
+  .grid-3,
+  .grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+  /* Collapse btn sembunyikan di mobile */
+  .collapse-btn {
+    display: none !important;
+  }
+  /* Card padding dikurangi */
+  .card {
+    padding: 16px !important;
+  }
+  /* Form grid single col */
+  .form-row-2 {
+    grid-template-columns: 1fr !important;
+  }
+  /* Table font lebih kecil */
+  .data-table th,
+  .data-table td {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  /* Button text lebih kecil */
+  .btn {
+    font-size: 12px;
+    padding: 8px 14px;
+  }
+  .btn-sm {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+  /* Page title */
+  .page-title {
+    font-size: 20px;
+  }
+  /* Topbar profile — hanya avatar */
+  .profile-chevron {
+    display: none;
+  }
+  /* Filter row wrap */
+  .pm-filter-row,
+  .filter-row {
+    flex-wrap: wrap !important;
+  }
+  .pm-filter-row > *,
+  .filter-row > * {
+    flex: 1 1 auto;
+    min-width: 130px;
+  }
+  /* Modal full screen on mobile */
+  .modal-content,
+  .modal-box {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    margin: 10px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   BREAKPOINT: ≤ 540px — small mobile
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 540px) {
+  /* Page header */
+  .page-title {
+    font-size: 18px;
+  }
+  .page-subtitle {
+    font-size: 12px;
+  }
+  /* Topbar search hide completely */
+  .topbar-search {
+    display: none;
+  }
+  /* Nominal grid 2 col */
+  .nominal-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* Tab nav scroll */
+  .tab-nav {
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* Dashboard welcome banner */
+  .welcome-banner-title {
+    font-size: 18px;
+  }
+  /* Topbar compact */
+  .topbar {
+    padding: 0 12px;
+    height: 56px;
+  }
+  /* Stat card compact */
+  .stat-value {
+    font-size: 20px;
+  }
+}
+
+/* ── Sidebar Overlay (mobile backdrop) ───────────────────────── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 499;
+  backdrop-filter: blur(2px);
+}
+.sidebar-overlay.show {
+  display: block;
+}
+
+/* ── Ensure sidebar-open-btn visible on mobile ───────────────── */
+@media (min-width: 769px) {
+  /* On desktop, hamburger behaviour handled by app.js / collapse */
+  .sidebar {
+    transform: none !important;
+  }
+}

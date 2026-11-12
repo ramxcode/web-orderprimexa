@@ -1,0 +1,419 @@
+﻿<!DOCTYPE html>
+<html lang="id" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="/images/logo.jpg" type="image/jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel &mdash; Primexa</title>
+  <meta name="description" content="Dashboard admin dan reseller Primexa &mdash; produk digital terpercaya.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/main.css">
+  <style>
+    /* Auth guard: sembunyikan body sampai token terverifikasi */
+    html[data-auth="pending"] body { display: none; }
+    body { margin: 0; font-family: 'Inter', sans-serif; background: #0B1120; color: #F1F5F9; }
+  </style>
+  <script>
+    // Early auth guard \u2014 berjalan sebelum body dirender
+    // Set pending state dulu (html element sudah tersedia di head)
+    document.documentElement.setAttribute('data-auth', 'pending');
+    (function(){
+      var token = localStorage.getItem('ramx_admin_token')
+                || localStorage.getItem('ramx_token')
+                || sessionStorage.getItem('ramx_token');
+      if (!token) {
+        // Tidak ada token → redirect ke login, body tidak pernah tampil
+        window.location.replace('/admin/login');
+      } else {
+        // Token ada → hapus data-auth saat DOM siap agar body muncul
+        document.addEventListener('DOMContentLoaded', function(){
+          document.documentElement.removeAttribute('data-auth');
+        });
+      }
+    })();
+  </script>
+</head>
+<body>
+
+<!-- ===== SIDEBAR OVERLAY (mobile) ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebarMobile()"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+
+  <!-- Header: Logo + Collapse -->
+  <div class="sidebar-header">
+    <a href="/admin/dashboard" class="sidebar-logo" id="sidebarLogoLink">
+      <img src="/images/logo.jpg" alt="Primexa" style="height:28px;width:auto;object-fit:contain;border-radius:6px;">
+    </a>
+    <button class="collapse-btn" id="collapseBtn" onclick="toggleCollapse()" title="Collapse sidebar">
+      <i class="fa-solid fa-angles-left" id="collapseIcon"></i>
+    </button>
+  </div>
+
+  <!-- User Profile -->
+  <div class="sidebar-profile">
+    <div class="profile-avatar">AD</div>
+    <div class="profile-info">
+      <div class="profile-name">Admin Reseller</div>
+      <div class="profile-email">admin@primexa.id</div>
+    </div>
+  </div>
+
+  <!-- Visit Store -->
+  <a href="#" class="visit-store-btn" target="_blank" title="Kunjungi Website Toko">
+    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+    <span>Kunjungi Website Toko</span>
+  </a>
+
+  <!-- Navigation -->
+  <nav class="sidebar-nav" id="sidebarNav">
+
+    <div class="nav-divider"></div>
+
+    <!-- Panel Admin -->
+    <div class="nav-group">
+      <button class="nav-group-header" onclick="toggleAccordion('panel')" id="panelHeader">
+        <div class="nav-group-left">
+          <i class="fa-solid fa-layer-group"></i>
+          <span class="nav-group-label">Panel Admin</span>
+        </div>
+        <i class="fa-solid fa-chevron-up nav-arrow" id="panelArrow"></i>
+      </button>
+      <div class="nav-submenu open" id="panelMenu">
+        <a href="/admin/dashboard" class="nav-link" data-page="dashboard">
+          <i class="fa-solid fa-gauge-high"></i><span>Dashboard</span>
+        </a>
+        <a href="/admin/analytics" class="nav-link" data-page="analytics">
+          <i class="fa-solid fa-chart-line"></i><span>Analitik</span>
+        </a>
+        <a href="/admin/orders" class="nav-link" data-page="orders">
+          <i class="fa-solid fa-receipt"></i><span>Pesanan</span>
+        </a>
+        <a href="/admin/database" class="nav-link" data-page="database">
+          <i class="fa-solid fa-database"></i><span>Database</span>
+        </a>
+        <a href="/admin/sync-products" class="nav-link" data-page="sync-products" style="opacity:0.5;pointer-events:none;cursor:default;">
+          <i class="fa-solid fa-rotate"></i>
+          <span>Sync Produk <span style="font-size:10px;background:rgba(99,102,241,.2);color:#818cf8;border:1px solid rgba(99,102,241,.3);border-radius:99px;padding:1px 7px;font-weight:600;margin-left:4px;">Soon</span></span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Pembayaran -->
+    <div class="nav-group">
+      <button class="nav-group-header" onclick="toggleAccordion('payment')" id="paymentHeader">
+        <div class="nav-group-left">
+          <i class="fa-solid fa-credit-card"></i>
+          <span class="nav-group-label">Pembayaran</span>
+        </div>
+        <i class="fa-solid fa-chevron-down nav-arrow" id="paymentArrow"></i>
+      </button>
+      <div class="nav-submenu" id="paymentMenu">
+        <a href="/admin/payment-methods" class="nav-link" data-page="payment-methods">
+          <i class="fa-solid fa-list-check"></i><span>Metode Pembayaran</span>
+        </a>
+        <a href="/admin/payment-gateway" class="nav-link" data-page="payment-gateway">
+          <i class="fa-solid fa-building-columns"></i><span>Payment Gateway</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Bot Settings -->
+    <div class="nav-group">
+      <button class="nav-group-header" onclick="toggleAccordion('bot')" id="botHeader">
+        <div class="nav-group-left">
+          <i class="fa-solid fa-robot"></i>
+          <span class="nav-group-label">Bot Settings</span>
+        </div>
+        <i class="fa-solid fa-chevron-down nav-arrow" id="botArrow"></i>
+      </button>
+      <div class="nav-submenu" id="botMenu">
+        <a href="/admin/bot-settings" class="nav-link" data-page="bot-settings">
+          <i class="fa-solid fa-sliders"></i><span>Pengaturan Bot</span>
+        </a>
+        <a href="/admin/bot-messages" class="nav-link" data-page="bot-messages">
+          <i class="fa-solid fa-comment-dots"></i><span>Pesan Otomatis</span>
+        </a>
+        <a href="/admin/bot-integration" class="nav-link" data-page="bot-integration">
+          <i class="fa-brands fa-telegram"></i><span>Integrasi Bot</span>
+        </a>
+        <a href="/admin/bot-logs" class="nav-link" data-page="bot-logs">
+          <i class="fa-solid fa-list-ul"></i><span>Log Aktivitas</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Kelola Produk -->
+    <div class="nav-group">
+      <button class="nav-group-header" onclick="toggleAccordion('products')" id="productsHeader">
+        <div class="nav-group-left">
+          <i class="fa-solid fa-box-open"></i>
+          <span class="nav-group-label">Kelola Produk</span>
+        </div>
+        <i class="fa-solid fa-chevron-down nav-arrow" id="productsArrow"></i>
+      </button>
+      <div class="nav-submenu" id="productsMenu">
+        <a href="/admin/products" class="nav-link" data-page="products">
+          <i class="fa-solid fa-boxes-stacked"></i><span>Produk</span>
+        </a>
+        <a href="/admin/categories" class="nav-link" data-page="categories">
+          <i class="fa-solid fa-tags"></i><span>Kategori</span>
+        </a>
+        <a href="/admin/product-types" class="nav-link" data-page="product-types">
+          <i class="fa-solid fa-layer-group"></i><span>Tipe Produk</span>
+        </a>
+        <a href="/admin/product-variants" class="nav-link" data-page="product-variants">
+          <i class="fa-solid fa-list-check"></i><span>Varian Produk</span>
+        </a>
+        <a href="/admin/stock-data" class="nav-link" data-page="stock-data">
+          <i class="fa-solid fa-database"></i><span>Stok Data</span>
+        </a>
+        <a href="/admin/featured-products" class="nav-link" data-page="featured-products">
+          <i class="fa-solid fa-star"></i><span>Produk Unggulan</span>
+        </a>
+        <a href="/admin/flash-sale" class="nav-link" data-page="flash-sale">
+          <i class="fa-solid fa-bolt"></i><span>Flash Sale</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Kustomisasi -->
+    <div class="nav-group">
+      <button class="nav-group-header" onclick="toggleAccordion('custom')" id="customHeader">
+        <div class="nav-group-left">
+          <i class="fa-solid fa-palette"></i>
+          <span class="nav-group-label">Kustomisasi</span>
+        </div>
+        <i class="fa-solid fa-chevron-down nav-arrow" id="customArrow"></i>
+      </button>
+      <div class="nav-submenu" id="customMenu">
+        <a href="/admin/general-config" class="nav-link" data-page="general-config">
+          <i class="fa-solid fa-gear"></i><span>Konfigurasi Umum</span>
+        </a>
+        <a href="/admin/static-pages" class="nav-link" data-page="static-pages">
+          <i class="fa-solid fa-file-lines"></i><span>Halaman Statis</span>
+        </a>
+        <a href="/admin/seo-pixel" class="nav-link" data-page="seo-pixel">
+          <i class="fa-solid fa-magnifying-glass-chart"></i><span>SEO &amp; Pixel</span>
+        </a>
+        <a href="/admin/widget" class="nav-link" data-page="widget">
+          <i class="fa-solid fa-puzzle-piece"></i><span>Widget</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Pelanggan -->
+    <div class="nav-group">
+      <button class="nav-group-header" onclick="toggleAccordion('customer')" id="customerHeader">
+        <div class="nav-group-left">
+          <i class="fa-solid fa-users"></i>
+          <span class="nav-group-label">Pelanggan</span>
+        </div>
+        <i class="fa-solid fa-chevron-down nav-arrow" id="customerArrow"></i>
+      </button>
+      <div class="nav-submenu" id="customerMenu">
+        <a href="/admin/customers" class="nav-link" data-page="customers">
+          <i class="fa-solid fa-user-group"></i><span>Data Pelanggan</span>
+        </a>
+        <a href="/admin/vouchers" class="nav-link" data-page="vouchers">
+          <i class="fa-solid fa-ticket"></i><span>Voucher</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Bantuan & Setup -->
+    <div class="nav-group">
+      <button class="nav-group-header" onclick="toggleAccordion('help')" id="helpHeader">
+        <div class="nav-group-left">
+          <i class="fa-solid fa-circle-question"></i>
+          <span class="nav-group-label">Bantuan &amp; Setup</span>
+        </div>
+        <i class="fa-solid fa-chevron-down nav-arrow" id="helpArrow"></i>
+      </button>
+      <div class="nav-submenu" id="helpMenu">
+        <a href="/admin/sync-products" class="nav-link" data-page="sync-products">
+          <i class="fa-solid fa-rotate"></i><span>Sync Produk</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Manajemen Tim -->
+    <div class="nav-group">
+      <button class="nav-group-header" onclick="toggleAccordion('team')" id="teamHeader">
+        <div class="nav-group-left">
+          <i class="fa-solid fa-people-group"></i>
+          <span class="nav-group-label">Manajemen Tim</span>
+        </div>
+        <i class="fa-solid fa-chevron-down nav-arrow" id="teamArrow"></i>
+      </button>
+      <div class="nav-submenu" id="teamMenu">
+        <a href="/admin/team-users" class="nav-link" data-page="team-users">
+          <i class="fa-solid fa-user-shield"></i><span>Daftar Anggota</span>
+        </a>
+        <a href="/admin/team-create" class="nav-link" data-page="team-create">
+          <i class="fa-solid fa-user-plus"></i><span>Buat Akun</span>
+        </a>
+        <a href="/admin/team-roles" class="nav-link" data-page="team-roles">
+          <i class="fa-solid fa-lock"></i><span>Role &amp; Izin</span>
+        </a>
+        <a href="/admin/team-logs" class="nav-link" data-page="team-logs">
+          <i class="fa-solid fa-clock-rotate-left"></i><span>Log Aktivitas</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="nav-divider"></div>
+
+    <!-- Akun Saya -->
+    <div class="nav-group">
+      <button class="nav-group-header" onclick="toggleAccordion('account')" id="accountHeader">
+        <div class="nav-group-left">
+          <i class="fa-solid fa-circle-user"></i>
+          <span class="nav-group-label">Akun Saya</span>
+        </div>
+        <i class="fa-solid fa-chevron-down nav-arrow" id="accountArrow"></i>
+      </button>
+      <div class="nav-submenu" id="accountMenu">
+        <a href="/admin/account-profile" class="nav-link" data-page="account-profile">
+          <i class="fa-solid fa-id-card"></i><span>Profil Akun</span>
+        </a>
+        <a href="/admin/account-security" class="nav-link" data-page="account-security">
+          <i class="fa-solid fa-shield-halved"></i><span>Keamanan</span>
+        </a>
+        <a href="/admin/account-password" class="nav-link" data-page="account-password">
+          <i class="fa-solid fa-lock"></i><span>Ganti Password</span>
+        </a>
+      </div>
+    </div>
+
+  </nav>
+</aside>
+
+<!-- ===== MAIN WRAPPER ===== -->
+<div class="main-wrapper" id="mainWrapper">
+
+  <!-- Topbar -->
+  <header class="topbar" id="topbar">
+    <div class="topbar-left">
+      <button class="topbar-icon-btn menu-btn" onclick="toggleSidebarMobile()" title="Menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div class="topbar-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" placeholder="Cari ID pesanan..." id="globalSearch" autocomplete="off">
+        <kbd>⌘K</kbd>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-icon-btn theme-btn" onclick="toggleTheme()" title="Toggle theme" id="themeBtn">
+        <i class="fa-solid fa-sun" id="themeIcon"></i>
+      </button>
+      <button class="topbar-icon-btn notif-btn" title="Notifikasi" onclick="showToast('info','Tidak ada notifikasi baru.')">
+        <i class="fa-solid fa-bell"></i>
+        <span class="notif-dot"></span>
+      </button>
+      <div class="topbar-profile" id="profileToggle" onclick="toggleProfileDropdown()">
+        <div class="topbar-avatar">AD</div>
+        <div class="topbar-user">
+          <span class="topbar-username">Admin Reseller</span>
+        </div>
+        <i class="fa-solid fa-chevron-down profile-chevron" id="profileChevron"></i>
+        <!-- Profile Dropdown -->
+        <div class="profile-dropdown" id="profileDropdown">
+          <div class="dropdown-user">
+            <div class="dropdown-avatar">AD</div>
+            <div>
+              <div class="dropdown-name">Admin Reseller</div>
+              <div class="dropdown-email">admin@primexa.id</div>
+            </div>
+          </div>
+          <div class="dropdown-divider"></div>
+          <a href="/admin/account-profile" class="dropdown-item" onclick="closeProfileDropdown()"><i class="fa-solid fa-user"></i>Profil Saya</a>
+          <a href="/admin/account-security" class="dropdown-item" onclick="closeProfileDropdown()"><i class="fa-solid fa-gear"></i>Pengaturan Akun</a>
+          <a href="/" target="_blank" class="dropdown-item" onclick="closeProfileDropdown()"><i class="fa-solid fa-store"></i>Kunjungi Toko</a>
+          <div class="dropdown-divider"></div>
+          <a href="/admin/login" class="dropdown-item danger" onclick="adminLogout(); return false;"><i class="fa-solid fa-right-from-bracket"></i>Keluar</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Content -->
+  <main class="page-content" id="pageContent">
+    <!-- Content injected by router -->
+  </main>
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h3 class="modal-title" id="modalTitle">Konfirmasi</h3>
+      <button class="modal-close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer" id="modalFooter"></div>
+  </div>
+</div>
+
+<!-- ===== TOAST CONTAINER ===== -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<!-- API Client (load pertama - tersedia untuk semua page scripts) -->
+<script src="js/api.js"></script>
+<!-- Data Store (load sebelum data.js agar page scripts bisa akses store) -->
+<script src="js/store.js"></script>
+<!-- Data & Components -->
+<script src="js/data.js"></script>
+<script src="js/components.js"></script>
+<!-- Pages: Panel Admin -->
+<script src="js/pages/dashboard.js"></script>
+<script src="js/pages/analytics.js"></script>
+<script src="js/pages/orders.js"></script>
+<script src="js/pages/topup.js"></script>
+<script src="js/pages/payment-methods.js"></script>
+<script src="js/pages/payment-gateway.js"></script>
+<script src="js/pages/api-payment.js"></script>
+<script src="js/pages/sync-products.js"></script>
+<!-- Pages: Bot -->
+<script src="js/pages/bot.js"></script>
+<!-- Pages: Kelola Produk -->
+<script src="js/pages/products.js"></script>
+<script src="js/pages/categories.js"></script>
+<script src="js/pages/product-types.js"></script>
+<script src="js/pages/product-variants.js"></script>
+<script src="js/pages/stock-data.js"></script>
+<script src="js/pages/featured-products.js"></script>
+<script src="js/pages/flash-sale.js"></script>
+<!-- Pages: Kustomisasi -->
+<script src="js/pages/general-config.js"></script>
+<script src="js/pages/static-pages.js"></script>
+<script src="js/pages/seo-pixel.js"></script>
+<script src="js/pages/widget.js"></script>
+<!-- Pages: Pelanggan -->
+<script src="js/pages/customers.js"></script>
+<script src="js/pages/voucher.js"></script>
+<!-- Pages: Manajemen Tim -->
+<script src="js/pages/team.js"></script>
+<!-- Pages: Akun -->
+<script src="js/pages/account.js"></script>
+<!-- Pages: Database -->
+<script src="js/pages/database.js"></script>
+<!-- Router / App -->
+<script src="js/app.js"></script>
+<script>
+function adminLogout() {
+  closeProfileDropdown();
+  localStorage.removeItem('ramx_admin_token');
+  localStorage.removeItem('ramx_token');
+  sessionStorage.removeItem('ramx_token');
+  window.location.replace('/admin/login');
+}
+</script>
+<script src="/shared-user-avatar.js"></script>
+</body>
+</html>
